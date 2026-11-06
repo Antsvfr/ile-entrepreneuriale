@@ -1,0 +1,28 @@
+PASS  1. Entrer dans une entreprise depuis la métropole — rev-em → « REV-EM »
+PASS  26. Métropole chargée sans erreur
+PASS  2. Retour vers la métropole — index.html?qualite=bas&ouvrir=rev-em
+PASS  7b. Un chantier n'affiche aucune entreprise inventée — bibliotheque
+PASS  7. Chaque bâtiment d'organisation correspond à une entreprise réelle — 11 bâtiments · 11 entreprises
+PASS  8. Directeur exact (11 entreprises)
+PASS  9. Départements exacts
+PASS  3. Accès à un département (membres exacts) — Produit · 2 membre(s)
+PASS  4. Accès à une équipe (membres exacts) — dg-ile · 12 poste(s)
+PASS  5. Profil de chaque agent — 14 profils
+PASS  11. Relations hiérarchiques exactes
+PASS  12. Statuts exacts (repris du registre)
+PASS  6. Navigation entre agents (vers le manager) — architecte → manager-produit
+PASS  10. Organigramme exact (une carte par poste du registre)
+PASS  10b. Organigramme : recherche, zoom, repli — 1 trouvé(s) · scale(1.15) · 2 replié(s)
+PASS  13. Missions de l'entreprise exactes — 5/5
+PASS  14. Livrable exact et consultable — projets/rev-em/livrables/fixture-note.md → 200
+PASS  15. Aucun agent fictif (annuaires = registre) — 14 affichés
+PASS  16. Aucune fausse présence (« en exécution » ⇔ exécution au registre) — aucun
+PASS  17. Aucune fausse réunion (réunions affichées = registre) — 2 réunion(s)
+PASS  18. Aucune permission supplémentaire (aucune requête d'écriture, aucun formulaire)
+PASS  19. Aucun secret exposé
+PASS  22. Rechargement d'un profil
+PASS  23. Navigateur neuf (sans cache ni stockage)
+PASS  24. Affichage mobile sans débordement
+PASS  25. Affichage ordinateur sans erreur
+PASS  27. Liens internes valides — 23 liens · 
+Bilan : 27/27 PASS

@@ -38,7 +38,9 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
   note("26. Métropole chargée sans erreur", !p.erreurs.length, p.erreurs.join(" | "));
   await p.goBack(); await p.waitForURL(/index\.html/, {timeout: 30000});
   const retour = await p.$eval("#n-met", a => a.href).catch(() => "");
-  note("2. Retour vers la métropole", /index\.html/.test(p.url()), p.url().split("/").slice(-1)[0]);
+  await p.waitForFunction(() => window.__metropole && window.__metropole.ready, null, {timeout: 300000});
+  const visible = await p.evaluate(() => !document.body.classList.contains("entree") && getComputedStyle(document.body).opacity === "1");
+  note("2. Retour vers la métropole (visible, sans fondu résiduel)", /index\.html/.test(p.url()) && visible, p.url().split("/").slice(-1)[0] + (visible ? "" : " · métropole invisible"));
   const chantier = reg.batiments.find(x => x.type === "chantier");
   if (chantier) {
     await p.goto(base + `residence/village/index.html?qualite=bas&ouvrir=${chantier.id}`);
@@ -54,14 +56,14 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
   let okDir = true, okDep = true, okEff = true, detail = [];
   for (const e of E) {
     await vue(p, `#/e/${e.id}`);
-    const t = await p.textContent("#vue");
+    const t = await p.textContent("#vue"), carteDir = await p.$eval(".grille .carte:nth-child(1)", x => x.textContent);
     const attendu = e.directeur && e.directeur.agent ? nom(e.directeur.agent) : (e.direction === "collégiale" ? "Collégiale" : "Aucun directeur");
-    if (!t.includes(attendu)) { okDir = false; detail.push(`${e.id}: directeur`); }
-    if (!t.includes(`${e.departements.length} enregistré`)) { okDep = false; detail.push(`${e.id}: départements`); }
+    if (!carteDir.includes(attendu)) { okDir = false; detail.push(`${e.id}: directeur`); }
+    if (!new RegExp(`(^|[^0-9])${e.departements.length} enregistré`).test(t)) { okDep = false; detail.push(`${e.id}: départements`); }
     const eff = await p.$eval(".grille .carte:nth-child(2) .v", x => x.textContent.trim());
     if (+eff !== e.agents.length) { okEff = false; detail.push(`${e.id}: effectif ${eff}≠${e.agents.length}`); }
   }
-  note("8. Directeur exact (11 entreprises)", okDir, detail.join(", "));
+  note(`8. Directeur exact (${E.length} entreprises, carte Direction)`, okDir, detail.join(", "));
   note("9. Départements exacts", okDep, detail.join(", "));
 
   // 3. Département
@@ -71,8 +73,9 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
     await Promise.all([p.waitForFunction(id => location.hash.includes("/departement/" + id), dep.id), p.click(`a[href$="/departement/${dep.id}"]`)]);
     await p.waitForTimeout(300);
     const membres = Object.values(O.postes).filter(x => x.departement === dep.id && x.titulaire).length;
-    const cartes = await p.$$eval("h2 + .grille a.carte", l => l.length).catch(() => 0);
-    note("3. Accès à un département (membres exacts)", (await p.textContent("h1")).includes(dep.nom) && (await p.textContent("#vue")).includes(dep.mission || ""), `${dep.nom} · ${membres} membre(s)`);
+    const cartes = await p.evaluate(() => { const h = [...document.querySelectorAll("#vue h2")].find(x => x.textContent.trim() === "Membres"); const g = h && h.nextElementSibling; return g && g.matches(".grille") ? [...g.querySelectorAll("a.carte.agent")].map(a => a.getAttribute("href").split("/").pop()).sort() : []; });
+    const attendus = Object.values(O.postes).filter(x => x.departement === dep.id && x.titulaire).map(x => x.titulaire).sort();
+    note("3. Accès à un département (membres exacts)", (await p.textContent("h1")).includes(dep.nom) && (await p.textContent("#vue")).includes(dep.mission || "") && JSON.stringify(cartes) === JSON.stringify(attendus), `${dep.nom} · affichés [${cartes}] · registre [${attendus}]`);
   } else {
     await vue(p, `#/e/${riche.id}/departements`);
     note("3. Département : état vide honnête (aucun au registre)", /Aucun département n'est enregistré/.test(await p.textContent("#vue")));
@@ -83,9 +86,14 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
     await vue(p, `#/e/${eqp.entreprise}/equipes`);
     await Promise.all([p.waitForFunction(id => location.hash.includes("/equipe/" + id), eqp.id), p.click(`a[href$="/equipe/${eqp.id}"]`)]);
     await p.waitForTimeout(300);
-    const t = await p.textContent("#vue"), subs = Object.values(O.postes).filter(y => y.superieur === eqp.id);
-    note("4. Accès à une équipe (membres exacts)", /Équipe de/.test(await p.textContent("h1")) && subs.every(s => t.includes(s.titulaire ? nom(s.titulaire) : s.titre)), `${eqp.id} · ${subs.length} poste(s)`);
-  } else note("4. Équipe : état vide honnête", true, "aucun poste avec subordonnés dans la même entreprise");
+    const subs = Object.values(O.postes).filter(y => y.superieur === eqp.id && y.entreprise === eqp.entreprise);
+    const affiches = await p.evaluate(() => { const h = [...document.querySelectorAll("#vue h2")].find(x => x.textContent.trim() === "Agents"); const g = h && h.parentElement.querySelector("h2 ~ .grille"); let n = h && h.nextElementSibling; while(n && !n.matches(".grille")) n = n.nextElementSibling; return n ? [...n.children].map(c => c.textContent) : []; });
+    const ok = affiches.length === subs.length && subs.every(s => affiches.some(x => x.includes(s.titulaire ? nom(s.titulaire) : s.titre)));
+    note("4. Accès à une équipe (membres exacts, même entreprise)", /Équipe de/.test(await p.textContent("h1")) && ok, `${eqp.id} · ${affiches.length} affiché(s) / ${subs.length} au registre`);
+  } else {
+    await vue(p, `#/e/${riche.id}/equipes`);
+    note("4. Équipe : état vide honnête (aucune au registre)", /Aucune équipe/.test(await p.textContent("#vue")) && !(await p.$("#vue a[href*='/equipe/']")), riche.id);
+  }
 
   // 5-6, 11-12. Profils, hiérarchie, statuts
   let okSup = true, okSt = true; detail = [];
@@ -123,8 +131,12 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
     await p.fill("#oc-cherche", cible.nom.slice(0, 6).toLowerCase());
     const trouve = await p.$$eval("#oc .noeud.trouve", l => l.length);
     await p.click("[data-z='1.15']"); const z = await p.$eval("#oc-plan", x => x.style.transform);
+    const parents = await p.$$eval("#oc li", l => l.filter(li => li.querySelector("ul")).length);
     await p.click("[data-tout='plier']"); const plies = await p.$$eval("#oc li.plie", l => l.length);
-    note("10b. Organigramme : recherche, zoom, repli", trouve > 0 && /scale\(1\.1/.test(z) && plies >= 0, `${trouve} trouvé(s) · ${z} · ${plies} replié(s)`);
+    const cachees = await p.$$eval("#oc li.plie > ul", l => l.every(u => getComputedStyle(u).display === "none"));
+    await p.click("[data-tout='deplier']"); const restants = await p.$$eval("#oc li.plie", l => l.length);
+    note("10b. Organigramme : recherche, zoom, repli", trouve > 0 && /scale\(1\.1/.test(z) && plies === parents && cachees && restants === 0 && (parents > 0 || riche.postes.every(x => !Object.values(O.postes).some(y => y.superieur === x.id))),
+      `${trouve} trouvé(s) · ${z} · ${plies}/${parents} replié(s) · ${restants} après dépliage`);
   }
 
   // 13-14. Missions et livrables
@@ -144,7 +156,10 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
     const href = await p.$eval(`a[href*="${avecLiv.livrables[0].chemin}"]`, a => a.href);
     const r = await p.evaluate(u => fetch(u).then(x => x.status), href);
     note("14. Livrable exact et consultable", r === 200 && (await p.textContent("#vue")).includes(avecLiv.livrables[0].sha256.slice(0, 12)), `${avecLiv.livrables[0].chemin} → ${r}`);
-  } else note("14. Livrables : aucun au registre, état vide affiché", true);
+  } else {
+    await vue(p, `#/agent/${Object.keys(O.agents)[0]}`);
+    note("14. Livrables : aucun au registre, état vide affiché", /Aucun livrable transmis/.test(await p.textContent("#vue")) && !(await p.$("#vue a[href*='/livrables/']")));
+  }
 
   // 15-19. Intégrité
   const cartesAgents = new Set();
@@ -153,7 +168,7 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
   const actifs = Object.values(O.agents).filter(a => a.statut === "en_execution");
   const affichesActifs = [];
   for (const a of Object.values(O.agents)) { await vue(p, `#/agent/${a.id}`); if ((await p.$eval(".statut", x => x.textContent)).includes("exécution")) affichesActifs.push(a.id); }
-  note("16. Aucune fausse présence (« en exécution » ⇔ exécution au registre)", affichesActifs.length === actifs.length && actifs.every(a => a.preuve && journal.includes(`"run": "${a.preuve}"`)), `${affichesActifs.join(", ") || "aucun"}`);
+  note("16. Aucune fausse présence (« en exécution » ⇔ exécution au registre)", JSON.stringify(affichesActifs.slice().sort()) === JSON.stringify(actifs.map(a => a.id).sort()) && actifs.every(a => a.preuve && journal.includes(`"run": "${a.preuve}"`)), `${affichesActifs.join(", ") || "aucun"}`);
   const reus = Object.values(O.reunions);
   let okReu = true;
   for (const e of E) { await vue(p, `#/e/${e.id}/reunions`); const n = await p.$$eval("#vue .carte", l => l.length); if (n !== reus.filter(r => r.entreprise === e.id).length) okReu = false; }
@@ -161,6 +176,23 @@ const STATUT = {en_execution: "En cours d'exécution", en_reunion: "En réunion"
   note("18. Aucune permission supplémentaire (aucune requête d'écriture, aucun formulaire)", !p.posts.length && !(await p.$("main form")), p.posts.join(" | "));
   const tout = JSON.stringify(O) + (await p.content());
   note("19. Aucun secret exposé", !/-----BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20}|github_pat_|sk-[A-Za-z0-9]{20}|"graine_privee"|"phrase"/.test(tout));
+
+  // 5b. Activité rattachée aux agents sans définition (ex. le Maire) : chaque acte qu'ils signent figure sur leur profil
+  let okAuteur = true; detail = [];
+  for (const a of Object.values(O.agents).filter(x => !x.definition)) {
+    const siens = [...O.activite.filter(x => x.agent === a.id || x.auteur === a.id).map(x => x.evenement), ...O.historique.filter(h => (h.auteur || {}).role === a.id).map(h => h.evenement)].slice(-40);
+    if (!siens.length) continue;
+    await vue(p, `#/agent/${a.id}`); const t = await p.textContent("#vue");
+    const manquants = siens.filter(id => !t.includes(id)); if (manquants.length) { okAuteur = false; detail.push(`${a.id}: ${manquants.join(" ")}`); }
+    else detail.push(`${a.id}: ${siens.length} acte(s)`);
+  }
+  note("5b. Actes des agents sans définition (Maire) visibles sur leur profil", okAuteur, detail.join(", ") || "aucun acte de ce type au registre");
+
+  // 20b. Adresses piégées : jamais de page blanche ni d'exception
+  const pieges = ["#/agent/constructor", "#/e/__proto__", "#/e/constructor", "#/mission/toString", "#/agent/%E0%A4%A", "#/e/hasOwnProperty/organigramme"];
+  const pz = await page(); const rates = [];
+  for (const h of pieges) { await pz.goto(B + h, {waitUntil: "networkidle"}); await pz.waitForTimeout(300); const t = await pz.textContent("#vue h1").catch(() => ""); if (!/Introuvable/.test(t)) rates.push(h); }
+  note("20b. Adresses piégées : page « Introuvable », aucune exception", !rates.length && !pz.erreurs.length, [...rates, ...pz.erreurs].join(" | "));
 
   // 22-25, 27. Compatibilité et liens
   await vue(p, `#/agent/${Object.keys(O.agents)[0]}`); await p.reload({waitUntil: "networkidle"}); await p.waitForTimeout(500);

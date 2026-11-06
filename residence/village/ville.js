@@ -995,3 +995,5 @@ document.addEventListener("click", ev => {
   const a = ev.target.closest("a[data-entrer]"); if(!a || ev.metaKey || ev.ctrlKey) return;
   ev.preventDefault(); document.body.classList.add("entree"); setTimeout(() => { location.href = a.href; }, 380);
 });
+// retour arrière depuis le cache du navigateur (Safari, Firefox) : la métropole ne doit pas rester en fondu
+addEventListener("pageshow", () => document.body.classList.remove("entree"));

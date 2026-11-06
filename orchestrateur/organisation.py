@@ -106,7 +106,7 @@ def projeter(evs: list, p: dict = None) -> dict:
         elif t == "org.agent.cree":
             agents[d["id"]]["historique"].append(trace)
         histo.append({**trace, "entreprise": d.get("entreprise") or (postes.get(d.get("poste")) or {}).get("entreprise")})
-    travail = _projeter_travail(evs, p, agents)
+    travail = _projeter_travail(evs, p, agents, postes)
     runs_actifs = {r["role"]: r for r in p["runs_actifs"]}
     for a in agents.values():
         a.update(_statut(a, runs_actifs, travail))
@@ -161,7 +161,7 @@ def _titulaire(postes, pid):
     return (postes.get(pid) or {}).get("titulaire") if pid else None
 
 
-def _projeter_travail(evs, p, agents):
+def _projeter_travail(evs, p, agents, postes=None):
     """Missions (avec attribution, livrables, validations), messages et réunions, d'après le journal."""
     missions = {k: {**m, "attributaire": None, "attribuee_par": None, "echeance": None, "priorite_travail": None,
                     "livrables": [], "corrections": 0, "validee": None, "remontees": [], "livree": None} for k, m in p["missions"].items()}
@@ -186,7 +186,8 @@ def _projeter_travail(evs, p, agents):
             m["remontees"].append({"de": d.get("de"), "vers": d.get("vers"), "motif": d.get("motif"), "evenement": ev["id"], "quand": q})
         elif t == "message.envoye":
             messages.append({"id": ev["id"], "quand": q, **{k: d.get(k) for k in ("de", "a", "sujet", "texte", "mission", "nature")}, "verifie": trace["verifie"]})
-            trace["entreprise"] = trace["entreprise"] or ((agents.get(d.get("de")) or {}).get("poste") or "").split("-")[0] or None
+            # entreprise du message : celle de la mission, sinon celle du poste de l'expéditeur (lue au registre, jamais devinée)
+            trace["entreprise"] = trace["entreprise"] or ((postes or {}).get((agents.get(d.get("de")) or {}).get("poste")) or {}).get("entreprise")
         elif t == "reunion.ouverte":
             reunions[d["id"]] = {"id": d["id"], "entreprise": d.get("entreprise"), "objet": d.get("objet"), "participants": d.get("participants", []),
                                  "par": d.get("par"), "ouverte": q, "close": None, "compte_rendu": None}

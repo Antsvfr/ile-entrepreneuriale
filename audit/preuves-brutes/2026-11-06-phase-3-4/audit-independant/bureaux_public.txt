@@ -1,0 +1,7 @@
+(node:14056) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+échec : page.waitForSelector: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#pBody a[data-entrer]') to be visible[22m
+
+exit 1

@@ -111,6 +111,12 @@ class Travail(Base):
         with self.assertRaises(org.ErreurOrganisation):
             org.envoyer_message("inconnu", "x", "y", self.dev)
 
+    def test_message_sans_mission_rattache_a_l_entreprise_du_poste(self):
+        # l'entreprise d'un message sans mission vient du poste de l'expéditeur au registre (rev-em), jamais d'un préfixe deviné (« rev »)
+        org.envoyer_message("chef-rev-em", "Question", "Sans mission.", self.dev)
+        trace = [x for x in org.etat()["activite"] if x["type"] == "message.envoye"][-1]
+        self.assertEqual(trace["entreprise"], "rev-em")
+
     def test_reunion_sans_fausse_presence(self):
         org.ouvrir_reunion("rev-em-point", "rev-em", "point hebdomadaire", ["chef-rev-em", "architecte"], self.chef)
         self.assertEqual(org.etat()["agents"]["architecte"]["statut"], "en_reunion")      # réunion ouverte + exécution réelle

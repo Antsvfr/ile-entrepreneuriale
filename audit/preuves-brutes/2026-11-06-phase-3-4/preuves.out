@@ -1,0 +1,59 @@
+Preuves — copie du journal dans /tmp/ile-preuves-avrikama, identité de test 82627081878737ba, serveur de test sur le port 45227
+
+— Étape 0 : Résidence présidentielle —
+PASS        C0.1  La Résidence expose projets, rapports, missions, décisions, tests, sécurité, historique, organisation
+            7 projets · 3 rapports de directeurs · 6 directions · sections : agents_actifs, approbations, decisions, historique, instructions, missions, organisation, rapports, securite, tests
+PASS        C0.2  Rien d'inventé : sources citées, « non renseigné » et « prévu » affichés honnêtement
+            aucune donnée sans source · « non renseigné » : bde-emergency, cuvee-campus, vetotri, ecole · directions marquées « prévu » (pas d'agent réel) : technique, innovation
+PASS        C0.3  Instruction au DG : exige la Résidence déverrouillée, signée, présentée au DG, suivie
+            verrouillée → 401 · déverrouillée → instruction E-000081 SIGNÉE · présentée au DG (SessionStart) · statut « lue »
+PASS        C0.4  Écritures protégées : jeton, session présidentielle, origine, hôte ; fichiers internes non servis
+            sans jeton 403 · sans session 401 · autre origine 403 · journal brut 404/404 · jeton vers un autre site 403 · hôte étranger 403
+PASS        C0.5  Le président tranche, fixe les priorités, reporte une mission ; tout est signé
+            décision tranchée et signée 200 · double verdict refusé 400 · priorité 200 · mission reportée 200 (sur la copie)
+PASS        C0.6  Emplacement du département Innovation & Business
+            chantier au registre, dossier innovation/, direction « Innovation & Business » prévue dans l'organisation
+
+— Étape 1 : fondations —
+PASS        C1.1  Tests automatisés (registre, identité, signatures, approbations, garde)
+            Ran 86 tests in 19.384s — OK
+PASS        C1.2  Le VRAI journal est intègre (chaîne et actes présidentiels)
+            ✔ journal intègre — 79 événements, dernière empreinte a48cc8b194ea2999…
+PASS        C1.3  Île active à la racine (réglages, hooks, agents, commandes)
+            6 hooks (dont le garde PreToolUse) pointent vers des fichiers existants · agents et commandes visibles à la racine
+PASS        C1.4  Chaque agent est inscrit avec son identité Claude Code
+            R-0006 ouverte puis close par les hooks, avec agent_id, session et trace
+PASS        C1.5  Plusieurs sièges actifs en parallèle, aucun agent sans exécution
+            pendant ['lexnote', 'upsa-sales-pilot'] · après []
+PASS        C1.6  Propositions des directeurs attribuées à des agents identifiés
+            23 inscriptions de directeurs, toutes rattachées à une exécution
+
+— Étape 2 : garde-fous —
+PASS        C2.1  Signature Ed25519 conforme à la RFC 8032
+            vecteur officiel RFC 8032 §7.1 reproduit à l'octet près
+PASS        C2.2  Le garde (hook réel) interdit, met en attente ou autorise selon la règle
+            4 interdits bloqués (code 2, 4 refus inscrits) · 8 sensibles bloqués avec demande d'approbation · 4 actions libres autorisées
+PASS        C2.3  File d'approbation : blocage → demande → accord signé dans la Résidence → passage unique
+            bloqué (A-0001) → visible dans la Résidence → accordé et signé → passe une fois → rebloqué · trace : approbation.demandee → approbation.accordee → approbation.utilisee
+PASS        C2.4  Identité non usurpable : un faux acte présidentiel est rejeté et signalé
+            acte non signé et acte signé d'une autre clé : ignorés (2 rejets), journal déclaré altéré
+PASS        C2.5  La phrase présidentielle ne se saisit que dans un vrai terminal
+            sans terminal (cas d'un agent) : « refusé : cette action exige un vrai terminal : lance-la toi-même dans Terminal (un agent ne le peut pas) »
+PASS        C2.6  Accès distant : tout exige la connexion présidentielle
+            hôte distant autorisé sans connexion : page → 302 vers /connexion, API → 401 · connexion → 200 (cookie Secure) → API 200
+PASS        C2.8  Détournement d'import (attaque de l'audit) : aucun module planté n'est exécuté par le garde ni par les hooks
+            modules piégés (json, hmac, getpass…) plantés dans securite/, presidence/, orchestrateur/, orchestrateur/hooks/, residence/, audit/ et à la racine : codes {'garde · git push origin main': 2, 'garde · usurpation (ile + president chargés)': 2, 'garde · ls': 0, 'SessionStart': 0, 'SubagentStart': 0, 'Stop (etat-ile repos)': 0} · modules piégés exécutés : aucun
+
+— Accès direct —
+PASS        C3.1  Lanceur ./ile : démarrage, adresse stable, une seule instance, arrêt
+            ./ile demarrer → http://localhost:40159/ (redirige vers /village/) · 2e démarrage sans doublon · ./ile arreter → fermée
+PARTIEL     C3.2  Démarrage automatique sur Mac (LaunchAgent)
+            fichier launchd généré et valide (RunAtLoad, KeepAlive, journal) · chargement par launchctl NON TESTÉ : aucun Mac dans cette session
+PASS        C3.3  Résidence dans un navigateur : déverrouiller, voir l'alerte, accorder une opération
+            alerte visible : true · lecture seule avant phrase : true · après phrase et clic : « A-0010 [accordee  ] git            git push origin main # test-ui » · mobile sans débordement : true · erreurs console : aucune
+NOT TESTED  C3.4  Une vraie session Claude Code est bloquée par le garde
+            relancer avec --claude (consomme un peu d'usage)
+PASS        C2.7  Tentatives de connexion limitées (testé en dernier : il verrouille la connexion 10 min)
+            5 mauvaises phrases → 403, la 6e → 429 (verrouillage 10 min)
+
+Bilan : 22 PASS · 1 PARTIEL · 0 FAIL · 1 NOT TESTED

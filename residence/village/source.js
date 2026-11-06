@@ -70,7 +70,7 @@
     if (cible === "batiment") return local ? "/batiment/" + encodeURIComponent(id) : new URL("index.html?ouvrir=" + encodeURIComponent(id), ICI).href;
     if (cible === "verification") return new URL("verification.html", ICI).href;
     if (cible === "accueil") return local ? "/" : new URL("../../index.html", ICI).href;
-    if (cible === "fichier") return local ? "/" + id : new URL("../../" + id, ICI).href;
+    if (cible === "fichier") { const c = String(id).replace(/^[\/]+/, ""); return local ? "/" + c : new URL("../../" + c, ICI).href; }   // jamais « //hôte »
     return "#";
   }
 
