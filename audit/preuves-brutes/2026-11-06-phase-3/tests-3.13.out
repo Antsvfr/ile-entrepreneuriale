@@ -1,0 +1,102 @@
+test_accord_president_puis_passage_unique (test_confinement.Confinement.test_accord_president_puis_passage_unique) ... ok
+test_arret_d_urgence_confine (test_confinement.Confinement.test_arret_d_urgence_confine) ... ok
+test_attaque_audit_json (test_confinement.Confinement.test_attaque_audit_json)
+json.py planté à côté du garde (securite/) → le garde l'exécutait et laissait passer « git push origin main » (code 0). ... ok
+test_capteur_session_et_verifier (test_confinement.Confinement.test_capteur_session_et_verifier) ... ok
+test_charger_refuse_module_inattendu (test_confinement.Confinement.test_charger_refuse_module_inattendu) ... ok
+test_chemin_indirect_ile_president (test_confinement.Confinement.test_chemin_indirect_ile_president)
+Le chemin de l'audit complémentaire : garde → ile → president → hmac / secrets / unicodedata plantés. ... ok
+test_commande_hook_echoue_fermee (test_confinement.Confinement.test_commande_hook_echoue_fermee)
+Commande exacte des réglages : même un garde.py illisible (SyntaxError, code 1) ou un python3 absent devient un refus. ... ok
+test_commande_presidentielle (test_confinement.Confinement.test_commande_presidentielle)
+`./ile president statut` : la commande où le président tape sa phrase charge getpass, hmac, president. ... ok
+test_copie_extraction_git_vers_garde_fous (test_confinement.Confinement.test_copie_extraction_git_vers_garde_fous)
+Écritures de garde-fous qui ne les nomment pas (constat D1/D4 de l'inspection) : accord exigé. ... ok
+test_garde_echoue_ferme_au_demarrage (test_confinement.Confinement.test_garde_echoue_ferme_au_demarrage)
+Une erreur AVANT main() (import cassé) donnait le code 1, que Claude Code laisse passer : c'est un refus. ... ok
+test_garde_soumet_modules_a_accord (test_confinement.Confinement.test_garde_soumet_modules_a_accord) ... ok
+test_garde_tous_modules_plantes (test_confinement.Confinement.test_garde_tous_modules_plantes) ... ok
+test_hooks_etat_ile (test_confinement.Confinement.test_hooks_etat_ile) ... ok
+test_lanceur_statut (test_confinement.Confinement.test_lanceur_statut) ... ok
+test_push_implicite_vers_main (test_confinement.Confinement.test_push_implicite_vers_main)
+remote.origin.push = HEAD:refs/heads/main dans .git/config : « git push origin » depuis une branche de travail. ... ok
+test_pyc_falsifie (test_confinement.Confinement.test_pyc_falsifie)
+Un .pyc forgé dans le __pycache__ d'un module de l'île (date et taille du source recopiées) : jamais chargé. ... ok
+test_pythonpath_et_site_utilisateur (test_confinement.Confinement.test_pythonpath_et_site_utilisateur)
+PYTHONPATH, usercustomize et fichiers .pth du site utilisateur : ignorés par « -I -S ». ... ok
+test_serveur (test_confinement.Confinement.test_serveur) ... ok
+test_aucun_future_ni_sys_path_insert (test_confinement.Invocations.test_aucun_future_ni_sys_path_insert) ... ok
+test_lanceur (test_confinement.Invocations.test_lanceur) ... ok
+test_reglages_hooks (test_confinement.Invocations.test_reglages_hooks) ... ok
+test_action_libre_sans_trace (test_garde.CycleComplet.test_action_libre_sans_trace) ... ok
+test_arret_d_urgence (test_garde.CycleComplet.test_arret_d_urgence) ... ok
+test_blocage_demande_accord_passage_unique (test_garde.CycleComplet.test_blocage_demande_accord_passage_unique) ... ok
+test_interdit_trace (test_garde.CycleComplet.test_interdit_trace) ... ok
+test_autorises (test_garde.Regles.test_autorises) ... ok
+test_branche_protegee (test_garde.Regles.test_branche_protegee)
+Sur main : commit, fusion et push sans destination exigent l'accord du président. ... ok
+test_fichiers (test_garde.Regles.test_fichiers) ... ok
+test_interdits (test_garde.Regles.test_interdits) ... ok
+test_organisation_sous_identite_verifiee (test_garde.Regles.test_organisation_sous_identite_verifiee)
+Un sous-agent ne modifie l'organisation que sous son identité vérifiée (--run), jamais comme le Maire. ... ok
+test_sensibles (test_garde.Regles.test_sensibles) ... ok
+test_aucun_agent_fantome (test_ile.Agents.test_aucun_agent_fantome)
+La 3D ne reçoit que des exécutions ouvertes et récentes. ... ok
+test_identite_confirmee_par_execution (test_ile.Agents.test_identite_confirmee_par_execution) ... ok
+test_rattachement_automatique_et_parallele (test_ile.Agents.test_rattachement_automatique_et_parallele) ... ok
+test_artefact_migre_leurre_detecte (test_ile.Chaine.test_artefact_migre_leurre_detecte)
+Artefact déposé avant une migration (ancien chemin dans le journal) : retrouvé au nouveau chemin ; une copie ... ok
+test_artefact_modifie_detecte (test_ile.Chaine.test_artefact_modifie_detecte) ... ok
+test_ecritures_paralleles (test_ile.Chaine.test_ecritures_paralleles) ... ok
+test_journal_integre (test_ile.Chaine.test_journal_integre) ... ok
+test_modification_detectee (test_ile.Chaine.test_modification_detectee) ... ok
+test_reecriture_complete_detectee_par_empreinte_finale (test_ile.Chaine.test_reecriture_complete_detectee_par_empreinte_finale)
+Un faussaire qui recalcule toute la chaîne change l'empreinte finale : elle est publiée (git, Résidence). ... ok
+test_suppression_detectee (test_ile.Chaine.test_suppression_detectee) ... ok
+test_decision_reservee_au_president (test_ile.Gouvernance.test_decision_reservee_au_president) ... ok
+test_instruction_lue_puis_traitee (test_ile.Gouvernance.test_instruction_lue_puis_traitee) ... ok
+test_classement_objectif_et_explique (test_ile.Missions.test_classement_objectif_et_explique) ... ok
+test_cycle_complet (test_ile.Missions.test_cycle_complet) ... ok
+test_mission_sensible_exige_le_president (test_ile.Missions.test_mission_sensible_exige_le_president) ... ok
+test_priorite_reservee_au_president (test_ile.Missions.test_priorite_reservee_au_president) ... ok
+test_siege_inconnu_refuse (test_ile.Missions.test_siege_inconnu_refuse) ... ok
+test_transition_interdite (test_ile.Missions.test_transition_interdite) ... ok
+test_amorce_faits_reels_seulement (test_organisation.Organisation.test_amorce_faits_reels_seulement) ... ok
+test_cloisonnement_entre_entreprises (test_organisation.Organisation.test_cloisonnement_entre_entreprises) ... ok
+test_directeur_construit_son_entreprise (test_organisation.Organisation.test_directeur_construit_son_entreprise) ... ok
+test_hierarchie_et_permissions_par_fonction (test_organisation.Organisation.test_hierarchie_et_permissions_par_fonction) ... ok
+test_identite_declaree_refusee (test_organisation.Organisation.test_identite_declaree_refusee) ... ok
+test_nomination_et_suspension (test_organisation.Organisation.test_nomination_et_suspension) ... ok
+test_president_signe_et_usurpation (test_organisation.Organisation.test_president_signe_et_usurpation) ... ok
+test_rejeu_identique (test_organisation.Organisation.test_rejeu_identique) ... ok
+test_statuts_derives_jamais_inventes (test_organisation.Organisation.test_statuts_derives_jamais_inventes) ... ok
+test_accord_falsifie_sans_effet (test_president.Approbations.test_accord_falsifie_sans_effet) ... ok
+test_cycle_usage_unique (test_president.Approbations.test_cycle_usage_unique) ... ok
+test_expiration (test_president.Approbations.test_expiration) ... ok
+test_reserve_au_president (test_president.Approbations.test_reserve_au_president) ... ok
+test_vecteurs_rfc8032 (test_president.Ed25519.test_vecteurs_rfc8032) ... ok
+test_acte_non_signe_ignore (test_president.Falsification.test_acte_non_signe_ignore) ... ok
+test_acte_presidentiel_par_un_autre_role (test_president.Falsification.test_acte_presidentiel_par_un_autre_role) ... ok
+test_acte_signe_accepte (test_president.Falsification.test_acte_signe_accepte) ... ok
+test_chaine_recalculee_ne_suffit_pas (test_president.Falsification.test_chaine_recalculee_ne_suffit_pas)
+Un agent qui réécrit le journal avec une chaîne cohérente ne peut pas fabriquer de signature. ... ok
+test_signature_d_un_autre_cle_ignoree (test_president.Falsification.test_signature_d_un_autre_cle_ignoree) ... ok
+test_changement_de_phrase_signe_par_l_ancienne (test_president.Identite.test_changement_de_phrase_signe_par_l_ancienne) ... ok
+test_changement_non_signe_rejete (test_president.Identite.test_changement_non_signe_rejete) ... ok
+test_cle_jamais_sur_disque (test_president.Identite.test_cle_jamais_sur_disque) ... ok
+test_deverrouillage (test_president.Identite.test_deverrouillage) ... ok
+test_phrase_trop_courte (test_president.Identite.test_phrase_trop_courte) ... ok
+test_phrase_exige_un_terminal (test_president.Terminal.test_phrase_exige_un_terminal) ... ok
+test_cle_d_ordre_faible_refusee (test_version_web.Instantane.test_cle_d_ordre_faible_refusee)
+Une clé publique d'ordre 2 permettrait de « signer » sans secret : refusée par Python ET par le navigateur. ... ok
+test_fichiers_et_contenu (test_version_web.Instantane.test_fichiers_et_contenu) ... ok
+test_signature_remplacee_empreinte_recalculee (test_version_web.Instantane.test_signature_remplacee_empreinte_recalculee)
+Faux acte présidentiel dont l'empreinte est recalculée : seule la SIGNATURE peut le trahir (Python et navigateur). ... ok
+test_verification_navigateur_identique_a_python (test_version_web.Instantane.test_verification_navigateur_identique_a_python) ... ok
+test_vrai_journal (test_version_web.Instantane.test_vrai_journal)
+Sur le journal réel de l'île (lecture seule) : même verdict et même empreinte finale qu'en Python. ... ok
+
+----------------------------------------------------------------------
+Ran 79 tests in 13.520s
+
+OK
