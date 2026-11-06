@@ -1,0 +1,24 @@
+(node:20214) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS  Accueil : état réel de l'île — Registre intègre · 79 événements7 projets · 9 missions4 décision(s) en attenteaucun agent au travailInstantané du 6 novembre 2026 à 14:51
+PASS  Accueil : toutes les institutions du registre — 17/17
+PASS  Accueil : aucune erreur
+PASS  Résidence : bandeau « version publiée » avec date et intégrité — Version publiée — lecture seule. Instantané du 06/11/2026 14:51 : 79 événements, journal intègre à cette date · même dernière empreinte que le journal publié. D
+PASS  Résidence : données réelles affichées — 7 indicateurs · 7 projets · 79 lignes de journal
+PASS  Résidence : aucune action possible en ligne — 47 commandes, 0 actives
+PASS  Résidence : aucune erreur
+PASS  Vérification : journal recalculé dans le navigateur — JournalIntègre79 événements vérifiésDernière empreintea48cc8b194ea2999…identique à celle de l'instantané publiéActes présidentiels0/0aucun acte présidentiel signé à vérifier
+PASS  Vérification : documents gelés intacts — 4 documents
+PASS  Vérification : aucune erreur
+PASS  Métropole : chargée avec les données du registre — Version publiée (lecture seule) · instantané du 06/11/2026 14:51 · aucun agent au travail à cette date · 4 décision(s) en attente
+PASS  Métropole : le bâtiment ouvre ses fonctions réelles — entreprise.html#/e/forge , https://antsvfr.github.io/ile-entrepreneuriale/residence/village/residence.html#tests , https://antsvfr.github.io/ile-entrepreneuriale/residence/village/residence.html#securite , verification.html , https://github.com/Antsvfr/ile-entrepreneuriale/tree/main/audit
+PASS  Métropole : aucune erreur
+PASS  Nom officiel « Île Entrepreneuriale » — Île Entrepreneuriale · Île Entrepreneuriale
+PASS  Rechargement de la Résidence : données toujours présentes
+PASS  Nouvel appareil (iPhone 13) : accueil complet sans stockage local
+PASS  Nouvel appareil (Pixel 7) : accueil complet sans stockage local
+PASS  Diagnostic de performance mesuré sur l'appareil — prête en 81.3 s · 0 images/s · rendu « ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver) » (LOGICIEL : non représentatif d'un ordinateur réel)
+PASS  Mobile 390 px : accueil
+PASS  Mobile 390 px : residence/village/residence.html
+PASS  Mobile 390 px : residence/village/verification.html
+Bilan : 21/21 PASS
