@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# Lanceur de l'Île des Agents — macOS (et Linux).
+#   ./ile                    ouvre l'île (démarre le serveur si besoin) → http://localhost:7777/
+#   ./ile residence          ouvre directement la Résidence présidentielle
+#   ./ile installer          (Mac) démarrage automatique à chaque ouverture de session + raccourci sur le Bureau
+#   ./ile aide               toutes les commandes
+set -u
+ICI="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PORT="${ILE_PORT:-7777}"
+URL="http://localhost:$PORT"
+PY="$(command -v python3 || true)"
+LOG="$ICI/residence/serveur.log"
+PIDF="$ICI/residence/.serveur.pid"
+LABEL="com.ile-des-agents.serveur"
+PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+MAC=0; [ "$(uname)" = "Darwin" ] && MAC=1
+
+dire() { printf '%s\n' "$*"; }
+erreur() { printf 'Erreur : %s\n' "$*" >&2; exit 1; }
+[ -n "$PY" ] || erreur "python3 introuvable. Sur Mac : ouvre Terminal et lance « xcode-select --install », puis recommence."
+
+sante() {
+  "$PY" -I -S -c "import json,sys,urllib.request
+try:
+    r = urllib.request.urlopen('http://127.0.0.1:%s/api/sante' % sys.argv[1], timeout=1.5)
+    sys.exit(0 if json.load(r).get('ile') == 'Île des Agents' else 1)
+except Exception:
+    sys.exit(1)" "$PORT" 2>/dev/null
+}
+
+navigateur() {
+  if [ "$MAC" = 1 ]; then open "$1"
+  elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$1" >/dev/null 2>&1 &
+  else dire "Ouvre dans ton navigateur : $1"; fi
+}
+
+identite() {
+  ( cd "$ICI" && "$PY" -I -S orchestrateur/ile.py president statut ) 2>/dev/null | grep -q "^Identité présidentielle :"
+}
+
+launchd_installe() { [ "$MAC" = 1 ] && [ -f "$PLIST" ]; }
+
+demarrer() {
+  if sante; then return 0; fi
+  mkdir -p "$ICI/residence"
+  if launchd_installe; then
+    launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || launchctl bootstrap "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
+  else
+    ( cd "$ICI" || exit 1; nohup "$PY" -I -S residence/serveur.py --port "$PORT" --sans-navigateur >>"$LOG" 2>&1 & echo $! >"$PIDF" )
+  fi
+  for _ in $(seq 1 40); do sante && return 0; sleep 0.25; done
+  dire "Le serveur ne répond pas. Dernières lignes du journal du serveur :"; tail -n 15 "$LOG" 2>/dev/null
+  return 1
+}
+
+arreter() {
+  if launchd_installe; then
+    launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 && dire "Serveur arrêté (il redémarrera à ta prochaine ouverture de session ; « ./ile desinstaller » pour le retirer)." && return 0
+  fi
+  pid="$(cat "$PIDF" 2>/dev/null || true)"
+  if [ -z "$pid" ] || ! ps -p "$pid" -o command= 2>/dev/null | grep -q "serveur.py"; then
+    pid="$(pgrep -f "serveur.py --port $PORT" 2>/dev/null | head -n 1 || true)"
+  fi
+  if [ -n "$pid" ]; then
+    kill "$pid" 2>/dev/null && for _ in $(seq 1 20); do sante || break; sleep 0.2; done
+    sante || dire "Serveur arrêté."
+  fi
+  rm -f "$PIDF"
+  sante && dire "Un serveur de l'île répond encore sur le port $PORT (lancé autrement) : ferme sa fenêtre de Terminal ou fais « kill » sur son processus." || true
+}
+
+premiere_fois() {
+  if ! identite; then
+    if [ -t 0 ] && [ -t 1 ]; then
+      dire ""; dire "Bienvenue, Président. Aucune identité présidentielle n'existe encore."
+      dire "Tu vas choisir une phrase secrète : elle signe toutes tes décisions et n'est écrite NULLE PART (impossible à récupérer, retiens-la)."
+      printf "La créer maintenant ? [O/n] "; read -r r
+      case "${r:-O}" in [nN]*) dire "D'accord : la Résidence restera en lecture seule. Plus tard : ./ile president";;
+        *) ( cd "$ICI" && "$PY" -I -S orchestrateur/ile.py president creer ) ;; esac
+    else
+      dire "(Identité présidentielle à créer une fois, dans Terminal : ./ile president)"
+    fi
+  fi
+}
+
+installer() {
+  [ "$MAC" = 1 ] || erreur "le démarrage automatique (launchd) concerne le Mac. Sous Linux, utilise un service systemd --user ou « ./ile » à la main."
+  case "$ICI" in "$HOME/Desktop"*|"$HOME/Documents"*|"$HOME/Downloads"*|"$HOME/Library/Mobile Documents"*)
+    dire "⚠ L'île est dans un dossier protégé par macOS ($ICI)."
+    dire "  Un service lancé en arrière-plan peut s'y voir refuser l'accès. Deux solutions :"
+    dire "  1) déplacer le projet (ex. ~/Developer/ile-entrepreneuriale), puis relancer « ./ile installer » ;"
+    dire "  2) ou autoriser python3 dans Réglages Système › Confidentialité et sécurité › Accès complet au disque."
+    printf "Continuer quand même ? [o/N] "; read -r r; case "${r:-N}" in [oO]*) ;; *) exit 1;; esac;;
+  esac
+  mkdir -p "$HOME/Library/LaunchAgents" "$ICI/residence"
+  "$PY" -I -S - "$PLIST" "$LABEL" "$PY" "$ICI" "$PORT" "$LOG" <<'EOF'
+import plistlib, sys
+plist, label, py, ici, port, log = sys.argv[1:]
+d = {"Label": label, "ProgramArguments": [py, "-I", "-S", ici + "/residence/serveur.py", "--port", port, "--sans-navigateur"],
+     "WorkingDirectory": ici, "RunAtLoad": True, "KeepAlive": {"SuccessfulExit": False}, "ThrottleInterval": 10,
+     "StandardOutPath": log, "StandardErrorPath": log, "EnvironmentVariables": {"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/usr/local/bin", "ILE_PORT": port}}
+with open(plist, "wb") as f:
+    plistlib.dump(d, f)
+EOF
+  arreter >/dev/null 2>&1 || true
+  launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+  launchctl bootstrap "gui/$(id -u)" "$PLIST" 2>/dev/null || launchctl load -w "$PLIST"
+  "$PY" -I -S - "$HOME/Desktop/Île des Agents.webloc" "$URL/" <<'EOF'
+import plistlib, sys
+with open(sys.argv[1], "wb") as f:
+    plistlib.dump({"URL": sys.argv[2]}, f)
+EOF
+  for _ in $(seq 1 40); do sante && break; sleep 0.25; done
+  if sante; then
+    dire "✔ Installé. L'île démarre seule à chaque ouverture de session et reste joignable sur $URL/"
+    dire "  Raccourci créé sur le Bureau : « Île des Agents » (double-clic). Ajoute aussi $URL/ à tes favoris."
+  else
+    dire "Le service est installé mais ne répond pas encore. Regarde : ./ile journal"
+  fi
+}
+
+desinstaller() {
+  [ "$MAC" = 1 ] || erreur "rien à désinstaller hors du Mac."
+  launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || launchctl unload -w "$PLIST" >/dev/null 2>&1 || true
+  rm -f "$PLIST" "$HOME/Desktop/Île des Agents.webloc"
+  dire "Démarrage automatique retiré. L'île s'ouvre toujours avec ./ile"
+}
+
+distant() {
+  case "${1:-statut}" in
+    activer)
+      command -v tailscale >/dev/null 2>&1 || erreur "Tailscale n'est pas installé. Installe-le (tailscale.com/download), connecte ce Mac et ton autre appareil au même compte, puis relance."
+      identite || erreur "crée d'abord ton identité présidentielle (./ile president) : à distance, tout exige la connexion par ta phrase."
+      demarrer || exit 1
+      tailscale serve --bg "$PORT" || erreur "« tailscale serve » a échoué (voir le message ci-dessus)."
+      hote="$(tailscale status --json | "$PY" -I -S -c 'import json,sys; print(json.load(sys.stdin)["Self"]["DNSName"].rstrip("."))')"
+      [ -n "$hote" ] || erreur "nom Tailscale de ce Mac introuvable."
+      "$PY" -I -S - "$ICI/securite/acces.json" "$hote" <<'EOF'
+import json, sys
+json.dump({"hotes_distants": [sys.argv[2]], "note": "géré par ./ile distant"}, open(sys.argv[1], "w"), indent=2)
+EOF
+      dire "✔ Accès distant privé activé : https://$hote/"
+      dire "  Joignable SEULEMENT depuis tes appareils connectés à ton réseau Tailscale (jamais depuis Internet public),"
+      dire "  et chaque visite exige ta phrase présidentielle. Désactiver : ./ile distant desactiver";;
+    desactiver)
+      command -v tailscale >/dev/null 2>&1 && tailscale serve --https=443 off >/dev/null 2>&1 || true
+      rm -f "$ICI/securite/acces.json"; dire "Accès distant désactivé.";;
+    *)
+      if [ -f "$ICI/securite/acces.json" ]; then dire "Accès distant : activé pour $("$PY" -I -S -c 'import json,sys;print(", ".join(json.load(open(sys.argv[1]))["hotes_distants"]))' "$ICI/securite/acces.json")"; else dire "Accès distant : désactivé (./ile distant activer)"; fi;;
+  esac
+}
+
+statut() {
+  if sante; then dire "Île ouverte : $URL/   (Résidence : $URL/residence)"; else dire "Île fermée (./ile pour l'ouvrir)"; fi
+  launchd_installe && dire "Démarrage automatique : installé" || { [ "$MAC" = 1 ] && dire "Démarrage automatique : non installé (./ile installer)"; }
+  ( cd "$ICI" && "$PY" -I -S orchestrateur/ile.py president statut ) 2>/dev/null
+  [ -f "$ICI/securite/STOP" ] && dire "⚠ ARRÊT D'URGENCE ACTIF : aucun agent ne peut agir (./ile arret-urgence off)"
+  distant statut
+}
+
+case "${1:-ouvrir}" in
+  ouvrir|"")      premiere_fois; demarrer && navigateur "$URL/" && dire "Île ouverte : $URL/";;
+  residence)      premiere_fois; demarrer && navigateur "$URL/residence" && dire "Résidence : $URL/residence";;
+  demarrer)       demarrer && dire "Île ouverte : $URL/";;
+  arreter)        arreter;;
+  redemarrer)     arreter; sleep 0.5; demarrer && dire "Île rouverte : $URL/";;
+  statut)         statut;;
+  journal)        tail -n "${2:-40}" "$LOG" 2>/dev/null || dire "(pas encore de journal du serveur)";;
+  installer)      installer;;
+  desinstaller)   desinstaller;;
+  distant)        distant "${2:-statut}";;
+  president)      ( cd "$ICI" && "$PY" -I -S orchestrateur/ile.py president "${2:-creer}" );;
+  arret-urgence)  case "${2:-on}" in on) date > "$ICI/securite/STOP"; dire "ARRÊT D'URGENCE : plus aucun agent ne peut agir. Lever : ./ile arret-urgence off";;
+                    off) rm -f "$ICI/securite/STOP"; dire "Arrêt d'urgence levé.";; esac;;
+  preuves)        ( cd "$ICI" && "$PY" -I -S audit/preuves.py "${@:2}" );;
+  aide|-h|--help) sed -n '2,6p' "$0"; dire "Autres : demarrer · arreter · redemarrer · statut · journal · desinstaller · distant activer|desactiver|statut · president [creer|statut|changer-phrase] · arret-urgence on|off · preuves";;
+  *)              erreur "commande inconnue : $1 (./ile aide)";;
+esac

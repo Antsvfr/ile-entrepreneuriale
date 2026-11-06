@@ -1,0 +1,17 @@
+CLAUDE.md	21
+docs/architecture/ETAPES-0-1.md	8
+docs/architecture/ETAPES-2.md	15
+docs/README-ile-des-agents.md	1
+agents/definitions/architecte.md	4
+agents/definitions/chef-bde-emergency.md	4
+agents/definitions/chef-cuvee-campus.md	4
+agents/definitions/chef-ecole.md	4
+agents/definitions/chef-lexnote.md	3
+agents/definitions/chef-rev-em.md	3
+agents/definitions/chef-upsa-sales-pilot.md	3
+agents/definitions/chef-vetotri.md	4
+agents/definitions/critique-strategie.md	1
+agents/definitions/forgeron.md	2
+agents/commandes/conseil.md	1
+agents/commandes/inspection.md	1
+agents/commandes/revue.md	3

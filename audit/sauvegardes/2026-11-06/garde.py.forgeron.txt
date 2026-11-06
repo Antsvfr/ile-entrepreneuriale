@@ -1,0 +1,304 @@
+#!/usr/bin/env python3
+"""Le garde : hook PreToolUse de Claude Code, exécuté AVANT chaque action d'un agent (session principale comprise).
+
+Il ne dépend pas du modèle : Claude Code le lance lui-même et respecte son verdict (code de sortie 2 = action refusée,
+le message est rendu à l'agent). Trois issues :
+  - autoriser      : l'agent travaille librement dans ses limites ;
+  - bloquer        : interdit dans tous les cas (usurper le président, réécrire le journal…) — refus inscrit au journal ;
+  - approbation    : opération sensible (push sur une branche protégée, fusion, déploiement, suppression, secret,
+                     envoi réseau, modification des garde-fous, écriture hors du dépôt…). Elle est bloquée et une
+                     demande part dans la Résidence ; après l'accord SIGNÉ du président, la même opération exacte passe.
+
+Limites assumées (voir architecture/ETAPES-2.md) : le garde lit des commandes, il ne peut pas deviner une commande
+volontairement obscurcie (base64, script intermédiaire). La signature présidentielle, elle, ne se contourne pas :
+un agent qui réussirait à écrire dans le journal ne pourrait toujours pas fabriquer un acte du président.
+"""
+# Pas de « from __future__ » ici : ce serait un import lancé AVANT toute protection, donc remplaçable par un fichier
+# operations/__future__.py planté. `os` et `sys` sont déjà chargés au démarrage de Python : impossibles à remplacer.
+import os
+import sys
+
+_ICI = os.path.dirname(os.path.realpath(__file__))
+# Un module planté dans operations/ (ex. operations/subprocess.py) ne doit jamais remplacer un module standard :
+# le dossier du script passe en DERNIER dans le chemin d'import (ile, president, signature y restent trouvables).
+sys.path[:] = [p for p in sys.path if os.path.realpath(p or os.curdir) != _ICI] + [_ICI]
+
+import json  # noqa: E402
+import re  # noqa: E402
+import shlex  # noqa: E402
+import subprocess  # noqa: E402
+from pathlib import Path  # noqa: E402
+from typing import Optional  # noqa: E402
+
+OPS_DIR = Path(__file__).resolve().parent
+ILE = OPS_DIR.parent
+DEPOT = ILE.parent
+# L'arrêt d'urgence suit ILE_OPS comme le journal : les tests (copie temporaire) ne touchent jamais au vrai STOP.
+STOP = Path(os.environ.get("ILE_OPS") or OPS_DIR) / "STOP"
+TEMPORAIRES = ("/tmp/", "/private/tmp/", "/var/folders/", "/private/var/folders/")
+PROTEGEES = ("main", "master", "production", "prod", "release")
+LECTURE = {"Read", "Glob", "Grep", "LS", "WebSearch", "TodoWrite", "TodoRead", "Task", "Agent", "ExitPlanMode", "BashOutput", "KillShell", "NotebookRead"}
+ECRITURE = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
+FICHIERS_GARDE = [".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/", "operations/garde.py", "operations/president.py",
+                  "operations/signature.py", "operations/ile.py", "serveur.py"]
+SECRETS = re.compile(r"(?:^|[\s/'\"=])(\.env(?!\.example\b)(?:\.[\w.-]+)?|id_rsa|id_ed25519|id_ecdsa|\.netrc|\.pgpass|\.npmrc|credentials\.json|service[-_]account[\w.-]*\.json|[\w.-]+\.pem|[\w.-]+\.p12|\.aws/credentials|\.ssh/)(?:$|[\s'\";|&)])")
+
+
+class Verdict:
+    def __init__(self, issue="autoriser", categorie=None, regle=None, raison=None, outil=None, cible=None, mode="unique"):
+        self.issue, self.categorie, self.regle, self.raison, self.outil, self.cible, self.mode = issue, categorie, regle, raison, outil, cible, mode
+
+
+def _branche(cwd: Optional[str]) -> Optional[str]:
+    try:
+        r = subprocess.run(["git", "-C", cwd or ".", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, timeout=3)
+        return r.stdout.strip() or None
+    except Exception:
+        return None
+
+
+def _segments(cmd: str):
+    """Découpe une ligne de commande en commandes simples (&&, ||, ;, |, retours à la ligne)."""
+    return [s.strip() for s in re.split(r"&&|\|\||;|\||\n", cmd) if s.strip()]
+
+
+def _sans_bruit(s: str) -> str:
+    """Retire les redirections inoffensives (2>&1, >&2, 2>/dev/null…) qui ne sont pas des écritures de fichier."""
+    return re.sub(r"(?:\d*|&)>>?\s*/dev/(?:null|stdout|stderr|tty)\b|\d*>&\s*(?:\d+|-)(?![\w./-])", " ", s)
+
+
+def _cibles_ecriture(s: str):
+    """Fichiers visés par une redirection (>, >>, &>) ou par tee dans une commande simple."""
+    cibles = re.findall(r"(?:\d*|&)>>?\|?\s*([^\s;&|<>()]+)", s)
+    m = re.search(r"\btee\s+(.*)$", s)
+    if m:
+        cibles += [x for x in m.group(1).split() if not x.startswith("-")]
+    return [c.strip("'\"") for c in cibles if c.strip("'\"")]
+
+
+def _norm(chemin: str, cwd: Optional[str]) -> str:
+    """Chemin absolu réel : « .. » résolus et liens symboliques suivis (un /tmp/../ ou un lien ne trompe pas le garde)."""
+    p = os.path.expanduser(chemin.strip("'\""))
+    if not os.path.isabs(p):
+        p = os.path.join(cwd or os.getcwd(), p)
+    return os.path.realpath(p)
+
+
+def _temporaire(chemin: str, cwd: Optional[str]) -> bool:
+    return (_norm(chemin, cwd) + "/").startswith(TEMPORAIRES)
+
+
+def _dans(chemin: str, cwd: Optional[str], base: Path) -> bool:
+    try:
+        p = Path(_norm(chemin, cwd))
+        return p == base or base in p.parents
+    except Exception:
+        return False
+
+
+def _relatif_ile(chemin: str, cwd: Optional[str]) -> Optional[str]:
+    try:
+        return str(Path(_norm(chemin, cwd)).relative_to(ILE)).replace(os.sep, "/")
+    except Exception:
+        return None
+
+
+def _hors_depot(chemin: str, cwd: Optional[str]) -> bool:
+    """Vrai si le chemin sort du dépôt de l'île (hors fichiers temporaires et /dev)."""
+    if chemin.startswith("$") and not chemin.startswith(("$HOME", "${HOME}")):
+        return False   # variable inconnue : on ne devine pas
+    chemin = chemin.replace("${HOME}", "~").replace("$HOME", "~")
+    n = _norm(chemin, cwd)
+    return not (_dans(n, None, DEPOT) or (n + "/").startswith(TEMPORAIRES) or n.startswith("/dev/"))
+
+
+def analyser_bash(cmd: str, cwd: Optional[str]) -> Verdict:
+    c = " ".join(cmd.split())
+    V = lambda *a, **k: Verdict(*a, outil="Bash", cible=cmd.strip(), **k)
+    # --- interdits absolus : usurper le président, toucher au journal ou à l'identité
+    if re.search(r"--auteur(?:=|\s+)['\"]?president\b", c):
+        return V("bloquer", "president", "usurpation", "seul le président peut agir en son nom (actes signés de sa clé)")
+    if re.search(r"\b(creer_identite|changer_phrase|ClePresident|nouvelle_identite|_graine|demander_phrase)\b"
+                 r"|\bile\.py\b(?:\s+--?[\w-]+(?:[=\s]+(?!-)[^\s;|&]+)?)*\s+['\"]?president\b|(^|[\s/])ile\s+['\"]?president\b", c):
+        return V("bloquer", "president", "identite", "l'identité et les actes présidentiels ne se manipulent que par le président, dans un vrai terminal")
+    if "journal.jsonl" in c and not all(re.match(r"^(git\s+(add|commit|diff|log|show|status|blame)\b|cat|head|tail|wc|grep|less|ls|stat|sha256sum|shasum)\b", s) and ">" not in _sans_bruit(s) for s in _segments(c) if "journal.jsonl" in s):
+        return V("bloquer", "journal", "ecriture-journal", "le journal des opérations ne s'écrit qu'à travers operations/ile.py")
+    if re.search(r"\boperations/STOP\b", c) and re.search(r"\b(rm|mv|unlink|truncate)\b", c):
+        return V("bloquer", "arret", "stop", "seul le président lève l'arrêt d'urgence (supprimer operations/STOP lui-même)")
+    # --- opérations sensibles : approbation présidentielle, opération par opération
+    ici = cwd
+    for s in _segments(c):
+        cl = _sans_bruit(s)
+        try:
+            mots = shlex.split(cl)
+        except ValueError:
+            mots = cl.split()
+        if mots[:1] == ["cd"]:   # « cd operations && sed -i … garde.py » : le dossier courant suit la commande
+            ici = _norm(mots[1], ici) if len(mots) > 1 else os.path.expanduser("~")
+            continue
+        if re.search(r"\b(rm|mv|unlink|truncate)\b", cl) and any(_norm(x, ici) == str(OPS_DIR / "STOP") for x in mots if not x.startswith("-")):
+            return V("bloquer", "arret", "stop", "seul le président lève l'arrêt d'urgence (supprimer operations/STOP lui-même)")
+        if re.match(r"^(sudo\s+)?git\b", s) or re.search(r"\bgit\s", s):
+            if re.search(r"\bpush\b", s):
+                if re.search(r"(--force\b|--force-with-lease|(\s|^)-[a-zA-Z]*f\b|\s\+\S|--delete\b|(\s|^)-d\b|\s:\S|--tags\b|--mirror\b)", s):
+                    return V("approbation", "git", "push-force", "push forcé, suppression ou publication de tags sur un dépôt distant")
+                if re.search(r"(^|[\s:/])(%s)\b" % "|".join(PROTEGEES), s):
+                    return V("approbation", "git", "push-protege", "push vers une branche protégée (main, master, production…)")
+                if not re.search(r"\bpush\s+\S+\s+\S+", s) and _branche(ici) in PROTEGEES:
+                    return V("approbation", "git", "push-protege", f"push depuis la branche protégée « {_branche(ici)} »")
+            if re.search(r"\b(merge|rebase|cherry-pick|reset\s+--hard|commit|am)\b", s) and _branche(ici) in PROTEGEES and not re.search(r"\b(merge-base|--abort|--continue)\b", s):
+                return V("approbation", "git", "branche-protegee", f"modification directe de la branche protégée « {_branche(ici)} »")
+            if re.search(r"\bbranch\s+(-D|--delete\s+--force|-d\s+-f)\b|\bclean\s+-[a-zA-Z]*f|\bfilter-(branch|repo)\b|\breflog\s+expire\b", s):
+                return V("approbation", "git", "destruction-git", "suppression d'historique ou de fichiers non suivis")
+        if re.search(r"\bgh\s+(pr\s+merge|pr\s+review\s+.*--approve|release\s+(create|delete)|repo\s+(create|delete|archive|edit)|secret\s+set|api\b.*(merge|-X\s*(DELETE|PUT)|--method\s*(DELETE|PUT)))", s):
+            return V("approbation", "github", "github-sensible", "fusion, publication, création ou suppression sur GitHub")
+        if re.search(r"\bvercel\b(?!\s+(dev|whoami|ls|list|logs|inspect|env\s+ls|--version|help)\b)|\bsupabase\s+(db\s+(push|reset)|functions\s+deploy|secrets\s+(set|unset)|projects\s+(create|delete)|link)\b|\bnpm\s+publish\b|\b(firebase|netlify|fly|flyctl|railway)\s+deploy\b|\bdocker\s+push\b|\bterraform\s+(apply|destroy)\b|\bkubectl\s+(apply|delete)\b|\bheroku\b", s):
+            return V("approbation", "deploiement", "deploiement", "déploiement, migration ou publication en production")
+        if re.search(r"\bnpm\s+run\s+db:reset\b|\bdropdb\b|\bDROP\s+(TABLE|DATABASE|SCHEMA)\b|\bTRUNCATE\s+TABLE\b", s, re.I):
+            return V("approbation", "donnees", "destruction-donnees", "destruction ou réinitialisation de données")
+        # rm récursif, y compris « /bin/rm », « command rm », « xargs rm », « (rm … ) », « --recursive »
+        m = re.match(r"^(?:[({`]|\$\()*\s*(?:(?:sudo|command|builtin|exec|nohup|time|nice|env|xargs(?:\s+-\S+)*)\s+)*(?:\S*/)?rm\s+(.*)$", cl)
+        if m and re.search(r"(^|\s)(-[a-zA-Z]*[rR]|--recursive\b)", m.group(1)):
+            cibles = [x.strip("'\")`") for x in m.group(1).split() if not x.startswith("-")]
+            cibles = [x for x in cibles if x]
+            dangereux = [x for x in cibles if x in ("/", "~", ".", "..", "*", "~/") or _hors_depot(x, ici) or _norm(x, ici) in (str(DEPOT), str(ILE))]
+            if dangereux or not cibles:
+                return V("approbation", "suppression", "rm-hors-projet", f"suppression récursive hors du dépôt ou trop large : {' '.join(dangereux) or '(aucune cible)'}")
+        m = re.match(r"^(?:sudo\s+)?find\s+(.*)$", cl)
+        if m and re.search(r"\s-delete\b|\s-exec(dir)?\s+(\S*/)?rm\b", cl):
+            racines = []
+            for x in m.group(1).split():
+                if x.startswith(("-", "(", "!")):
+                    break
+                racines.append(x.strip("'\""))
+            dangereux = [x for x in (racines or ["."]) if _hors_depot(x, ici)]
+            if dangereux:
+                return V("approbation", "suppression", "rm-hors-projet", f"suppression (find) hors du dépôt : {' '.join(dangereux)}")
+        if SECRETS.search(" " + s + " ") or re.search(r"\bsecurity\s+find-(generic|internet)-password\b|^printenv\b|^env\s*$|^export\s+-p\b", s):
+            return V("approbation", "secret", "secret", "lecture d'un secret (clé, mot de passe, variables d'environnement)")
+        if re.search(r"\b(curl|wget|http|https|xh)\b", s) and re.search(r"(\s-[a-zA-Z]*[dFT]\b|--data|--json\b|--form|--upload-file|-X\s*(POST|PUT|PATCH|DELETE)|--request[=\s]*(POST|PUT|PATCH|DELETE)|--post-data|--post-file|--body-data|--body-file)", s):
+            hotes = [h.rsplit("@", 1)[-1].rsplit(":", 1)[0].lower() for h in re.findall(r"https?://([^/\s'\"?#]+)", s)]
+            if not hotes or any(h not in ("localhost", "127.0.0.1", "[::1]") for h in hotes):
+                return V("approbation", "reseau", "envoi-reseau", "envoi de données vers un service extérieur")
+        if re.match(r"^(scp|sftp|ssh|nc|ncat|telnet)\b", s) or re.match(r"^rsync\b.*\s\S+:\S*", s):
+            return V("approbation", "reseau", "connexion-distante", "connexion ou copie vers une machine distante")
+        cibles = _cibles_ecriture(cl)
+        verbe = re.search(r"(\btee\b|\bsed\s+[^|]*-i|\bperl\s+-[a-z]*i|\bmv\b|\bcp\b|\brm\b|\bchmod\b|\bln\b|\btruncate\b|\bpython[0-9.]*\s+-c\b|\bpatch\b|\bgit\s+(checkout|restore)\b|\binstall\b|\bdd\b)", cl)
+        if any(_est_garde(x, ici) for x in cibles) or (verbe and (any(f in cl for f in FICHIERS_GARDE) or any(_est_garde(x, ici) for x in mots[1:] if not x.startswith("-")))):
+            return V("approbation", "garde-fous", "modif-garde-fous", "modification des garde-fous (hooks, réglages, registre, identité, serveur)")
+        m = re.match(r"^(?:sudo\s+)?(cp|mv|install|ln)\s+(.*)$", cl)
+        dest = [x for x in (m.group(2).split() if m else []) if not x.startswith("-")]
+        externes = [x for x in cibles if _hors_depot(x, ici)] + ([dest[-1]] if len(dest) >= 2 and _hors_depot(dest[-1], ici) else [])
+        if externes:
+            return V("approbation", "projet-externe", "ecriture-externe", f"écriture hors du dépôt de l'île : {' '.join(externes)}")
+    return Verdict()
+
+
+def _est_garde(chemin: str, cwd: Optional[str]) -> Optional[str]:
+    """Chemin (relatif) du garde-fou visé, ou None."""
+    rel = _relatif_ile(chemin, cwd)
+    if rel and any(rel == f or (f.endswith("/") and rel.startswith(f)) for f in FICHIERS_GARDE):
+        return rel
+    try:
+        rel_depot = str(Path(_norm(chemin, cwd)).relative_to(DEPOT)).replace(os.sep, "/")
+    except ValueError:
+        return None
+    return rel_depot if rel_depot in (".claude/settings.json", ".claude/settings.local.json") else None
+
+
+def analyser_fichier(outil: str, chemin: str, cwd: Optional[str], agent: dict) -> Verdict:
+    V = lambda *a, **k: Verdict(*a, outil="Edit", cible=os.path.normpath(os.path.join(cwd or os.getcwd(), os.path.expanduser(chemin))), **k)
+    rel = _relatif_ile(chemin, cwd)
+    if rel == "operations/journal.jsonl":
+        return V("bloquer", "journal", "ecriture-journal", "le journal des opérations ne s'écrit qu'à travers operations/ile.py")
+    garde_fou = _est_garde(chemin, cwd)
+    if garde_fou:
+        return V("approbation", "garde-fous", "modif-garde-fous", f"modification d'un garde-fou : {garde_fou}", mode="fenetre")
+    if not _dans(chemin, cwd, DEPOT) and not _temporaire(chemin, cwd):
+        if SECRETS.search(" " + chemin + " "):
+            return V("approbation", "secret", "secret", "écriture d'un fichier de secrets")
+        return V("approbation", "projet-externe", "ecriture-externe", "écriture hors du dépôt de l'île (projet externe)", mode="fenetre")
+    role = (agent or {}).get("agent_type") or ""
+    if rel is not None:
+        if role.startswith("critique-") and not rel.startswith("conseil/"):
+            return V("bloquer", "role", "critique-lecture", f"une critique ne modifie que les procès-verbaux du Conseil (tentative : {rel})")
+        if role.startswith("chef-"):
+            siege = _siege_du_chef(role)
+            if siege and not (rel.startswith(f"maisons/{siege}/") or rel.startswith("conseil/")):
+                return V("bloquer", "role", "chef-hors-maison", f"un directeur ne modifie que sa maison maisons/{siege}/ (tentative : {rel})")
+    return Verdict()
+
+
+def _siege_du_chef(role: str) -> Optional[str]:
+    try:
+        for b in json.loads((ILE / "registre.json").read_text(encoding="utf-8")).get("batiments", []):
+            if Path(b.get("agent", "")).stem == role:
+                return b.get("dossier", "").split("/")[-1] or b["id"]
+    except Exception:
+        pass
+    return None
+
+
+def analyser(payload: dict) -> Verdict:
+    outil = payload.get("tool_name") or ""
+    ti = payload.get("tool_input") or {}
+    cwd = payload.get("cwd")
+    agent = {k: payload.get(k) for k in ("agent_type", "agent_id", "session_id") if payload.get(k)}
+    if STOP.exists() and outil not in LECTURE:
+        return Verdict("bloquer", "arret", "stop", "ARRÊT D'URGENCE actif (operations/STOP) : aucune action n'est permise tant que le président ne l'a pas levé", outil, str(ti)[:300])
+    if outil == "Bash":
+        return analyser_bash(ti.get("command") or "", cwd)
+    if outil in ECRITURE:
+        return analyser_fichier(outil, ti.get("file_path") or ti.get("notebook_path") or "", cwd, agent)
+    if outil in ("Read", "Grep") and SECRETS.search(" " + (ti.get("file_path") or ti.get("path") or "") + " "):
+        return Verdict("approbation", "secret", "secret", "lecture d'un fichier de secrets", outil, ti.get("file_path") or ti.get("path"))
+    if outil.startswith("mcp__") and re.search(r"merge|delete|create_repository|auto_merge|fork_repository|run_secret|actions_run_trigger", outil):
+        return Verdict("approbation", "github", "mcp-sensible", f"outil distant sensible : {outil}", outil, json.dumps(ti, sort_keys=True, ensure_ascii=False)[:1500])
+    if outil.startswith("mcp__") and re.search(r"push_files|create_or_update_file", outil) and re.sub(r"^refs/heads/", "", str(ti.get("branch", ""))) in PROTEGEES:
+        return Verdict("approbation", "github", "mcp-branche-protegee", "écriture distante sur une branche protégée", outil, json.dumps(ti, sort_keys=True, ensure_ascii=False)[:1500])
+    return Verdict()
+
+
+def main():
+    try:
+        payload = json.loads(sys.stdin.read() or "{}")
+    except Exception:
+        payload = {}
+    agent = {k: payload.get(k) for k in ("agent_type", "agent_id", "session_id") if payload.get(k)} or {"agent_type": "session principale"}
+    try:
+        v = analyser(payload)
+    except Exception as e:   # prudence : en cas d'erreur interne, on refuse et on le dit
+        print(f"Garde de l'île : erreur interne ({type(e).__name__}: {e}) — action refusée par prudence.", file=sys.stderr)
+        return 2
+    if v.issue == "autoriser":
+        return 0
+    if str(OPS_DIR) not in sys.path:
+        sys.path.append(str(OPS_DIR))   # en dernier : jamais devant la bibliothèque standard
+    import ile
+    if v.issue == "approbation":
+        a = ile.approbation_valide(v.outil, v.cible)
+        if a:
+            ile.utiliser_approbation(a["id"], agent, ile._auteur("garde", "hook", session_id=agent.get("session_id")))
+            return 0
+        aid, neuve = ile.demander_approbation(v.categorie, v.regle, v.raison, v.outil, v.cible, ile._auteur("garde", "hook", session_id=agent.get("session_id")),
+                                              cwd=payload.get("cwd"), agent=agent, mode=v.mode)
+        print(f"Garde de l'île — opération sensible ({v.raison}). Demande {aid} {'transmise' if neuve else 'déjà en attente'} au président dans la Résidence. "
+              f"Ne cherche pas à la contourner : continue le reste du travail et réessaie exactement la même opération après son accord.", file=sys.stderr)
+        return 2
+    try:
+        ile.inscrire_refus(v.categorie, v.regle, v.raison, v.outil, v.cible, agent)
+    except Exception:
+        pass
+    print(f"Garde de l'île — action interdite : {v.raison}.", file=sys.stderr)
+    return 2
+
+
+if __name__ == "__main__":
+    # Claude Code ne bloque que sur le code 2 : toute autre sortie (exception, import cassé, sys.exit(1)…) laisserait
+    # passer l'action. Le garde échoue donc FERMÉ : tout incident devient un refus.
+    try:
+        code = main()
+    except BaseException as e:   # noqa: BLE001 — y compris SystemExit : main() ne quitte jamais elle-même
+        print(f"Garde de l'île : erreur interne ({type(e).__name__}: {e}) — action refusée par prudence.", file=sys.stderr)
+        code = 2
+    sys.exit(code if code in (0, 2) else 2)

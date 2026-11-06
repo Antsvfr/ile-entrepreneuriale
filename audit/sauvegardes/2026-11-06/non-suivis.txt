@@ -1,0 +1,3 @@
+ile-des-agents/forge/rapports/2026-11-06-finalisation-etape-2.md
+ile-des-agents/operations/confinement.py
+ile-des-agents/operations/tests/test_confinement.py

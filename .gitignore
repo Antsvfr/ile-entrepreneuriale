@@ -1,0 +1,49 @@
+# --- Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# --- Secrets : jamais versionnés (les secrets restent à leur emplacement d'origine, hors du dépôt)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+id_rsa*
+id_ed25519*
+id_ecdsa*
+.netrc
+.npmrc
+credentials*.json
+service-account*.json
+service_account*.json
+
+# --- Fichiers d'exécution de l'île (recalculés ou propres à la machine)
+securite/STOP
+securite/acces.json
+orchestrateur/registre/etat.json
+orchestrateur/registre/.verrou
+orchestrateur/registre/.mission-courante
+orchestrateur/registre/.etat-*
+orchestrateur/registre/capteurs-erreurs.log
+orchestrateur/etat-de-l-ile.json.lock
+orchestrateur/.etat-*
+residence/serveur.log
+residence/.serveur.pid
+tests/.artefact-test.md
+tests/.ancien-test/
+tests/.nouveau-test/
+*.log
+*.pid
+
+# --- Divers
+node_modules/
+.DS_Store
+
+# --- Sauvegarde locale non publiée : copie complète de l’ancien dépôt (public, et conservé comme référence historique)
+audit/sauvegardes/**/*.bundle

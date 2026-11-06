@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connexion présidentielle</title>
+<style>
+:root{--paper:#fbf6ec;--ink:#231c13;--night:#14202e;--gold:#f5d27a;--bad:#b3261e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 30%,#22344a,var(--night));color:var(--paper);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:16px}
+form{width:min(400px,100%);background:rgba(251,246,236,.06);border:1px solid rgba(251,246,236,.25);border-radius:16px;padding:26px;display:flex;flex-direction:column;gap:14px}
+h1{margin:0;font:400 30px Georgia,serif}
+p{margin:0;opacity:.85;font-size:14px}
+input{font:inherit;padding:10px 12px;border-radius:9px;border:1.5px solid rgba(251,246,236,.4);background:rgba(0,0,0,.25);color:var(--paper)}
+button{font:600 15px inherit;padding:10px;border-radius:9px;border:0;background:var(--gold);color:var(--night);cursor:pointer}
+button:disabled{opacity:.6}
+input:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.err{color:#ffb4ab;min-height:1.3em;font-size:14px}
+</style>
+</head>
+<body>
+<form id="f">
+  <h1>Île des Agents</h1>
+  <p>Accès réservé au président. Saisis ta phrase présidentielle : elle reconstitue ta clé pour cette session, puis n'est conservée nulle part.</p>
+  <input type="password" id="phrase" autocomplete="current-password" aria-label="Phrase présidentielle" placeholder="Phrase présidentielle" required autofocus>
+  <div class="err" id="err" role="alert"></div>
+  <button type="submit" id="go">Entrer</button>
+</form>
+<script>
+"use strict";
+const suite = (() => { const s = new URLSearchParams(location.search).get("suite") || "/residence"; return /^\/(?!\/)/.test(s) ? s : "/residence"; })();
+document.getElementById("f").addEventListener("submit", async ev => {
+  ev.preventDefault(); const go = document.getElementById("go"), err = document.getElementById("err"); go.disabled = true; err.textContent = "Vérification…";
+  try{
+    const j = await (await fetch("/api/session")).json();
+    const r = await fetch("/api/president/deverrouiller", {method:"POST", headers:{"Content-Type":"application/json","X-Ile-Jeton":j.jeton}, body:JSON.stringify({phrase:document.getElementById("phrase").value})});
+    const d = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(d.erreur || "refusé");
+    location.replace(suite);
+  }catch(e){ err.textContent = e.message; go.disabled = false; }
+});
+</script>
+</body>
+</html>

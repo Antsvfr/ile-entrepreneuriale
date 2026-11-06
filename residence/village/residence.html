@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résidence présidentielle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4ecdc; --paper:#fbf6ec; --ink:#231c13; --muted:#76664f; --rule:#e2d4ba; --chip:#efe3cb;
+  --gold:#b8891c; --accent:#c4553a; --ok:#2f7d4f; --warn:#b06a10; --bad:#b3261e; --night:#14202e;
+  --display:"Caprasimo","Cooper Black",Georgia,serif; --body:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:var(--night);color:var(--paper);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.topbar .in{max-width:1280px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.brand{font:400 22px var(--display);white-space:nowrap}
+.topbar nav{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1}
+.topbar nav a,.topbar select{color:var(--paper);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:7px;padding:5px 10px;font:600 12.5px var(--body);text-decoration:none}
+.topbar select option{color:var(--ink)}
+.chip-id{display:flex;gap:8px;align-items:center;font-size:13px}
+.chip-id button{border:1.5px solid var(--gold);background:transparent;color:#f5d27a;border-radius:7px;padding:5px 11px;font:600 12.5px var(--body);cursor:pointer}
+.chip-id button.on{background:#f5d27a;color:var(--night)}
+.alerte{display:none;background:var(--accent);color:#fff}
+.alerte.on{display:block}
+.alerte .in{max-width:1280px;margin:0 auto;padding:8px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between;font-weight:600}
+.alerte a{background:#fff;color:var(--accent);border-radius:7px;padding:4px 12px;text-decoration:none;font-size:13px}
+.wrap{max-width:1280px;margin:0 auto;padding:18px 20px 70px}
+h1{font:400 clamp(28px,4vw,42px)/1.05 var(--display);margin:6px 0 2px}
+.kicker{font:500 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.btn{border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 12px;font:600 13px var(--body);cursor:pointer;text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+.btn.dark{background:var(--ink);color:var(--paper)} .btn.ok{border-color:var(--ok);color:var(--ok)} .btn.bad{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible,.topbar a:focus-visible,.chip-id button:focus-visible,.kpi:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0 6px}
+.kpi{background:var(--paper);border:1.5px solid var(--rule);border-radius:10px;padding:9px 12px;text-decoration:none}
+.kpi b{display:block;font:400 26px/1.1 var(--display)} .kpi span{font-size:12px;color:var(--muted)}
+.kpi.alert{border-color:var(--accent)} .kpi.alert b{color:var(--accent)} .kpi.good b{color:var(--ok)} .kpi.bad{border-color:var(--bad)} .kpi.bad b{color:var(--bad)}
+section{margin-top:30px}
+h2{font:400 24px var(--display);margin:0 0 3px} h3{margin:0;font:600 17px var(--body)}
+.lead{margin:0 0 12px;color:var(--muted);font-size:13.5px;max-width:900px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.card{background:var(--paper);border:1.5px solid var(--ink);border-radius:12px;padding:14px 16px;box-shadow:4px 4px 0 rgba(35,28,19,.12);display:flex;flex-direction:column;gap:9px;min-width:0}
+.card.urgent{border-color:var(--accent);box-shadow:4px 4px 0 rgba(196,85,58,.22)}
+.dot{width:12px;height:12px;border-radius:3px;border:1.5px solid var(--ink);flex:none;display:inline-block}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{font:500 11px var(--mono);letter-spacing:.03em;padding:2px 7px;border-radius:999px;background:var(--chip);border:1px solid var(--rule);white-space:nowrap}
+.tag.p1,.tag.warn{background:#f7d9cf;border-color:#e2a28f} .tag.none{background:transparent;border-style:dashed}
+.tag.bloquant,.tag.FAIL{background:#f6d4d1;border-color:#d99b95;color:var(--bad)} .tag.majeur,.tag.PARTIEL{background:#f7e3c4;border-color:#e3b874;color:var(--warn)}
+.tag.PASS,.tag.okk{background:#dcefe2;border-color:#9ccaa9;color:var(--ok)} .tag.live{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.f{display:flex;flex-direction:column;gap:4px}
+.lbl{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.plain li{border-left:3px solid var(--rule);padding:2px 0 2px 9px;font-size:14px}
+ul.plain li.pb-bloquant{border-color:var(--bad)} ul.plain li.pb-majeur{border-color:var(--warn)}
+.src{font:400 11.5px var(--mono);color:var(--muted);word-break:break-word}
+.nr{color:var(--muted);font-style:italic;font-size:13.5px}
+.score{font:500 12px var(--mono);background:var(--ink);color:var(--paper);padding:1px 6px;border-radius:5px}
+pre.cmd{margin:0;background:var(--night);color:#e9f0f6;border-radius:8px;padding:8px 10px;font:12.5px/1.45 var(--mono);white-space:pre-wrap;word-break:break-all;max-height:160px;overflow:auto}
+select,textarea,input{font:inherit;border:1.5px solid var(--ink);border-radius:8px;background:#fff;padding:7px 9px;color:var(--ink)}
+textarea{width:100%;min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:14px}
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1.5px solid var(--ink);font-size:13.5px}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--chip)}
+.tablewrap{overflow-x:auto;border-radius:12px}
+.v-signature,.v-hook{color:var(--ok)} .v-run{color:#2a6a8a} .v-declare{color:var(--warn)}
+.banner{border:1.5px dashed var(--accent);background:#fff5ee;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:14px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+details summary{cursor:pointer;font-size:13px;color:var(--muted)}
+dialog{border:2px solid var(--ink);border-radius:14px;padding:0;max-width:440px;width:calc(100vw - 32px);background:var(--paper);color:var(--ink);box-shadow:8px 8px 0 rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(20,32,46,.6)}
+dialog form{padding:20px;display:flex;flex-direction:column;gap:12px}
+dialog h3{font:400 24px var(--display)}
+.err{color:var(--bad);font-size:13.5px;min-height:1.2em}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:9px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:calc(100vw - 32px);z-index:50}
+.toast.on{opacity:1}
+.lock-note{font-size:12.5px;color:var(--muted)}
+@media (max-width:820px){ .two{grid-template-columns:1fr} .grid{grid-template-columns:1fr} .brand{font-size:19px} }
+@media (prefers-reduced-motion:reduce){ .toast{transition:none} }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <span class="brand">Résidence</span>
+    <nav aria-label="Navigation">
+      <a href="/village/">Métropole 3D</a>
+      <a href="#trancher">À trancher</a><a href="#projets">Projets</a><a href="#rapports">Rapports</a><a href="#missions">Missions</a><a href="#instructions">Instructions</a><a href="#tests">Tests</a><a href="#securite">Sécurité</a><a href="#journal">Journal</a>
+      <select id="aller" aria-label="Aller à un bâtiment"><option value="">Bâtiments…</option></select>
+    </nav>
+    <div class="chip-id" id="chip-id" aria-live="polite"></div>
+  </div>
+  <div class="alerte" id="alerte" role="status"><div class="in"><span id="alerte-txt"></span><a href="#trancher">Traiter maintenant</a></div></div>
+</header>
+
+<div class="wrap">
+  <div class="kicker">Île des Agents · centre de contrôle du président</div>
+  <h1>Résidence présidentielle</h1>
+  <div id="hors-ligne" class="banner" hidden>Le serveur de l'île ne répond pas. Ouvre-la avec <code>./ile</code> (ou double-clic sur « Ouvrir l'île.command »), puis recharge cette page.</div>
+  <div id="sans-identite" class="banner" hidden>Ton identité présidentielle n'existe pas encore : la Résidence est en lecture seule. Ouvre <b>Terminal</b> dans le dossier de l'île et lance <code>./ile president</code> (une seule fois) pour choisir ta phrase secrète.</div>
+  <div class="kpis" id="kpis" aria-live="polite"></div>
+
+  <section id="trancher" aria-labelledby="t-tr">
+    <h2 id="t-tr">À trancher</h2>
+    <p class="lead">Opérations sensibles bloquées par le garde en attendant votre accord, puis décisions demandées par vos équipes. Chaque verdict est <b>signé de votre clé</b> et inscrit au journal ; un accord ne vaut que pour l'opération exacte affichée.</p>
+    <div class="grid" id="approbations"></div>
+    <div class="grid" id="decisions" style="margin-top:14px"></div>
+  </section>
+
+  <section id="projets" aria-labelledby="t-pr">
+    <h2 id="t-pr">Projets</h2>
+    <p class="lead">Classés par la priorité que vous fixez, puis par urgence. Chaque information indique sa source ; « non renseigné » signifie qu'aucun agent ne l'a encore établie.</p>
+    <div class="grid" id="projets-liste"></div>
+  </section>
+
+  <section id="rapports" aria-labelledby="t-ra">
+    <h2 id="t-ra">Rapports des directeurs</h2>
+    <p class="lead">Chaque revue d'un directeur de projet : son exécution, ce qu'il a établi, les problèmes vérifiés et les missions qu'il propose.</p>
+    <div class="grid" id="rapports-liste"></div>
+  </section>
+
+  <section id="missions" aria-labelledby="t-mi">
+    <h2 id="t-mi">Missions</h2>
+    <p class="lead">Proposées par les directeurs, classées par le directeur général selon une formule publique. Vous retenez, rejetez ou reportez. Le DG peut planifier seul une mission non sensible ; une mission sensible attend votre accord.</p>
+    <div class="tablewrap"><table id="missions-t"><thead><tr><th>Rang</th><th>Mission</th><th>Projet</th><th>Statut</th><th>Score</th><th>Proposée par</th><th>Votre décision</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="instructions" aria-labelledby="t-in" class="two">
+    <div>
+      <h2 id="t-in">Instructions au directeur général</h2>
+      <p class="lead">Signées de votre clé et présentées au DG au début de chaque session. Il les traite et rend compte ici. L'exécution automatique sans session ouverte arrive à l'étape 3.</p>
+      <form id="f-ins" class="card">
+        <label class="f"><span class="lbl">Projet concerné (facultatif)</span><select id="ins-siege"><option value="">Toute l'entreprise</option></select></label>
+        <label class="f"><span class="lbl">Instruction</span><textarea id="ins-texte" maxlength="4000" required placeholder="Ex. : Prépare un plan pour la PR #26 de REV-EM ; je veux les risques avant jeudi."></textarea></label>
+        <div class="row"><button class="btn dark" type="submit">Transmettre au directeur général</button><span class="lock-note" data-lock-note></span></div>
+      </form>
+    </div>
+    <div>
+      <h2>Suivi</h2>
+      <p class="lead">reçue → lue par le DG → traitée (sa réponse et les missions créées).</p>
+      <ul class="plain" id="instructions-liste"></ul>
+    </div>
+  </section>
+
+  <section id="agents" aria-labelledby="t-ag">
+    <h2 id="t-ag">Agents et exécutions</h2>
+    <p class="lead">Un agent n'est actif que pendant une exécution réelle ouverte par Claude Code (hook) ou par le directeur général.</p>
+    <div class="tablewrap"><table id="runs"><thead><tr><th>Exécution</th><th>Agent</th><th>Projet</th><th>Mission</th><th>Début</th><th>Fin</th><th>Résultat</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="tests" aria-labelledby="t-te">
+    <h2 id="t-te">Tests et résultats</h2>
+    <p class="lead">Seuls des tests réellement exécutés sont inscrits, avec la commande et la date d'exécution. NOT TESTED signifie : non exécuté, et la raison est donnée.</p>
+    <div class="tablewrap"><table id="tests-t"><thead><tr><th>Quand</th><th>Projet</th><th>Test</th><th>Résultat</th><th>Détail</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="securite" aria-labelledby="t-se">
+    <h2 id="t-se">Sécurité</h2>
+    <p class="lead">État des protections, tentatives bloquées par le garde, et actes « présidentiels » rejetés parce qu'ils ne portaient pas votre signature.</p>
+    <div class="grid" id="securite-cartes"></div>
+  </section>
+
+  <section aria-labelledby="t-hi">
+    <h2 id="t-hi">Décisions passées</h2>
+    <div class="tablewrap"><table id="historique"><thead><tr><th>Quand</th><th>Type</th><th>Objet</th><th>Verdict</th><th>Motif</th><th>Signature</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section aria-labelledby="t-or">
+    <h2 id="t-or">Organisation de l'entreprise</h2>
+    <p class="lead">« actif » seulement quand les agents de la direction existent réellement ; sinon « prévu », avec l'étape qui le construira.</p>
+    <div class="grid" id="organisation"></div>
+  </section>
+
+  <section id="journal" aria-labelledby="t-jr">
+    <h2 id="t-jr">Journal des opérations</h2>
+    <p class="lead">Historique complet en ajout seul, chaque ligne liée à la précédente par son empreinte. Auteur : <span class="v-signature">signé</span> (vous), <span class="v-hook">hook</span> (Claude Code), <span class="v-run">exécution</span> (agent identifié), <span class="v-declare">déclaré</span> (non vérifié).</p>
+    <div class="filters">
+      <select id="jr-siege" aria-label="Filtrer par projet"><option value="">Tous les projets</option></select>
+      <select id="jr-type" aria-label="Filtrer par type"><option value="">Tous les types</option><option>approbation</option><option>decision</option><option>instruction</option><option>mission</option><option>probleme</option><option>siege</option><option>run</option><option>test</option><option>garde</option><option>president</option><option>artefact</option></select>
+      <button class="btn" type="button" id="verif">Vérifier l'intégrité</button>
+    </div>
+    <div class="tablewrap"><table id="journal-t"><thead><tr><th>Événement</th><th>Quand</th><th>Type</th><th>Auteur</th><th>Contenu</th><th>Empreinte</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</div>
+
+<dialog id="dlg-lock" aria-labelledby="dlg-t">
+  <form method="dialog" id="f-lock">
+    <h3 id="dlg-t">Déverrouiller la Résidence</h3>
+    <p style="margin:0;font-size:14px">Votre phrase présidentielle reconstitue votre clé de signature le temps de la session (2 h d'inactivité, 12 h au plus). Elle n'est enregistrée nulle part.</p>
+    <label class="f"><span class="lbl">Phrase présidentielle</span><input type="password" id="phrase" autocomplete="current-password" required></label>
+    <div class="err" id="lock-err" role="alert"></div>
+    <div class="row"><button class="btn dark" type="submit" id="lock-go">Déverrouiller</button><button class="btn" type="button" id="lock-cancel">Annuler</button></div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const quand = q => q ? new Date(q).toLocaleString("fr-FR", {dateStyle:"short", timeStyle:"short"}) : "—";
+const STATUT = {proposee:"proposée", attente_president:"attend votre accord", planifiee:"planifiée", reportee:"reportée", en_cours:"en cours", bloquee:"bloquée", verification:"en vérification", terminee:"terminée", rejetee:"rejetée", abandonnee:"abandonnée"};
+const CAT = {git:"Git", github:"GitHub", deploiement:"Déploiement", donnees:"Données", suppression:"Suppression", secret:"Secret", reseau:"Réseau", "garde-fous":"Garde-fous", "projet-externe":"Projet externe"};
+let JETON = null, D = null, apresDeverrouillage = null;
+
+function toast(t){ const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("on"), 3600); }
+async function jeton(force){ if(!JETON || force){ const r = await fetch("/api/session"); JETON = (await r.json()).jeton; } return JETON; }
+async function post(path, body, retry = true){
+  const r = await fetch(path, {method:"POST", headers:{"Content-Type":"application/json","X-Ile-Jeton":await jeton()}, body:JSON.stringify(body)});
+  const j = await r.json().catch(() => ({}));
+  if(r.status === 403 && retry && /jeton/.test(j.erreur || "")){ await jeton(true); return post(path, body, false); }
+  if(r.status === 401){ const e = new Error(j.erreur || "verrouillée"); e.verrou = true; throw e; }
+  if(!r.ok) throw new Error(j.erreur || ("erreur " + r.status));
+  return j;
+}
+async function get(path){ const r = await fetch(path, {cache:"no-store"}); if(r.status === 401){ location.href = "/connexion?suite=" + encodeURIComponent(location.pathname); throw new Error("connexion"); } if(!r.ok) throw new Error(r.status); return r.json(); }
+async function acte(path, body, ok){
+  try{ const r = await post(path, body); toast(`${ok} — signé et inscrit (${r.evenement}).`); await charger(); return true; }
+  catch(e){ if(e.verrou){ apresDeverrouillage = () => acte(path, body, ok); ouvrirVerrou(); } else toast("Refusé : " + e.message); return false; }
+}
+const auteur = a => a ? `${esc(a.role)}${a.run ? " · " + esc(a.run) : ""} <span class="v-${esc(a.verifie)}">(${esc({signature:"signé",hook:"hook",run:"exécution",declare:"déclaré"}[a.verifie] || a.verifie)})</span>` : "—";
+const src = s => s ? `<div class="src">source : ${esc(s)}</div>` : "";
+
+function ouvrirVerrou(){
+  if(!D?.president?.identite){ toast("Crée d'abord ton identité : ./ile president dans Terminal."); return; }
+  $("#lock-err").textContent = ""; $("#phrase").value = ""; $("#dlg-lock").showModal(); setTimeout(() => $("#phrase").focus(), 50);
+}
+$("#lock-cancel").onclick = () => { apresDeverrouillage = null; $("#dlg-lock").close(); };
+$("#f-lock").addEventListener("submit", async ev => {
+  ev.preventDefault(); $("#lock-go").disabled = true; $("#lock-err").textContent = "Vérification…";
+  try{ await post("/api/president/deverrouiller", {phrase:$("#phrase").value}); $("#phrase").value = ""; $("#dlg-lock").close(); toast("Résidence déverrouillée."); await charger();
+       const f = apresDeverrouillage; apresDeverrouillage = null; if(f) await f(); }
+  catch(e){ $("#lock-err").textContent = e.message; }
+  finally{ $("#lock-go").disabled = false; }
+});
+
+function identite(d){
+  const p = d.president, el = $("#chip-id");
+  $("#sans-identite").hidden = !!p.identite;
+  if(!p.identite){ el.innerHTML = `<span>Identité : non créée</span>`; return; }
+  el.innerHTML = p.deverrouille
+    ? `<span>🔓 Déverrouillée jusqu'à ${esc(p.expire)}</span><button type="button" id="b-lock" class="on">Verrouiller</button>`
+    : `<span>🔒 Lecture seule</span><button type="button" id="b-lock">Déverrouiller</button>`;
+  $("#b-lock").onclick = async () => { if(p.deverrouille){ await post("/api/president/verrouiller", {}); toast("Résidence verrouillée."); charger(); } else ouvrirVerrou(); };
+  document.querySelectorAll("[data-lock-note]").forEach(n => n.textContent = p.deverrouille ? "" : "Déverrouillage demandé à l'envoi.");
+}
+
+function kpis(d){
+  const pb = d.sieges.flatMap(s => s.problemes), bl = pb.filter(p => p.gravite === "bloquant").length, att = d.approbations.length + d.decisions.length;
+  $("#alerte").classList.toggle("on", att > 0);
+  $("#alerte-txt").textContent = att ? `⚠ ${d.approbations.length} opération(s) sensible(s) et ${d.decisions.length} décision(s) attendent votre accord` : "";
+  document.title = (att ? `(${att}) ` : "") + "Résidence présidentielle";
+  $("#kpis").innerHTML = [
+    [att, "attendent votre accord", att ? "alert" : "", "#trancher"],
+    [d.sieges.length, "projets suivis", "", "#projets"],
+    [`${bl}<small style="font-size:15px"> / ${pb.length}</small>`, "problèmes bloquants / ouverts", bl ? "alert" : "", "#projets"],
+    [d.missions.filter(m => m.statut === "proposee").length, "missions proposées", "", "#missions"],
+    [d.agents_actifs.length, "agents réellement actifs", "", "#agents"],
+    [d.securite.refus.length, "tentatives bloquées", d.securite.refus.length ? "alert" : "", "#securite"],
+    [d.integrite.ok ? "✔" : "✘", `journal ${d.integrite.ok ? "intègre" : "ALTÉRÉ"} · ${d.integrite.evenements} év.`, d.integrite.ok ? "good" : "bad", "#journal"],
+  ].map(([v,l,c,h]) => `<a class="kpi ${c}" href="${h}"><b>${v}</b><span>${l}</span></a>`).join("");
+}
+
+function trancher(d){
+  $("#approbations").innerHTML = d.approbations.map(a => `
+    <article class="card urgent">
+      <div class="row"><span class="tag warn">${esc(CAT[a.categorie] || a.categorie)}</span><span class="src">${esc(a.id)} · ${quand(a.quand)}</span></div>
+      <h3>${esc(a.raison)}</h3>
+      <pre class="cmd">${esc(a.commande)}</pre>
+      <div class="src">demandée par ${esc(a.agent?.agent_type || "session principale")}${a.agent?.agent_id ? " (" + esc(a.agent.agent_id) + ")" : ""}${a.cwd ? " · dossier " + esc(a.cwd) : ""} · règle ${esc(a.regle)} · ${a.mode === "fenetre" ? "accord valable pour ce fichier pendant la durée choisie" : "accord valable une seule fois"}</div>
+      <label class="f"><span class="lbl">Motif (facultatif)</span><textarea data-motif="${esc(a.id)}" maxlength="1000"></textarea></label>
+      <div class="row"><button class="btn ok" type="button" data-appr="${esc(a.id)}" data-v="accordee">Accorder</button>
+        <select data-heures="${esc(a.id)}" aria-label="Durée de validité"><option value="1">valable 1 h</option><option value="24" selected>valable 24 h</option><option value="168">valable 7 jours</option></select>
+        <button class="btn bad" type="button" data-appr="${esc(a.id)}" data-v="refusee">Refuser</button></div>
+    </article>`).join("");
+  $("#decisions").innerHTML = d.decisions.map(x => `
+    <article class="card urgent">
+      <div class="row"><span class="tag">${esc(x.siege)}</span><span class="src">${esc(x.id)} · ${quand(x.quand)} · par ${auteur(x.auteur)}</span></div>
+      <h3>${esc(x.titre)}</h3><div>${esc(x.question)}</div>
+      ${x.contexte ? `<div class="nr" style="font-style:normal">${esc(x.contexte)}</div>` : ""}${src(x.source)}
+      <label class="f"><span class="lbl">Votre motif (facultatif)</span><textarea data-motif="${esc(x.id)}" maxlength="2000"></textarea></label>
+      <div class="row"><button class="btn ok" data-dec="${esc(x.id)}" data-v="approuvee" type="button">Approuver</button><button class="btn bad" data-dec="${esc(x.id)}" data-v="refusee" type="button">Refuser</button><button class="btn" data-dec="${esc(x.id)}" data-v="reportee" type="button">Reporter</button></div>
+    </article>`).join("");
+  if(!d.approbations.length && !d.decisions.length) $("#approbations").innerHTML = `<p class="nr">Rien n'attend votre accord.</p>`;
+}
+
+function projet(s){
+  const prio = s.priorite ? `<span class="tag ${s.priorite === "P1" ? "p1" : ""}">priorité ${esc(s.priorite)}</span>` : `<span class="tag none">priorité non fixée</span>`;
+  const e = s.etat;
+  const etat = e ? `<div><b>${esc(e.phase)}</b> — ${esc(e.resume)}</div>${e.indicateurs?.length ? `<ul class="plain">${e.indicateurs.map(i => `<li>${esc(i.nom)} : <b>${esc(i.valeur)}</b>${i.source ? `<div class="src">${esc(i.source)}</div>` : ""}</li>`).join("")}</ul>` : ""}<div class="src">établi par ${esc(e.par)} · ${quand(e.quand)}</div>`
+    : (s.etat_des_lieux ? `<div class="nr">Avancement pas encore établi par un agent. État des lieux : <span class="src">${esc(s.etat_des_lieux.chemin)}</span></div>` : `<div class="nr">Non renseigné : aucun état des lieux pour ce projet.</div>`);
+  const actions = s.prochaines_actions.length ? `<ul class="plain">${s.prochaines_actions.slice(0,4).map(m => `<li>${m.score != null ? `<span class="score">${esc(m.score)}</span> ` : ""}${esc(m.titre)} <span class="src">${esc(m.id)} · ${esc(STATUT[m.statut])} · par ${esc(m.auteur.role)}</span></li>`).join("")}</ul>` : `<div class="nr">Aucune mission proposée.</div>`;
+  const pbs = s.problemes.length ? `<ul class="plain">${s.problemes.map(p => `<li class="pb-${esc(p.gravite)}"><span class="tag ${esc(p.gravite)}">${esc(p.gravite)}</span> ${esc(p.titre)}${src(p.source)}</li>`).join("")}</ul>` : `<div class="nr">Aucun problème ouvert signalé.</div>`;
+  const tests = s.tests.length ? `<ul class="plain">${s.tests.map(t => `<li><span class="tag ${esc(t.resultat.replace(" ",""))}">${esc(t.resultat)}</span> ${esc(t.intitule)} <span class="src">${quand(t.execute_le)}</span></li>`).join("")}</ul>` : `<div class="nr">Aucun test inscrit.</div>`;
+  return `<article class="card">
+    <div class="row" style="justify-content:space-between"><h3><span class="dot" style="background:${esc(s.couleur)}"></span> ${esc(s.nom)}</h3>
+      <label class="src">priorité <select data-prio="${esc(s.id)}" aria-label="Priorité de ${esc(s.nom)}"><option value="">—</option>${["P1","P2","P3"].map(p => `<option ${s.priorite === p ? "selected" : ""}>${p}</option>`).join("")}</select></label></div>
+    <div class="row">${prio}${s.agents_actifs.length ? `<span class="tag live">● ${s.agents_actifs.length} agent(s) au travail</span>` : ""}${s.decisions.length ? `<span class="tag p1">${s.decisions.length} décision(s)</span>` : ""}${s.depot ? `<span class="tag">${esc(s.depot.replace("https://github.com/",""))}</span>` : `<span class="tag none">pas de dépôt connu</span>`}</div>
+    <div class="f"><span class="lbl">Avancement</span>${etat}</div>
+    <div class="f"><span class="lbl">Prochaines actions recommandées</span>${actions}</div>
+    <div class="f"><span class="lbl">Problèmes détectés</span>${pbs}</div>
+    <div class="f"><span class="lbl">Derniers tests</span>${tests}</div>
+    <div class="row"><a class="btn" href="/batiment/${encodeURIComponent(s.id)}">Siège en 3D</a><button class="btn" type="button" data-ecrire="${esc(s.id)}">Instruction pour ce projet</button></div>
+  </article>`;
+}
+
+function rapports(d){
+  $("#rapports-liste").innerHTML = d.rapports.length ? d.rapports.map(r => `<article class="card">
+    <div class="row"><span class="tag">${esc(r.siege)}</span><span class="src">${esc(r.run)} · ${esc(r.role)} · ${quand(r.debut)} → ${r.fin ? quand(r.fin) : "en cours"}</span></div>
+    ${r.etat ? `<div><b>${esc(r.etat.phase)}</b> — ${esc(r.etat.resume)}</div>` : `<div class="nr">Pas d'état établi lors de cette revue.</div>`}
+    <div class="f"><span class="lbl">Problèmes signalés (${r.problemes.length})</span><ul class="plain">${r.problemes.map(p => `<li>${esc(p.titre)} <span class="src">${esc(p.id)}</span></li>`).join("") || "<li class='nr'>aucun</li>"}</ul></div>
+    <div class="f"><span class="lbl">Missions proposées (${r.missions.length})</span><ul class="plain">${r.missions.map(m => `<li>${esc(m.titre)} <span class="src">${esc(m.id)}</span></li>`).join("") || "<li class='nr'>aucune</li>"}</ul></div>
+    ${r.resultat ? `<div class="src">résultat : ${esc(r.resultat)}</div>` : ""}</article>`).join("") : `<p class="nr">Aucune revue de directeur pour l'instant.</p>`;
+}
+
+function missions(d){
+  const B = (id, v, t, c) => `<button class="btn ${c}" type="button" data-mis="${esc(id)}" data-v="${v}">${t}</button>`;
+  $("#missions-t tbody").innerHTML = d.missions.length ? d.missions.map(m => {
+    const acts = m.statut === "proposee" ? (m.sensible ? B(m.id,"attente_president","Examiner","ok") : B(m.id,"planifiee","Retenir","ok")) + B(m.id,"reportee","Reporter","") + B(m.id,"rejetee","Rejeter","bad")
+      : m.statut === "attente_president" ? B(m.id,"planifiee","Accorder","ok") + B(m.id,"rejetee","Rejeter","bad")
+      : m.statut === "reportee" ? B(m.id,"proposee","Remettre en proposition","") + B(m.id,"rejetee","Rejeter","bad") : "";
+    return `<tr><td>${esc(m.rang ?? "—")}</td>
+    <td><b>${esc(m.titre)}</b><div class="src">${esc(m.id)}</div><details><summary>objectif, critères, sources${m.classement ? ", calcul du score" : ""}</summary><div>${esc(m.objectif)}</div><ul>${m.criteres.map(c => `<li>${esc(c)}</li>`).join("")}</ul>
+      ${m.sources?.length ? `<div class="src">sources : ${m.sources.map(esc).join(" · ")}</div>` : ""}${m.classement ? `<div class="src">${esc(m.classement.motif)} — valeur ${esc(m.classement.detail.valeur)}, urgence ${esc(m.classement.detail.urgence)}, effort ${esc(m.classement.detail.effort)}, risque ${esc(m.classement.detail.risque)}, priorité ${esc(m.classement.detail.priorite_siege)}</div>` : ""}</details></td>
+    <td>${esc(m.siege)}</td><td>${esc(STATUT[m.statut] || m.statut)}${m.sensible ? ' <span class="tag p1">sensible</span>' : ""}</td>
+    <td>${m.score != null ? `<span class="score">${esc(m.score)}</span>` : "—"}</td><td>${auteur(m.auteur)}</td><td><div class="row">${acts}</div></td></tr>`; }).join("") : `<tr><td colspan="7" class="nr">Aucune mission.</td></tr>`;
+}
+
+function instructions(d){
+  $("#instructions-liste").innerHTML = d.instructions.length ? d.instructions.map(i => `<li>
+    <span class="tag ${i.statut === "traitee" ? "okk" : "p1"}">${esc({recue:"reçue, pas encore lue",lue:"lue par le DG",traitee:"traitée"}[i.statut])}</span>${i.siege ? ` <span class="tag">${esc(i.siege)}</span>` : ""} ${esc(i.texte)}
+    <div class="src">${esc(i.id)} · ${quand(i.quand)}${i.lue ? " · lue " + quand(i.lue.quand) : ""}</div>
+    ${i.reponse ? `<div><b>Réponse du DG :</b> ${esc(i.reponse)}${i.missions?.length ? ` <span class="src">missions : ${i.missions.map(esc).join(", ")}</span>` : ""}</div>` : ""}</li>`).join("") : `<li class="nr">Aucune instruction.</li>`;
+}
+
+function runs(d){
+  $("#runs tbody").innerHTML = d.runs.length ? d.runs.map(r => `<tr><td>${esc(r.run)}</td><td>${esc(r.role)}${r.agent_id ? `<div class="src">agent ${esc(r.agent_id)}</div>` : ""}</td><td>${esc(r.siege || "—")}</td><td>${esc(r.mission || "hors mission")}</td><td>${quand(r.debut)}</td><td>${r.fin ? quand(r.fin) : '<span class="tag live">en cours</span>'}</td><td>${esc(r.resultat || "")}${r.transcript ? `<div class="src">trace : ${esc(r.transcript)}</div>` : ""}</td></tr>`).join("") : `<tr><td colspan="7" class="nr">Aucune exécution.</td></tr>`;
+}
+
+function tests(d){
+  $("#tests-t tbody").innerHTML = d.tests.length ? d.tests.map(t => `<tr><td>${quand(t.execute_le)}</td><td>${esc(t.siege)}</td><td><b>${esc(t.intitule)}</b>${t.commande ? `<div class="src">${esc(t.commande)}</div>` : ""}</td><td><span class="tag ${esc(t.resultat.replace(" ",""))}">${esc(t.resultat)}</span></td><td>${esc(t.resume || "")}${t.preuve ? `<div class="src">preuve : ${esc(t.preuve)}</div>` : ""}<div class="src">inscrit par ${auteur(t.auteur)}</div></td></tr>`).join("") : `<tr><td colspan="5" class="nr">Aucun test inscrit.</td></tr>`;
+}
+
+function securite(d){
+  const s = d.securite, gb = Object.entries(s.garde_branche);
+  $("#securite-cartes").innerHTML = `
+    <article class="card"><h3>Protections</h3><ul class="plain">
+      <li>Identité présidentielle : ${d.president.identite ? `<b>${esc(d.president.identite.empreinte)}</b> <span class="src">créée ${quand(d.president.identite.quand)}</span>` : "<b>non créée</b> (./ile president)"}</li>
+      ${gb.map(([f, on]) => `<li>Garde branché dans <code>${esc(f)}</code> : ${on ? '<span class="tag PASS">oui</span>' : '<span class="tag FAIL">non</span>'}</li>`).join("")}
+      <li>Arrêt d'urgence : ${s.arret_urgence ? '<span class="tag FAIL">ACTIF</span> (./ile arret-urgence off)' : '<span class="tag okk">inactif</span> <span class="src">./ile arret-urgence on</span>'}</li>
+      <li>Accès distant : ${s.acces_distant.length ? s.acces_distant.map(esc).join(", ") + " (connexion obligatoire)" : "désactivé"}</li>
+      <li>Intégrité du journal : ${d.integrite.ok ? '<span class="tag PASS">vérifiée</span>' : '<span class="tag FAIL">altéré</span>'} <span class="src">${esc(d.integrite.dernier_hash.slice(0,16))}…</span></li>
+    </ul></article>
+    <article class="card"><h3>Tentatives bloquées (${s.refus.length})</h3>${s.refus.length ? `<ul class="plain">${s.refus.map(r => `<li><span class="tag bloquant">${esc(r.categorie)}</span> ${esc(r.raison)}<div class="src">${quand(r.quand)} · ${esc(r.agent?.agent_type || "session principale")} · ${esc((r.extrait || "").slice(0,120))}</div></li>`).join("")}</ul>` : `<div class="nr">Aucune.</div>`}</article>
+    <article class="card"><h3>Actes présidentiels rejetés (${s.rejets.length})</h3>${s.rejets.length ? `<ul class="plain">${s.rejets.map(r => `<li>${esc(r.id)} ${esc(r.type)} — ${esc(r.motif)}<div class="src">${quand(r.quand)} · auteur déclaré ${esc(r.auteur?.role)}</div></li>`).join("")}</ul>` : `<div class="nr">Aucun : tous les actes présidentiels portent votre signature.</div>`}</article>`;
+}
+
+function historique(d){
+  $("#historique tbody").innerHTML = d.historique.length ? d.historique.map(h => `<tr><td>${quand(h.tranchee)}</td><td>${h.type === "approbation" ? "Opération" : "Décision"}</td><td>${esc(h.titre)}${h.commande ? `<div class="src">${esc(h.commande.slice(0,140))}</div>` : ""}</td>
+    <td>${esc(h.type === "approbation" ? ({accordee:"accordée",refusee:"refusée",utilisee:"accordée puis utilisée",expiree:"accordée, expirée"}[h.statut] || h.statut) : h.verdict)}</td><td>${esc((h.type === "approbation" ? h.verdict?.motif : h.motif) || "")}</td><td><span class="v-signature">${esc(((h.type === "approbation" ? h.verdict?.par : h.par) || {}).cle || "")}</span></td></tr>`).join("") : `<tr><td colspan="6" class="nr">Aucune décision prise pour l'instant.</td></tr>`;
+}
+
+function organisation(d){
+  $("#organisation").innerHTML = d.organisation.length ? d.organisation.map(o => `<article class="card"><div class="row" style="justify-content:space-between"><h3>${esc(o.nom)}</h3><span class="tag ${o.statut_reel === "actif" ? "okk" : "none"}">${esc(o.statut_reel === "actif" ? "actif" : (o.statut || "prévu"))}</span></div>
+    <div>${esc(o.mission)}</div>${o.batiment ? `<div class="src">bâtiment : <a href="/batiment/${encodeURIComponent(o.batiment)}">${esc(o.batiment)}</a></div>` : ""}
+    <div class="src">agents : ${o.agents?.length ? o.agents.map(esc).join(", ") : "aucun pour l'instant"}${o.prevus?.length ? " · prévus : " + o.prevus.map(esc).join(", ") : ""}</div></article>`).join("") : `<p class="nr">Organisation non décrite dans le registre.</p>`;
+}
+
+async function journal(){
+  const q = new URLSearchParams({n:"200"}); if($("#jr-siege").value) q.set("siege", $("#jr-siege").value); if($("#jr-type").value) q.set("type", $("#jr-type").value);
+  const j = await get("/api/journal?" + q);
+  $("#journal-t tbody").innerHTML = j.evenements.length ? j.evenements.map(e => `<tr><td class="src">${esc(e.id)}</td><td>${quand(e.quand)}</td><td>${esc(e.type)}</td><td>${auteur(e.auteur)}</td>
+    <td><details><summary>${esc(resume(e))}</summary><pre style="white-space:pre-wrap;font:12px var(--mono);margin:6px 0 0">${esc(JSON.stringify(e.donnees, null, 1))}</pre></details></td><td class="src">${esc(e.hash.slice(0,12))}…</td></tr>`).join("") : `<tr><td colspan="6" class="nr">Journal vide.</td></tr>`;
+}
+function resume(e){ const d = e.donnees; return d.titre || d.texte || d.raison || d.intitule || (d.mission ? `${d.mission} ${d.de ? d.de + " → " + d.vers : ""}` : "") || d.approbation || d.run || d.empreinte || d.siege || e.type; }
+
+async function charger(){
+  try{
+    const d = await get("/api/residence"); D = d; $("#hors-ligne").hidden = true;
+    identite(d); kpis(d); trancher(d); $("#projets-liste").innerHTML = d.sieges.map(projet).join(""); rapports(d); missions(d); instructions(d); runs(d); tests(d); securite(d); historique(d); organisation(d);
+    for(const sel of ["#ins-siege", "#jr-siege"]){ const el = $(sel); if(el.options.length <= 1) d.sieges.forEach(s => el.add(new Option(s.nom, s.id))); }
+    if($("#aller").options.length <= 1) fetch("/registre.json").then(r => r.json()).then(r => r.batiments.forEach(b => $("#aller").add(new Option(b.nom, b.id)))).catch(() => {});
+    await journal();
+  }catch(e){ if(e.message !== "connexion") $("#hors-ligne").hidden = false; }
+}
+
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if(!b) return;
+  const motif = id => document.querySelector(`[data-motif="${id}"]`)?.value || null;
+  if(b.dataset.appr) acte("/api/approbation", {id:b.dataset.appr, verdict:b.dataset.v, motif:motif(b.dataset.appr), heures:+(document.querySelector(`[data-heures="${b.dataset.appr}"]`)?.value || 24)}, b.dataset.v === "accordee" ? "Opération accordée" : "Opération refusée");
+  else if(b.dataset.dec) acte("/api/decision", {id:b.dataset.dec, verdict:b.dataset.v, motif:motif(b.dataset.dec)}, "Décision prise");
+  else if(b.dataset.mis) acte("/api/mission", {id:b.dataset.mis, vers:b.dataset.v}, "Mission mise à jour");
+  else if(b.dataset.ecrire){ $("#ins-siege").value = b.dataset.ecrire; $("#ins-texte").focus(); $("#instructions").scrollIntoView({behavior:"smooth", block:"start"}); }
+  else if(b.id === "verif") get("/api/verifier").then(v => toast(v.ok ? `Journal intègre : ${v.n} événements, empreinte ${v.dernier.slice(0,12)}…` : `ALTÉRATION : ${v.erreurs[0]}`));
+});
+document.addEventListener("change", ev => {
+  const s = ev.target.closest("[data-prio]"); if(s && s.value) acte("/api/priorite", {siege:s.dataset.prio, priorite:s.value}, `Priorité ${s.value} fixée`);
+  if(ev.target.id === "aller" && ev.target.value) location.href = "/batiment/" + encodeURIComponent(ev.target.value);
+});
+$("#f-ins").addEventListener("submit", async ev => { ev.preventDefault(); const t = $("#ins-texte").value.trim(); if(!t) return;
+  if(await acte("/api/instruction", {texte:t, siege:$("#ins-siege").value || null}, "Instruction transmise au DG")) $("#ins-texte").value = ""; });
+$("#jr-siege").addEventListener("change", journal); $("#jr-type").addEventListener("change", journal);
+charger(); setInterval(() => { if(!$("#dlg-lock").open && !["TEXTAREA","SELECT","INPUT"].includes(document.activeElement?.tagName)) charger(); }, 6000);
+</script>
+</body>
+</html>

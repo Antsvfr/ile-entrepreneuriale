@@ -1,0 +1,546 @@
+{
+  "ile": "Île des Agents",
+  "version": 1,
+  "batiments": [
+    {
+      "id": "residence",
+      "nom": "Résidence présidentielle",
+      "type": "residence",
+      "pos": [
+        -76,
+        67
+      ],
+      "couleur": "#c9a227",
+      "agent": "Anton (président)",
+      "role": "Le président supervise toute l'entreprise : projets, priorités, décisions sensibles, instructions au directeur général.",
+      "dossier": "residence",
+      "quartier": "Îlot présidentiel",
+      "fonction": "Supervision et décisions du président",
+      "environnement": [
+        "residence/village/residence.html : le tableau de bord",
+        "orchestrateur/registre/journal.jsonl : le registre des opérations (chaîné)",
+        "orchestrateur/ile.py : la ligne de commande du registre"
+      ],
+      "commande": "./ile, puis http://localhost:7777/residence"
+    },
+    {
+      "id": "mairie",
+      "nom": "Mairie",
+      "type": "mairie",
+      "pos": [
+        0,
+        0
+      ],
+      "couleur": "#c4553a",
+      "agent": "Session principale (CLAUDE.md)",
+      "role": "Le Maire reçoit chaque demande, la fait passer au Conseil, la confie à la bonne maison, puis demande à la Forge de vérifier avant de te répondre.",
+      "dossier": ".",
+      "environnement": [
+        "CLAUDE.md : la constitution de l'île",
+        "registre.json : le cadastre",
+        "audit/journal-de-l-ile.md : l'histoire de l'île"
+      ],
+      "commande": "claude",
+      "quartier": "Quartier stratégique",
+      "fonction": "Centre stratégique : le Maire, cerveau de la métropole"
+    },
+    {
+      "id": "conseil",
+      "nom": "Conseil des Critiques",
+      "type": "conseil",
+      "pos": [
+        -24,
+        -71
+      ],
+      "couleur": "#6b4fa0",
+      "agent": ".claude/agents/critique-*.md (×3)",
+      "role": "Trois tours, trois critiques qui relisent chaque prompt en parallèle. Le Maire fusionne leurs avis en un prompt amélioré.",
+      "dossier": "audit/conseil",
+      "environnement": [
+        "Tour de la Clarté : ambiguïtés, reformulation",
+        "Tour de l'Exigence : barre de qualité, pièges",
+        "Tour Stratège : objectif réel, priorités",
+        "proces-verbaux/ : chaque avis rendu"
+      ],
+      "commande": "/conseil <ton prompt>",
+      "quartier": "Quartier technologique",
+      "fonction": "Centre de contrôle : les 3 critiques"
+    },
+    {
+      "id": "forge",
+      "nom": "La Forge",
+      "type": "forge",
+      "pos": [
+        97,
+        -6
+      ],
+      "couleur": "#3d3a36",
+      "agent": ".claude/agents/forgeron.md",
+      "role": "Vérifie et répare tout ce qui sort des maisons : structure, fichiers manquants, code qui casse, chiffres sans source. Inspecte aussi l'île automatiquement à la fin de chaque tâche.",
+      "dossier": "audit",
+      "environnement": [
+        "inspection.sh : contrôle de toute l'île",
+        "rapports/ : un rapport par inspection",
+        "Hook de fin de tâche : réparation automatique"
+      ],
+      "commande": "/inspection",
+      "quartier": "Port industriel",
+      "fonction": "Centre de contrôle : vérification et réparation"
+    },
+    {
+      "id": "cuvee-campus",
+      "nom": "Cave Cuvée Campus",
+      "type": "maison",
+      "pos": [
+        -41.3,
+        21.6
+      ],
+      "couleur": "#7d2e46",
+      "agent": ".claude/agents/chef-cuvee-campus.md",
+      "role": "Projet sociétal environnemental de l'équipe 53 : livrables, recherches sourcées, suivi d'équipe.",
+      "dossier": "projets/cuvee-campus",
+      "environnement": [
+        "livrables/",
+        "recherches/",
+        "equipe.md",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-cuvee-campus pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "bde-emergency",
+      "nom": "QG EM'ERGENCY",
+      "type": "maison",
+      "pos": [
+        -29.4,
+        32.8
+      ],
+      "couleur": "#d6402b",
+      "agent": ".claude/agents/chef-bde-emergency.md",
+      "role": "Campagne BDE BBA : programme chiffré, entraînement à l'entretien de candidature, communication de la liste.",
+      "dossier": "projets/bde-emergency",
+      "environnement": [
+        "programme/",
+        "entretien/",
+        "com/",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-bde-emergency pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "vetotri",
+      "nom": "Labo Vétotri",
+      "type": "maison",
+      "pos": [
+        41.3,
+        21.6
+      ],
+      "couleur": "#2f8f83",
+      "agent": ".claude/agents/chef-vetotri.md",
+      "role": "Ton chatbot : code, prompts système versionnés, tests, recherche d'un nouveau nom.",
+      "dossier": "projets/vetotri",
+      "environnement": [
+        "src/",
+        "prompts/",
+        "tests/",
+        "noms.md",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-vetotri pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "ecole",
+      "nom": "École",
+      "type": "maison",
+      "pos": [
+        -34,
+        -16
+      ],
+      "couleur": "#2e5c9e",
+      "agent": ".claude/agents/chef-ecole.md",
+      "role": "Cours emlyon : présentation d'anglais sur Lester Piggott, « Analyser et comprendre le marché », fiches de révision.",
+      "dossier": "projets/ecole",
+      "environnement": [
+        "anglais/",
+        "marche/",
+        "fiches/",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-ecole pour …",
+      "quartier": "Campus",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "lexnote",
+      "nom": "LexNote",
+      "type": "maison",
+      "pos": [
+        -10.6,
+        39.2
+      ],
+      "couleur": "#1f6f6a",
+      "agent": ".claude/agents/chef-lexnote.md",
+      "dossier": "projets/lexnote",
+      "depot": "https://github.com/Antsvfr/LexNote",
+      "branche_active": "claude/production-readiness-observability",
+      "etat": "Chaîne de 5 PR empilées en brouillon ; production = main (plus ancienne). 15/23 portes PASS, NOT READY (selon le dossier du 06/11).",
+      "role": "Prise de notes de cours, transcription, documents et consolidation, pour le droit et toutes filières. Local-first, PWA, Supabase.",
+      "branches": [
+        {
+          "nom": "main",
+          "sha": "981d9aa",
+          "role": "Production (plus ancienne)"
+        },
+        {
+          "nom": "claude/reconcile-main-production-schema",
+          "sha": "05afdba",
+          "role": "PR #12 · 1re à fusionner"
+        },
+        {
+          "nom": "claude/revem-course-launch",
+          "sha": "8602eb6",
+          "role": "PR #10 · 2e"
+        },
+        {
+          "nom": "claude/generalize-lexnote-smart-transcript",
+          "sha": "042b3b5",
+          "role": "PR #11 · 3e"
+        },
+        {
+          "nom": "claude/persistent-revem-auth",
+          "sha": "6e305fb",
+          "role": "PR #13 · 4e"
+        },
+        {
+          "nom": "claude/production-readiness-observability",
+          "sha": "caf8b40",
+          "role": "PR #14 · branche de travail"
+        }
+      ],
+      "environnement": [
+        "dossier-projet.md",
+        "branches.md",
+        "etat-des-lieux.md",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-lexnote pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "rev-em",
+      "nom": "REV-EM",
+      "type": "maison",
+      "pos": [
+        10.6,
+        39.2
+      ],
+      "couleur": "#b8572b",
+      "agent": ".claude/agents/chef-rev-em.md",
+      "dossier": "projets/rev-em",
+      "depot": "https://github.com/Antsvfr/REV-EM",
+      "branche_active": "claude/lexnote-sso-launch",
+      "etat": "main publiée (GitHub Pages). PR #24 et #26 en attente ; les deux dossiers de reprise divergent sur la chaîne, à vérifier sur GitHub. Le zip local diffère de main.",
+      "role": "Plateforme de révision pour étudiants : cours, quiz, flashcards, planning, assistant IA local, maths, liaison avec LexNote.",
+      "branches": [
+        {
+          "nom": "main",
+          "sha": "763ad74",
+          "role": "Seule branche publiée"
+        },
+        {
+          "nom": "claude/lexnote-sso-launch",
+          "sha": "b7773d5",
+          "role": "PR #25 · branche de travail (dossier LexNote)"
+        },
+        {
+          "nom": "claude/planning-lexnote-live-session",
+          "sha": "3e72c32",
+          "role": "PR #24 · brouillon"
+        },
+        {
+          "nom": "claude/anaquizz-rebrand-restructure-ddinml",
+          "sha": "ffd1f95",
+          "role": "PR #26 · ouverte"
+        },
+        {
+          "nom": "claude/lexnote-link",
+          "sha": "a1af8d5",
+          "role": "à qualifier"
+        },
+        {
+          "nom": "claude/fix-connected-apps-ui",
+          "sha": "5993e65",
+          "role": "à qualifier"
+        }
+      ],
+      "environnement": [
+        "dossier-projet.md",
+        "gouvernance-claude-projet.md",
+        "branches.md",
+        "etat-des-lieux.md",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-rev-em pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "upsa-sales-pilot",
+      "nom": "UPSA Sales Pilot",
+      "type": "maison",
+      "pos": [
+        29.4,
+        32.8
+      ],
+      "couleur": "#7a3f8f",
+      "agent": ".claude/agents/chef-upsa-sales-pilot.md",
+      "dossier": "projets/upsa-sales-pilot",
+      "depot": "",
+      "branche_active": "",
+      "etat": "Documentation seulement : le code est sur le Mac d'Anton, sans dépôt Git connu. Aucune donnée réelle.",
+      "role": "Pilotage commercial quotidien pour une commerciale UPSA : fiche pharmacie 360°, paracétamol, OTC, conventions, visites, import X20. Local, données fictives.",
+      "branches": [
+        {
+          "nom": "Phases 1, 2, 3, 5, 6, 7",
+          "sha": "",
+          "role": "Faites (selon le dossier)"
+        },
+        {
+          "nom": "Phase 4 · importations avancées",
+          "sha": "",
+          "role": "En attente des formats"
+        },
+        {
+          "nom": "Phase 8 · optimisation",
+          "sha": "",
+          "role": "Partielle"
+        },
+        {
+          "nom": "Connecteur X20 Cockpit",
+          "sha": "",
+          "role": "Uniquement sur le Mac"
+        }
+      ],
+      "environnement": [
+        "dossier/",
+        "branches.md",
+        "etat-des-lieux.md",
+        "journal.md"
+      ],
+      "commande": "Utilise chef-upsa-sales-pilot pour …",
+      "quartier": "Quartier des entreprises",
+      "fonction": "Siège du projet"
+    },
+    {
+      "id": "bibliotheque",
+      "nom": "Bibliothèque",
+      "type": "chantier",
+      "pos": [
+        -42,
+        -68
+      ],
+      "couleur": "#a0703c",
+      "agent": "à construire",
+      "dossier": "",
+      "role": "Mémoire de l'île : résumés de cours, sources, notes de lecture, tout ce que les maisons ont appris. Les chefs viennent y chercher avant de refaire une recherche.",
+      "environnement": [
+        "index.md",
+        "sources/",
+        "resumes/"
+      ],
+      "commande": "/nouvelle-maison Bibliothèque",
+      "quartier": "Quartier technologique",
+      "fonction": "Chantier : futur centre de connaissance"
+    },
+    {
+      "id": "phare",
+      "nom": "Phare",
+      "type": "chantier",
+      "pos": [
+        96,
+        -19
+      ],
+      "couleur": "#e0b23a",
+      "agent": "à construire",
+      "dossier": "",
+      "role": "Veille et alertes : échéances de toutes les maisons, rappels planifiés, brief du matin sur ce qui arrive cette semaine.",
+      "environnement": [
+        "echeances.md",
+        "tâches planifiées"
+      ],
+      "commande": "/nouvelle-maison Phare",
+      "quartier": "Port industriel",
+      "fonction": "Chantier : futur centre de veille"
+    },
+    {
+      "id": "port",
+      "nom": "Port",
+      "type": "chantier",
+      "pos": [
+        97,
+        22
+      ],
+      "couleur": "#4a7fa8",
+      "agent": "à construire",
+      "dossier": "",
+      "role": "Ce qui part de l'île : mails, posts, messages d'équipe. Rien n'est envoyé sans ton feu vert.",
+      "environnement": [
+        "brouillons/",
+        "envoyes.md"
+      ],
+      "commande": "/nouvelle-maison Port",
+      "quartier": "Port industriel",
+      "fonction": "Chantier : futur quai de départ"
+    },
+    {
+      "id": "observatoire",
+      "nom": "Observatoire",
+      "type": "chantier",
+      "pos": [
+        24,
+        -71
+      ],
+      "couleur": "#5a4a8a",
+      "agent": "à construire",
+      "dossier": "",
+      "role": "Données et tableaux de bord : avancement de chaque maison, stats d'utilisation de Vétotri, budget de la liste BDE.",
+      "environnement": [
+        "donnees/",
+        "dashboards/"
+      ],
+      "commande": "/nouvelle-maison Observatoire",
+      "quartier": "Quartier technologique",
+      "fonction": "Chantier : futur centre de données"
+    },
+    {
+      "id": "academie",
+      "nom": "Académie",
+      "type": "chantier",
+      "pos": [
+        -48,
+        0
+      ],
+      "couleur": "#3f8a4e",
+      "agent": "à construire",
+      "dossier": "",
+      "role": "Entraînement : quiz, flashcards, simulations d'oral et d'entretien, à partir de ce que contiennent les autres maisons.",
+      "environnement": [
+        "quiz/",
+        "simulations/"
+      ],
+      "commande": "/nouvelle-maison Académie",
+      "quartier": "Campus",
+      "fonction": "Chantier : future académie d'entraînement"
+    },
+    {
+      "id": "innovation",
+      "nom": "Innovation & Business",
+      "type": "chantier",
+      "pos": [
+        41,
+        -68
+      ],
+      "couleur": "#d4a017",
+      "agent": "à construire (étape 6)",
+      "dossier": "projets/innovation",
+      "quartier": "Quartier technologique",
+      "fonction": "Chantier : futur département Innovation & Business",
+      "role": "Rechercher des opportunités commerciales, étudier des marchés et des concurrents, proposer des business models et présenter des projets potentiellement rentables. Ne dépense rien, ne contacte personne, ne crée aucun projet sans décision du président.",
+      "environnement": [
+        "innovation/signaux/",
+        "innovation/opportunites/",
+        "innovation/decisions/"
+      ],
+      "commande": "(étape 6 de la roadmap)"
+    }
+  ],
+  "organisation": [
+    {
+      "id": "direction-generale",
+      "nom": "Direction générale",
+      "batiment": "mairie",
+      "mission": "Reçoit les instructions du président, classe les propositions des directeurs, planifie, rend compte.",
+      "agents": [
+        "(session principale : le Maire)"
+      ],
+      "statut": "actif"
+    },
+    {
+      "id": "strategie-analyse",
+      "nom": "Stratégie et analyse",
+      "batiment": "conseil",
+      "mission": "Critique et sélection des propositions : clarté, exigence, stratégie ; analyses chiffrées.",
+      "agents": [
+        "critique-clarte",
+        "critique-exigence",
+        "critique-strategie"
+      ],
+      "prevus": [
+        "analyste"
+      ],
+      "statut": "actif"
+    },
+    {
+      "id": "qualite-securite",
+      "nom": "Qualité et sécurité",
+      "batiment": "forge",
+      "mission": "Vérifie et répare ce qui sort des équipes ; le garde bloque techniquement les opérations interdites ou sensibles.",
+      "agents": [
+        "forgeron"
+      ],
+      "prevus": [
+        "testeur-qa",
+        "responsable-securite"
+      ],
+      "statut": "actif"
+    },
+    {
+      "id": "technique",
+      "nom": "Direction technique et développement",
+      "batiment": "observatoire",
+      "mission": "Architecture, développement sur branches de travail isolées, design UX/UI.",
+      "agents": [],
+      "prevus": [
+        "architecte-logiciel",
+        "developpeur",
+        "designer-ux"
+      ],
+      "statut": "prévu — étape 3"
+    },
+    {
+      "id": "innovation",
+      "nom": "Innovation & Business",
+      "batiment": "innovation",
+      "mission": "Opportunités commerciales, études de marché et de concurrence, business models, projets potentiellement rentables. Ne dépense rien, ne contacte personne, ne crée rien sans décision du président.",
+      "agents": [],
+      "prevus": [
+        "veilleur",
+        "analyste-business"
+      ],
+      "statut": "prévu — étape 6"
+    },
+    {
+      "id": "sieges",
+      "nom": "Équipes par projet",
+      "batiment": null,
+      "mission": "Un directeur par projet : revues régulières (/revue), problèmes vérifiés, missions proposées au DG.",
+      "agents": [
+        "chef-rev-em",
+        "chef-lexnote",
+        "chef-upsa-sales-pilot",
+        "chef-bde-emergency",
+        "chef-cuvee-campus",
+        "chef-vetotri",
+        "chef-ecole"
+      ],
+      "statut": "actif"
+    }
+  ]
+}

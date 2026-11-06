@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Île des Agents</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : la scène 3D occupe tout l'écran ; un carnet de bord (panneau) glisse à droite, en feuille du bas sur téléphone. Look unique « fin d'après-midi sur le lagon ». */
+:root{
+  --sea:#0f3d47; --sky:#f2c48d; --paper:#fbf3e4; --ink:#2a2117; --muted:#7a6a55;
+  --rule:#e4d5bb; --accent:#c4553a; --chip:#efe2c8;
+  --display:"Caprasimo","Cooper Black",Georgia,serif;
+  --body:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--sea);color:var(--ink);font-family:var(--body);font-size:15px}
+#scene{position:fixed;inset:0}
+#scene canvas{display:block;touch-action:none}
+.labels{position:fixed;inset:0;pointer-events:none}
+.lbl{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;
+  background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;
+  padding:3px 10px 4px;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 2px 0 var(--ink);transition:transform .15s}
+.lbl:hover,.lbl:focus-visible{transform:translate(-50%,-110%);outline:none}
+.lbl.chantier{background:transparent;color:var(--paper);border-style:dashed;border-color:var(--paper);box-shadow:none;font-weight:500}
+.lbl i{font-style:normal;display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+
+header{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);left:max(16px,env(safe-area-inset-left,0px));
+  color:var(--paper);pointer-events:none;max-width:min(420px,calc(100vw - 32px))}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:.95;margin:0;letter-spacing:.5px;
+  text-shadow:0 3px 0 rgba(0,0,0,.25)}
+header p{margin:8px 0 0;font-size:14px;opacity:.9;line-height:1.4}
+
+.chain{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:calc(100vw - 32px)}
+.chain span{background:rgba(251,243,228,.92);color:var(--ink);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:600}
+.chain b{color:var(--paper);font-weight:400}
+.chain small{color:var(--paper);font-size:11px;opacity:.75;width:100%}
+
+aside{position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);right:max(16px,env(safe-area-inset-right,0px));
+  bottom:calc(env(safe-area-inset-bottom,0px) + 16px);width:360px;background:var(--paper);border:2px solid var(--ink);
+  border-radius:14px;box-shadow:6px 6px 0 rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;
+  transform:translateX(0);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+aside.closed{transform:translateX(calc(100% + 40px))}
+.ph{padding:18px 20px 14px;border-bottom:1.5px dashed var(--rule);position:relative}
+.kind{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ph h2{font-family:var(--display);font-weight:400;font-size:28px;line-height:1.05;margin:6px 0 0;text-wrap:balance}
+.swatch{position:absolute;top:18px;right:52px;width:22px;height:22px;border-radius:5px;border:1.5px solid var(--ink)}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;border:1.5px solid var(--ink);
+  background:var(--chip);color:var(--ink);font-size:16px;cursor:pointer;line-height:1}
+.x:focus-visible,.lbl:focus-visible,.nav button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.pb{padding:16px 20px 20px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.pb p{margin:0;line-height:1.5}
+.f{display:flex;flex-direction:column;gap:6px}
+.f > span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+code{font-family:var(--mono);font-size:12.5px;background:var(--chip);padding:2px 6px;border-radius:4px;word-break:break-all}
+ul.env{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+ul.env li{font-family:var(--mono);font-size:12.5px;padding:6px 9px;border:1px solid var(--rule);border-radius:6px;background:#fff8ec}
+.cmd{display:flex;gap:8px;align-items:center}
+.cmd code{flex:1;padding:8px 10px}
+.cmd button{border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:6px;padding:7px 10px;font:600 12px var(--body);cursor:pointer}
+.live{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--ink);color:var(--paper)}
+ul.jr{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+ul.jr li{font-size:13px;line-height:1.4;padding:6px 9px;border-left:3px solid var(--rule);background:#fff8ec}
+.chain .now{background:var(--ink);color:var(--paper);width:100%;font-weight:500}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;border:1.5px dashed var(--accent);color:var(--accent)}
+.nav{display:flex;gap:8px;padding:12px 20px;border-top:1.5px dashed var(--rule)}
+.nav button{flex:1;border:1.5px solid var(--ink);background:var(--chip);color:var(--ink);border-radius:8px;padding:8px;font:600 13px var(--body);cursor:pointer}
+.open{position:fixed;right:max(16px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 16px);
+  border:2px solid var(--ink);background:var(--paper);color:var(--ink);border-radius:10px;padding:8px 12px;font:600 13px var(--body);cursor:pointer;box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+@media (max-width:720px){
+  aside{top:auto;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));width:auto;max-height:56%}
+  aside.closed{transform:translateY(calc(100% + 40px))}
+  .chain{display:none}
+  header p{display:none}
+}
+@media (prefers-reduced-motion:reduce){aside,.lbl{transition:none}}
+
+/* ---- métropole : navigation, commandes, chargement ---- */
+.hud{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 150px);display:flex;flex-direction:column;gap:6px;z-index:5}
+.ctl{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 150px + 10*38px + 14px);display:flex;flex-wrap:wrap;gap:6px;max-width:280px;z-index:5}
+.hud button,.ctl button,.ctl select{background:rgba(14,22,38,.74);color:var(--paper);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:7px 12px;font:600 12px var(--body);cursor:pointer;backdrop-filter:blur(6px);text-align:left}
+.hud button:hover,.ctl button:hover{background:rgba(30,44,70,.88)}
+.hud .res-lien{display:block;background:#f5d27a;color:#14202e;border:1px solid #f5d27a;border-radius:8px;padding:7px 12px;font:700 12px var(--body);text-decoration:none}
+.hud .res-lien:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hud button.on,.ctl button.on{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.hud button:focus-visible,.ctl button:focus-visible,.ctl select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.dlbl{position:absolute;transform:translate(-50%,-100%);pointer-events:none;color:#fff;font:600 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.7);white-space:nowrap}
+#loader{position:fixed;inset:0;display:grid;place-items:center;background:rgba(8,16,30,.9);z-index:20;transition:opacity .8s}
+#loader.done{opacity:0;pointer-events:none}
+#loader div.card{width:min(360px,calc(100vw - 48px));color:var(--paper);text-align:center}
+#loader b{display:block;font:400 34px var(--display);margin-bottom:10px}
+#loader span{display:block;font-size:13px;opacity:.85;min-height:20px}
+.lb{margin-top:14px;height:5px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
+.lb i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e0b23a,#ff7a2e);transition:width .25s}
+body.jour header{color:#10202e;text-shadow:0 1px 0 rgba(255,255,255,.55)}
+body.jour .chain small{color:#10202e}
+@media (max-width:720px){
+  .hud{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);left:12px;right:12px;flex-direction:row;overflow-x:auto;max-width:none}
+  .hud button{white-space:nowrap}
+  .ctl{top:calc(env(safe-area-inset-top,0px) + 118px);max-width:calc(100vw - 24px)}
+}
+</style>
+</head>
+<body>
+<div id="scene" aria-label="Carte 3D de la métropole : glisse pour tourner, molette ou pincement pour zoomer, clic sur un bâtiment pour l'ouvrir"></div>
+<div class="labels" id="labels"></div>
+
+<header>
+  <h1>Île des Agents</h1>
+  <p>Une métropole insulaire : chaque siège est un projet, chaque centre de contrôle un groupe d'agents. Clique un bâtiment ; les courriers suivent les vraies missions.</p>
+</header>
+
+<nav class="hud" id="hud" aria-label="Quartiers"></nav>
+<div class="ctl" aria-label="Affichage">
+  <button type="button" data-time="jour">Jour</button><button type="button" data-time="crepuscule">Crépuscule</button><button type="button" data-time="nuit">Nuit</button>
+  <button type="button" id="tour">Visite guidée</button>
+  <select id="qsel" aria-label="Qualité graphique"><option value="auto">Qualité : auto</option><option value="bas">Qualité : basse</option><option value="moyen">Qualité : moyenne</option><option value="haut">Qualité : haute</option></select>
+</div>
+
+<div class="chain" aria-label="Circuit d'une demande">
+  <small>Circuit d'une demande — suis les courriers</small>
+  <span class="now" id="now" hidden></span>
+  <span>Mairie</span><b>→</b><span>Conseil ×3</span><b>→</b><span>Siège du projet</span><b>→</b><span>Forge</span><b>→</b><span>Mairie</span>
+</div>
+
+<button class="open" id="open" hidden>Carnet de l'île</button>
+<aside id="panel" aria-live="polite">
+  <div class="ph">
+    <div class="kind" id="pKind"></div>
+    <h2 id="pName"></h2>
+    <div class="swatch" id="pSw"></div>
+    <button class="x" id="close" aria-label="Fermer le carnet">✕</button>
+  </div>
+  <div class="pb" id="pBody"></div>
+  <div class="nav"><button id="prev">← Précédent</button><button id="next">Suivant →</button></div>
+</aside>
+
+<div id="loader"><div class="card"><b>Île des Agents</b><span>Préparation…</span><div class="lb"><i id="lbar"></i></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script>const FALLBACK = {"ile": "Île des Agents", "version": 1, "batiments": [{"id": "residence", "nom": "Résidence présidentielle", "type": "residence", "pos": [-76, 67], "couleur": "#c9a227", "agent": "Anton (président)", "role": "Le président supervise toute l'entreprise : projets, priorités, décisions sensibles, instructions au directeur général.", "dossier": "residence", "quartier": "Îlot présidentiel", "fonction": "Supervision et décisions du président", "environnement": ["residence/village/residence.html : le tableau de bord", "orchestrateur/registre/journal.jsonl : le registre des opérations (chaîné)", "orchestrateur/ile.py : la ligne de commande du registre"], "commande": "./ile, puis http://localhost:7777/residence"}, {"id": "mairie", "nom": "Mairie", "type": "mairie", "pos": [0, 0], "couleur": "#c4553a", "agent": "Session principale (CLAUDE.md)", "role": "Le Maire reçoit chaque demande, la fait passer au Conseil, la confie à la bonne maison, puis demande à la Forge de vérifier avant de te répondre.", "dossier": ".", "environnement": ["CLAUDE.md : la constitution de l'île", "registre.json : le cadastre", "audit/journal-de-l-ile.md : l'histoire de l'île"], "commande": "claude", "quartier": "Quartier stratégique", "fonction": "Centre stratégique : le Maire, cerveau de la métropole"}, {"id": "conseil", "nom": "Conseil des Critiques", "type": "conseil", "pos": [-24, -71], "couleur": "#6b4fa0", "agent": ".claude/agents/critique-*.md (×3)", "role": "Trois tours, trois critiques qui relisent chaque prompt en parallèle. Le Maire fusionne leurs avis en un prompt amélioré.", "dossier": "audit/conseil", "environnement": ["Tour de la Clarté : ambiguïtés, reformulation", "Tour de l'Exigence : barre de qualité, pièges", "Tour Stratège : objectif réel, priorités", "proces-verbaux/ : chaque avis rendu"], "commande": "/conseil <ton prompt>", "quartier": "Quartier technologique", "fonction": "Centre de contrôle : les 3 critiques"}, {"id": "forge", "nom": "La Forge", "type": "forge", "pos": [97, -6], "couleur": "#3d3a36", "agent": ".claude/agents/forgeron.md", "role": "Vérifie et répare tout ce qui sort des maisons : structure, fichiers manquants, code qui casse, chiffres sans source. Inspecte aussi l'île automatiquement à la fin de chaque tâche.", "dossier": "audit", "environnement": ["inspection.sh : contrôle de toute l'île", "rapports/ : un rapport par inspection", "Hook de fin de tâche : réparation automatique"], "commande": "/inspection", "quartier": "Port industriel", "fonction": "Centre de contrôle : vérification et réparation"}, {"id": "cuvee-campus", "nom": "Cave Cuvée Campus", "type": "maison", "pos": [-41.3, 21.6], "couleur": "#7d2e46", "agent": ".claude/agents/chef-cuvee-campus.md", "role": "Projet sociétal environnemental de l'équipe 53 : livrables, recherches sourcées, suivi d'équipe.", "dossier": "projets/cuvee-campus", "environnement": ["livrables/", "recherches/", "equipe.md", "journal.md"], "commande": "Utilise chef-cuvee-campus pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "bde-emergency", "nom": "QG EM'ERGENCY", "type": "maison", "pos": [-29.4, 32.8], "couleur": "#d6402b", "agent": ".claude/agents/chef-bde-emergency.md", "role": "Campagne BDE BBA : programme chiffré, entraînement à l'entretien de candidature, communication de la liste.", "dossier": "projets/bde-emergency", "environnement": ["programme/", "entretien/", "com/", "journal.md"], "commande": "Utilise chef-bde-emergency pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "vetotri", "nom": "Labo Vétotri", "type": "maison", "pos": [41.3, 21.6], "couleur": "#2f8f83", "agent": ".claude/agents/chef-vetotri.md", "role": "Ton chatbot : code, prompts système versionnés, tests, recherche d'un nouveau nom.", "dossier": "projets/vetotri", "environnement": ["src/", "prompts/", "tests/", "noms.md", "journal.md"], "commande": "Utilise chef-vetotri pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "ecole", "nom": "École", "type": "maison", "pos": [-34, -16], "couleur": "#2e5c9e", "agent": ".claude/agents/chef-ecole.md", "role": "Cours emlyon : présentation d'anglais sur Lester Piggott, « Analyser et comprendre le marché », fiches de révision.", "dossier": "projets/ecole", "environnement": ["anglais/", "marche/", "fiches/", "journal.md"], "commande": "Utilise chef-ecole pour …", "quartier": "Campus", "fonction": "Siège du projet"}, {"id": "lexnote", "nom": "LexNote", "type": "maison", "pos": [-10.6, 39.2], "couleur": "#1f6f6a", "agent": ".claude/agents/chef-lexnote.md", "dossier": "projets/lexnote", "depot": "https://github.com/Antsvfr/LexNote", "branche_active": "claude/production-readiness-observability", "etat": "Chaîne de 5 PR empilées en brouillon ; production = main (plus ancienne). 15/23 portes PASS, NOT READY (selon le dossier du 06/11).", "role": "Prise de notes de cours, transcription, documents et consolidation, pour le droit et toutes filières. Local-first, PWA, Supabase.", "branches": [{"nom": "main", "sha": "981d9aa", "role": "Production (plus ancienne)"}, {"nom": "claude/reconcile-main-production-schema", "sha": "05afdba", "role": "PR #12 · 1re à fusionner"}, {"nom": "claude/revem-course-launch", "sha": "8602eb6", "role": "PR #10 · 2e"}, {"nom": "claude/generalize-lexnote-smart-transcript", "sha": "042b3b5", "role": "PR #11 · 3e"}, {"nom": "claude/persistent-revem-auth", "sha": "6e305fb", "role": "PR #13 · 4e"}, {"nom": "claude/production-readiness-observability", "sha": "caf8b40", "role": "PR #14 · branche de travail"}], "environnement": ["dossier-projet.md", "branches.md", "etat-des-lieux.md", "journal.md"], "commande": "Utilise chef-lexnote pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "rev-em", "nom": "REV-EM", "type": "maison", "pos": [10.6, 39.2], "couleur": "#b8572b", "agent": ".claude/agents/chef-rev-em.md", "dossier": "projets/rev-em", "depot": "https://github.com/Antsvfr/REV-EM", "branche_active": "claude/lexnote-sso-launch", "etat": "main publiée (GitHub Pages). PR #24 et #26 en attente ; les deux dossiers de reprise divergent sur la chaîne, à vérifier sur GitHub. Le zip local diffère de main.", "role": "Plateforme de révision pour étudiants : cours, quiz, flashcards, planning, assistant IA local, maths, liaison avec LexNote.", "branches": [{"nom": "main", "sha": "763ad74", "role": "Seule branche publiée"}, {"nom": "claude/lexnote-sso-launch", "sha": "b7773d5", "role": "PR #25 · branche de travail (dossier LexNote)"}, {"nom": "claude/planning-lexnote-live-session", "sha": "3e72c32", "role": "PR #24 · brouillon"}, {"nom": "claude/anaquizz-rebrand-restructure-ddinml", "sha": "ffd1f95", "role": "PR #26 · ouverte"}, {"nom": "claude/lexnote-link", "sha": "a1af8d5", "role": "à qualifier"}, {"nom": "claude/fix-connected-apps-ui", "sha": "5993e65", "role": "à qualifier"}], "environnement": ["dossier-projet.md", "gouvernance-claude-projet.md", "branches.md", "etat-des-lieux.md", "journal.md"], "commande": "Utilise chef-rev-em pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "upsa-sales-pilot", "nom": "UPSA Sales Pilot", "type": "maison", "pos": [29.4, 32.8], "couleur": "#7a3f8f", "agent": ".claude/agents/chef-upsa-sales-pilot.md", "dossier": "projets/upsa-sales-pilot", "depot": "", "branche_active": "", "etat": "Documentation seulement : le code est sur le Mac d'Anton, sans dépôt Git connu. Aucune donnée réelle.", "role": "Pilotage commercial quotidien pour une commerciale UPSA : fiche pharmacie 360°, paracétamol, OTC, conventions, visites, import X20. Local, données fictives.", "branches": [{"nom": "Phases 1, 2, 3, 5, 6, 7", "sha": "", "role": "Faites (selon le dossier)"}, {"nom": "Phase 4 · importations avancées", "sha": "", "role": "En attente des formats"}, {"nom": "Phase 8 · optimisation", "sha": "", "role": "Partielle"}, {"nom": "Connecteur X20 Cockpit", "sha": "", "role": "Uniquement sur le Mac"}], "environnement": ["dossier/", "branches.md", "etat-des-lieux.md", "journal.md"], "commande": "Utilise chef-upsa-sales-pilot pour …", "quartier": "Quartier des entreprises", "fonction": "Siège du projet"}, {"id": "bibliotheque", "nom": "Bibliothèque", "type": "chantier", "pos": [-42, -68], "couleur": "#a0703c", "agent": "à construire", "dossier": "", "role": "Mémoire de l'île : résumés de cours, sources, notes de lecture, tout ce que les maisons ont appris. Les chefs viennent y chercher avant de refaire une recherche.", "environnement": ["index.md", "sources/", "resumes/"], "commande": "/nouvelle-maison Bibliothèque", "quartier": "Quartier technologique", "fonction": "Chantier : futur centre de connaissance"}, {"id": "phare", "nom": "Phare", "type": "chantier", "pos": [96, -19], "couleur": "#e0b23a", "agent": "à construire", "dossier": "", "role": "Veille et alertes : échéances de toutes les maisons, rappels planifiés, brief du matin sur ce qui arrive cette semaine.", "environnement": ["echeances.md", "tâches planifiées"], "commande": "/nouvelle-maison Phare", "quartier": "Port industriel", "fonction": "Chantier : futur centre de veille"}, {"id": "port", "nom": "Port", "type": "chantier", "pos": [97, 22], "couleur": "#4a7fa8", "agent": "à construire", "dossier": "", "role": "Ce qui part de l'île : mails, posts, messages d'équipe. Rien n'est envoyé sans ton feu vert.", "environnement": ["brouillons/", "envoyes.md"], "commande": "/nouvelle-maison Port", "quartier": "Port industriel", "fonction": "Chantier : futur quai de départ"}, {"id": "observatoire", "nom": "Observatoire", "type": "chantier", "pos": [24, -71], "couleur": "#5a4a8a", "agent": "à construire", "dossier": "", "role": "Données et tableaux de bord : avancement de chaque maison, stats d'utilisation de Vétotri, budget de la liste BDE.", "environnement": ["donnees/", "dashboards/"], "commande": "/nouvelle-maison Observatoire", "quartier": "Quartier technologique", "fonction": "Chantier : futur centre de données"}, {"id": "academie", "nom": "Académie", "type": "chantier", "pos": [-48, 0], "couleur": "#3f8a4e", "agent": "à construire", "dossier": "", "role": "Entraînement : quiz, flashcards, simulations d'oral et d'entretien, à partir de ce que contiennent les autres maisons.", "environnement": ["quiz/", "simulations/"], "commande": "/nouvelle-maison Académie", "quartier": "Campus", "fonction": "Chantier : future académie d'entraînement"}, {"id": "innovation", "nom": "Innovation & Business", "type": "chantier", "pos": [41, -68], "couleur": "#d4a017", "agent": "à construire (étape 6)", "dossier": "projets/innovation", "quartier": "Quartier technologique", "fonction": "Chantier : futur département Innovation & Business", "role": "Rechercher des opportunités commerciales, étudier des marchés et des concurrents, proposer des business models et présenter des projets potentiellement rentables. Ne dépense rien, ne contacte personne, ne crée aucun projet sans décision du président.", "environnement": ["innovation/signaux/", "innovation/opportunites/", "innovation/decisions/"], "commande": "(étape 6 de la roadmap)"}], "organisation": [{"id": "direction-generale", "nom": "Direction générale", "batiment": "mairie", "mission": "Reçoit les instructions du président, classe les propositions des directeurs, planifie, rend compte.", "agents": ["(session principale : le Maire)"], "statut": "actif"}, {"id": "strategie-analyse", "nom": "Stratégie et analyse", "batiment": "conseil", "mission": "Critique et sélection des propositions : clarté, exigence, stratégie ; analyses chiffrées.", "agents": ["critique-clarte", "critique-exigence", "critique-strategie"], "prevus": ["analyste"], "statut": "actif"}, {"id": "qualite-securite", "nom": "Qualité et sécurité", "batiment": "forge", "mission": "Vérifie et répare ce qui sort des équipes ; le garde bloque techniquement les opérations interdites ou sensibles.", "agents": ["forgeron"], "prevus": ["testeur-qa", "responsable-securite"], "statut": "actif"}, {"id": "technique", "nom": "Direction technique et développement", "batiment": "observatoire", "mission": "Architecture, développement sur branches de travail isolées, design UX/UI.", "agents": [], "prevus": ["architecte-logiciel", "developpeur", "designer-ux"], "statut": "prévu — étape 3"}, {"id": "innovation", "nom": "Innovation & Business", "batiment": "innovation", "mission": "Opportunités commerciales, études de marché et de concurrence, business models, projets potentiellement rentables. Ne dépense rien, ne contacte personne, ne crée rien sans décision du président.", "agents": [], "prevus": ["veilleur", "analyste-business"], "statut": "prévu — étape 6"}, {"id": "sieges", "nom": "Équipes par projet", "batiment": null, "mission": "Un directeur par projet : revues régulières (/revue), problèmes vérifiés, missions proposées au DG.", "agents": ["chef-rev-em", "chef-lexnote", "chef-upsa-sales-pilot", "chef-bde-emergency", "chef-cuvee-campus", "chef-vetotri", "chef-ecole"], "statut": "actif"}]};</script>
+<script src="ville.js"></script>
+</body>
+</html>

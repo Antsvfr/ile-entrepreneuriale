@@ -1,0 +1,12 @@
+# Journal de l'île
+
+- 2026-11-05 : fondation de l'île. Mairie, Conseil des Critiques, Forge, et quatre maisons : Cave Cuvée Campus, QG EM'ERGENCY, Labo Vétotri, École. Cinq chantiers proposés.
+- 2026-11-05 : le village reflète l'activité réelle. Hooks SubagentStart/SubagentStop/Stop → etat-de-l-ile.json, maison active éclairée et fumante, messager sur le vrai trajet, journal dans le carnet, serveur.py.
+- 2026-11-06 : trois grosses maisons construites — LexNote, REV-EM, UPSA Sales Pilot — avec branches réelles, règles de chaque projet, état des lieux et chefs dédiés. Aucun code modifié.
+- 2026-11-06 : l'île devient une métropole insulaire 3D (village/ville.js) : 3 terrains et 2 ponts, réseau routier, 6 quartiers, un siège d'architecture unique par projet, jour/nuit, caméra cinématique, courriers sur les vraies routes. Activité réelle conservée.
+- 2026-11-06 : architecture de l'Entreprise des Agents rédigée (architecture/ENTREPRISE-IA.md) : audit, organigramme, métiers, moteur, tâches, sélection, connecteurs, mémoire, sécurité, Innovation, Résidence, roadmap. Aucun code ni projet externe modifié.
+- 2026-11-06 : étapes 0 et 1 livrées : Résidence présidentielle (supervision, décisions, priorités, instructions au DG), registre des opérations chaîné (operations/), île active à la racine, revues autonomes de REV-EM, LexNote et UPSA (9 missions proposées et classées). Preuves : 15 PASS.
+- 2026-11-06 : étape 2 livrée : identité présidentielle signée (Ed25519), garde PreToolUse, file d'approbations, arrêt d'urgence ; accès direct (./ile, port 7777 stable, démarrage automatique Mac, accès distant Tailscale derrière connexion) ; Résidence centre de contrôle. Preuves : 22 PASS · 1 PARTIEL · 0 FAIL.
+- 2026-11-06 : finalisation de l'étape 2 : confinement des imports Python (attaque de l'audit corrigée et prouvée), garde à échec fermé ; inspection indépendante : contournements lisibles du garde restants → **étape 2 NON VALIDÉE** (audit/rapports/2026-11-06-finalisation-etape-2.md).
+- 2026-11-06 : migration vers le dépôt ile-entrepreneuriale : architecture presidence/ securite/ orchestrateur/ residence/ agents/ projets/ audit/ docs/ tests/ ; 118 fichiers, journal copié à l'octet près ; ancien dépôt intact (audit/rapports/rapport-migration-nouveau-depot.md).
+- 2026-11-06 : publication officielle sur GitHub (Antsvfr/ile-entrepreneuriale, branche main) après audit et contre-inspection de la Forge (audit/rapports/rapport-publication-officielle-github.md). Identité présidentielle : pas encore créée (à faire par le président : ./ile president).

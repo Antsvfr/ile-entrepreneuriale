@@ -1,0 +1,16 @@
+ M .claude/settings.json
+ M ile-des-agents/.claude/hooks/etat-ile.py
+ M ile-des-agents/.claude/settings.json
+ M ile-des-agents/CLAUDE.md
+ M ile-des-agents/architecture/ETAPES-2.md
+ M ile-des-agents/forge/inspection.sh
+ M ile-des-agents/forge/rapports/2026-11-06-inspection.md
+ M ile-des-agents/ile
+ M ile-des-agents/operations/garde.py
+ M ile-des-agents/operations/ile.py
+ M ile-des-agents/operations/president.py
+ M ile-des-agents/operations/preuves.py
+ M ile-des-agents/serveur.py
+?? ile-des-agents/forge/rapports/2026-11-06-finalisation-etape-2.md
+?? ile-des-agents/operations/confinement.py
+?? ile-des-agents/operations/tests/test_confinement.py

@@ -1,0 +1,59 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/securite/garde.py\" || exit 2"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/orchestrateur/ile.py\" capteur session"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/orchestrateur/hooks/etat-ile.py\" debut"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/orchestrateur/hooks/etat-ile.py\" fin"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/audit/inspection.sh\" --hook"
+          },
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/orchestrateur/hooks/etat-ile.py\" repos"
+          }
+        ]
+      }
+    ]
+  }
+}

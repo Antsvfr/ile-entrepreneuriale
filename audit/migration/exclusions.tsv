@@ -1,0 +1,11 @@
+ancien_chemin	motif
+.gitignore	fusionné dans .gitignore (règles Python + fichiers d'exécution de la nouvelle architecture)
+CLAUDE.md	fusionné dans CLAUDE.md (l'ancien ne faisait qu'importer ile-des-agents/CLAUDE.md)
+.claude/agents	lien recréé : .claude/agents → ../agents/definitions
+.claude/commands	lien recréé : .claude/commands → ../agents/commandes
+ile-des-agents/.gitignore	fusionné dans .gitignore
+ile-des-agents/etat-de-l-ile.json.lock	fichier d'exécution (ignoré par git, recalculé ou propre à la machine)
+ile-des-agents/.claude/settings.json	fusionné dans .claude/settings.json (un seul jeu de hooks : la racine est l'île)
+ile-des-agents/operations/.verrou	fichier d'exécution (ignoré par git, recalculé ou propre à la machine)
+ile-des-agents/operations/etat.json	fichier d'exécution (ignoré par git, recalculé ou propre à la machine)
+ile-des-agents/operations/serveur.log	fichier d'exécution (ignoré par git, recalculé ou propre à la machine)

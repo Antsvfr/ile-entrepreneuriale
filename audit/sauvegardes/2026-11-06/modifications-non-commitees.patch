@@ -1,0 +1,1248 @@
+diff --git a/.claude/settings.json b/.claude/settings.json
+index af06f26..87792e6 100644
+--- a/.claude/settings.json
++++ b/.claude/settings.json
+@@ -6,7 +6,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ile-des-agents/operations/garde.py\""
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/ile-des-agents/operations/garde.py\" || exit 2"
+           }
+         ]
+       }
+@@ -16,7 +16,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ile-des-agents/operations/ile.py\" capteur session"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/ile-des-agents/operations/ile.py\" capteur session"
+           }
+         ]
+       }
+@@ -26,7 +26,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" debut"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" debut"
+           }
+         ]
+       }
+@@ -36,7 +36,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" fin"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" fin"
+           }
+         ]
+       }
+@@ -50,7 +50,7 @@
+           },
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" repos"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/ile-des-agents/.claude/hooks/etat-ile.py\" repos"
+           }
+         ]
+       }
+diff --git a/ile-des-agents/.claude/hooks/etat-ile.py b/ile-des-agents/.claude/hooks/etat-ile.py
+index 8d97949..977f891 100644
+--- a/ile-des-agents/.claude/hooks/etat-ile.py
++++ b/ile-des-agents/.claude/hooks/etat-ile.py
+@@ -11,12 +11,22 @@ Appelé par les hooks Claude Code (payload JSON sur stdin) :
+ 
+ Ne fait jamais échouer un hook : toute erreur est avalée (exit 0).
+ """
+-import datetime
+-import json
+ import os
+ import sys
+-import tempfile
+-import time
++
++if __name__ == "__main__":
++    # Hook lancé par Claude Code (`python3 -I -S …`) : confinement des imports AVANT tout autre import, pour qu'aucun
++    # module planté (dans .claude/hooks/, operations/ ou ailleurs) ne remplace un module standard
++    # (voir operations/confinement.py).
++    _STD = os.path.dirname(os.path.realpath(os.__file__))
++    sys.path[:] = [p for p in sys.path if p and (os.path.realpath(p) + os.sep).startswith(_STD + os.sep)
++                   and "-packages" not in os.path.realpath(p)]
++    sys.dont_write_bytecode = True
++
++import datetime  # noqa: E402
++import json  # noqa: E402
++import tempfile  # noqa: E402
++import time  # noqa: E402
+ 
+ # Toujours relatif au script : la session peut être ouverte à la racine du dépôt ou dans ile-des-agents/.
+ RACINE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+@@ -179,9 +189,18 @@ def simuler(maison="bde-emergency", pause=4.0):
+ def registre_operations(cmd, payload):
+     """Inscrit l'exécution dans le registre des opérations (journal chaîné). Ne bloque jamais."""
+     try:
+-        sys.path.insert(0, os.path.join(RACINE, "operations"))
+-        import ile
+-        ile.capteur(cmd, payload)
++        # `ile` par son chemin exact, depuis la source (operations/confinement.py), jamais par le chemin d'import.
++        chemin = os.path.join(os.path.realpath(RACINE), "operations", "confinement.py")
++        conf = sys.modules.get("confinement")
++        if conf is None:
++            conf = type(sys)("confinement")
++            conf.__file__ = chemin
++            with open(chemin, "rb") as f:
++                exec(compile(f.read(), chemin, "exec", dont_inherit=True), conf.__dict__)
++            sys.modules["confinement"] = conf
++        elif os.path.realpath(getattr(conf, "__file__", None) or "") != chemin:
++            raise ImportError("module « confinement » inattendu : refusé")
++        conf.charger("ile").capteur(cmd, payload)
+     except Exception as e:
+         try:
+             with open(os.path.join(RACINE, "operations", "capteurs-erreurs.log"), "a", encoding="utf-8") as f:
+diff --git a/ile-des-agents/.claude/settings.json b/ile-des-agents/.claude/settings.json
+index 4bbad5f..a5b0102 100644
+--- a/ile-des-agents/.claude/settings.json
++++ b/ile-des-agents/.claude/settings.json
+@@ -6,7 +6,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/operations/garde.py\""
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/operations/garde.py\" || exit 2"
+           }
+         ]
+       }
+@@ -16,7 +16,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/operations/ile.py\" capteur session"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/operations/ile.py\" capteur session"
+           }
+         ]
+       }
+@@ -26,7 +26,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" debut"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" debut"
+           }
+         ]
+       }
+@@ -36,7 +36,7 @@
+         "hooks": [
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" fin"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" fin"
+           }
+         ]
+       }
+@@ -50,7 +50,7 @@
+           },
+           {
+             "type": "command",
+-            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" repos"
++            "command": "/usr/bin/python3 -I -S \"$CLAUDE_PROJECT_DIR/.claude/hooks/etat-ile.py\" repos"
+           }
+         ]
+       }
+diff --git a/ile-des-agents/CLAUDE.md b/ile-des-agents/CLAUDE.md
+index f3f3f58..b7cbc4c 100644
+--- a/ile-des-agents/CLAUDE.md
++++ b/ile-des-agents/CLAUDE.md
+@@ -71,5 +71,6 @@ L'île est une métropole insulaire : trois terrains reliés par deux ponts (îl
+ 
+ - **Le garde** (`operations/garde.py`, hook `PreToolUse`) s'exécute avant chaque action de chaque agent, toi compris. Il autorise le travail courant, **interdit** ce qui usurpe le président ou réécrit le journal, et **bloque en attente d'approbation** les opérations sensibles : push sur une branche protégée, push forcé, fusion, déploiement, migration, suppression large, lecture de secrets, envoi réseau, modification des garde-fous, écriture hors du dépôt.
+ - **Quand le garde bloque une opération sensible**, il inscrit une demande `A-…` dans la Résidence. Ne cherche pas à contourner : poursuis le reste du travail, puis réessaie **exactement la même opération** après l'accord signé du président (valable une fois). Pour préparer une demande à l'avance : `python3 operations/ile.py approbation demander --categorie … --raison "…" --commande "…"`.
++- **Confinement des imports** : le garde, les hooks, le serveur et les commandes présidentielles sont lancés en `python3 -I -S` et chargent les modules de l'île par leur chemin exact (`operations/confinement.py`) : un module Python planté n'y est jamais exécuté. Déposer un `.py` dans `operations/` par une commande directe exige l'accord du président (limites : `architecture/ETAPES-2.md`).
+ - **Arrêt d'urgence** : si `operations/STOP` existe, plus aucun agent ne peut agir (lecture exceptée). Seul le président le lève (`./ile arret-urgence off`).
+ - Détail, matrice des protections et limites : `architecture/ETAPES-2.md`.
+diff --git a/ile-des-agents/architecture/ETAPES-2.md b/ile-des-agents/architecture/ETAPES-2.md
+index d3d95e7..525b8fd 100644
+--- a/ile-des-agents/architecture/ETAPES-2.md
++++ b/ile-des-agents/architecture/ETAPES-2.md
+@@ -21,7 +21,8 @@ Adresses stables : `/` (métropole), `/residence`, `/batiment/<id>` (ex. `/batim
+ | Signature Ed25519 (RFC 8032) en Python standard | `operations/signature.py` | vecteurs officiels reproduits (tests) |
+ | Identité présidentielle | `operations/president.py` | phrase → PBKDF2-HMAC-SHA256 (600 000 tours) → graine Ed25519 ; seule la clé publique est au journal (`president.identite`) |
+ | Actes présidentiels signés | `operations/ile.py` | décisions, priorités, instructions, accords d'opération, arbitrages de missions : ignorés et signalés s'ils ne portent pas une signature valide |
+-| Le garde | `operations/garde.py`, hook `PreToolUse` (les deux `.claude/settings.json`) | lancé par Claude Code avant CHAQUE action de CHAQUE agent ; code 2 = refus |
++| Le garde | `operations/garde.py`, hook `PreToolUse` (les deux `.claude/settings.json`) | lancé par Claude Code avant CHAQUE action de CHAQUE agent ; code 2 = refus ; toute erreur (même un `garde.py` illisible ou absent) = refus (`|| exit 2`) |
++| Confinement des imports | `operations/confinement.py` + bloc en tête de `garde.py`, `ile.py`, `serveur.py`, `etat-ile.py` | points d'entrée lancés en `python3 -I -S` ; chemin d'import réduit à la bibliothèque standard avant tout autre import ; modules de l'île chargés par chemin exact depuis la source (jamais un `.pyc`) |
+ | File d'approbations | `ile.py` (`approbation.*`), Résidence | opération sensible bloquée → demande → accord signé → la même opération exacte passe une fois (ou pendant une fenêtre pour un fichier) |
+ | Arrêt d'urgence | `operations/STOP` | le garde refuse toute action (lecture exceptée) tant que le fichier existe |
+ | Serveur | `serveur.py` | port fixe 7777, une instance, 127.0.0.1 seulement, sessions déverrouillées par la phrase, accès distant derrière connexion, tentatives limitées |
+@@ -38,9 +39,10 @@ Les agents (Claude Code) tournent sur le même ordinateur et sous le même utili
+ | Actes présidentiels falsifiés | Oui : ignorés par toutes les projections, signalés par `ile.py verifier`, la Forge et la Résidence | **Non** : même un agent qui réécrirait le journal avec une chaîne cohérente ne peut pas fabriquer de signature | Oui (C2.4) |
+ | Saisie de la phrase | Seulement dans un vrai terminal (`/dev/tty`) ou la Résidence | Un agent n'a pas de terminal | Oui (C2.5) |
+ | `--auteur president`, écriture du journal à la main, manipulation de l'identité | Bloqués par le garde, refus inscrits | Le garde lit les commandes : une commande volontairement obscurcie (base64, script intermédiaire) peut lui échapper. **Mais** l'effet reste nul : sans signature, l'acte est rejeté. | Oui, y compris par une vraie session Claude Code (C3.4) |
+-| Opérations sensibles (push sur `main`, push forcé, fusion, déploiement, suppression large, secrets, envoi réseau, modification des garde-fous, écriture hors du dépôt) | Bloquées par le garde jusqu'à l'accord signé | Même limite : une commande obscurcie peut échapper au garde. Seconde ligne recommandée : **protection de branche GitHub sur `main`** (à activer par toi), qui tient même si tout le reste échoue. | Oui (C2.2, C2.3, tests) |
++| Détournement d'import Python (module planté : `operations/json.py`, `hmac.py`, `getpass.py`…, `.pyc` forgé, `PYTHONPATH`, `usercustomize`, `.pth`) | Oui : aucun module planté n'est exécuté par le garde, les hooks, le serveur ni les commandes présidentielles ; écrire un `.py`/`.pyc`/`.pth` dans `operations/` exige ton accord | Seulement en remplaçant l'interpréteur lui-même (bibliothèque standard modifiable, ex. Homebrew ; les hooks appellent `/usr/bin/python3`, pas le premier `python3` du `PATH`) : écriture hors du dépôt, donc soumise au garde, sauf commande obscurcie | Oui (`test_confinement.py`, 21 tests, sous Python 3.13 et 3.9 ; preuve C2.8 ; échec démontré sur les versions d'avant ; inspection indépendante de la Forge) |
++| Opérations sensibles (push sur `main`, y compris un `git push` sans destination dont la configuration vise `main`, push forcé, fusion, déploiement, suppression large, secrets, envoi réseau, modification des garde-fous, écriture hors du dépôt) | Bloquées par le garde jusqu'à l'accord signé | **Oui, par des commandes lisibles** : `git push origin --all`, `git push origin 'refs/heads/*'`, `remote.origin.mirror` posé par `git config --global` (prouvé par la Forge sur un dépôt de test). Seule protection fiable : **protection de branche GitHub sur `main`** (à activer par toi), qui tient même si tout le reste échoue. | Oui (C2.2, C2.3, tests) |
+ | Rôles (critique en lecture, directeur limité à sa maison) | Appliqués quand Claude Code transmet le type d'agent au hook | Si le champ n'est pas transmis par la version de Claude Code, la limite de rôle ne s'applique pas (les autres protections, si) | Règle testée ; transmission du champ par Claude Code non vérifiée |
+-| Garde-fous modifiables par un agent ? | `garde.py`, `ile.py`, `president.py`, `signature.py`, `serveur.py`, les `settings.json` : toute modification exige ton accord | Même limite d'obscurcissement ; git garde l'historique de toute modification | Oui |
++| Garde-fous modifiables par un agent ? | Y compris sans les nommer : copie ou déplacement vers leur dossier (`cp x operations/`), copie récursive, extraction d'archive, `git checkout`/`restore`/`reset`/`pull`/`merge`/`apply` dans le dépôt, configuration git (`.git/config`, `.git/hooks`). `garde.py`, `ile.py`, `president.py`, `signature.py`, `confinement.py`, `serveur.py`, les `settings.json`, les hooks, le lanceur `ile`, `Ouvrir l'île.command`, `forge/inspection.sh`, tout `.py` de `operations/`, `operations/tests/` : toute modification exige ton accord | **Oui, par des commandes lisibles** (inspection de la Forge, 6 novembre) : préfixe devant la copie (`env cp …`, `find … -exec cp`), `curl -o`, `patch`, git lancé hors du dépôt avec `--git-dir`/`--work-tree`. Le garde lit des commandes : il ne peut pas les énumérer toutes. git garde l'historique | Oui |
+ | Arrêt d'urgence | Le garde refuse tout tant que `operations/STOP` existe ; un agent ne peut pas le supprimer par une commande lisible | Même limite | Oui |
+ | Résidence en local | Lecture libre sur cet ordinateur ; tout acte exige la session déverrouillée + jeton anti-CSRF + origine | Un agent local peut LIRE l'API (comme les fichiers) ; il ne peut pas AGIR sans la phrase | Oui (C0.4) |
+ | Accès distant | Jamais ouvert par défaut ; seulement pour les noms d'hôte inscrits par `./ile distant activer` ; tout y exige la connexion ; cookie `Secure`, `HttpOnly`, `SameSite=Strict` ; 5 essais puis 10 min de blocage | Le serveur n'écoute que sur 127.0.0.1 : il n'est joignable de l'extérieur que par Tailscale | Logique serveur testée (C2.6, C2.7) ; **Tailscale lui-même non testé ici** |
+@@ -51,4 +53,6 @@ Les agents (Claude Code) tournent sur le même ordinateur et sous le même utili
+ - **Phrase perdue** : aucune récupération possible (c'est le prix de la sécurité). Changer de phrase : `./ile president changer-phrase` (signé par l'ancienne).
+ - **Accès distant et journal** : l'accès distant montre le serveur de ton Mac (un seul journal). Travailler en parallèle depuis le cloud et depuis le Mac produirait encore deux chaînes à réconcilier.
+ - **Instructions** : présentées au DG à chaque début de session ; pas d'exécution sans session ouverte avant l'étape 3.
++- **Le garde n'est pas une frontière de sécurité complète** : il reconnaît des commandes, et des formes lisibles lui échappent encore (voir la matrice). Ce qui tient réellement : la signature présidentielle (aucun acte sans ta phrase) et, à activer, la protection de branche GitHub. Rendre les garde-fous inaccessibles aux agents demande de les faire tourner sous un autre utilisateur système que les agents (décision d'architecture à prendre).
++- **Confinement des imports** : il suppose que les points d'entrée sont lancés comme prévu (`python3 -I -S`, réglages et lanceur). Lancé à la main sans `-I`, le bloc en tête de chaque script protège encore contre les modules plantés dans le projet, mais pas contre un `usercustomize`/`.pth` du site utilisateur, ni contre `PYTHONPATH` sous Python 3.9 (exécutés par Python avant le script). Lancé en `-S` sans `-I`, un `os.py` planté à côté du script serait chargé. L'interpréteur lui-même (`python3` trouvé par le `PATH`, bibliothèque standard d'une installation Homebrew modifiable par l'utilisateur) reste hors de portée : même utilisateur système.
+ - **Python sur Mac** : compatible avec le python3 système (3.9). Si le projet est dans Documents, Bureau ou Téléchargements, macOS peut refuser l'accès au service lancé en arrière-plan : `./ile installer` le signale et propose deux solutions.
+diff --git a/ile-des-agents/forge/inspection.sh b/ile-des-agents/forge/inspection.sh
+index 3fc2721..68db2ca 100755
+--- a/ile-des-agents/forge/inspection.sh
++++ b/ile-des-agents/forge/inspection.sh
+@@ -27,19 +27,25 @@ besoin operations/ile.py
+ besoin operations/garde.py
+ besoin operations/president.py
+ besoin operations/signature.py
++besoin operations/confinement.py
+ besoin village/connexion.html
+ besoin ile
+ # Registre des opérations : le journal chaîné doit être intègre (toute ligne modifiée est détectée)
+ if [ -f operations/journal.jsonl ]; then
+-  if python3 operations/ile.py verifier >/dev/null 2>&1; then OK=$((OK+1)); else ERREURS+=("journal des opérations altéré : python3 operations/ile.py verifier"); fi
++  if python3 -I -S operations/ile.py verifier >/dev/null 2>&1; then OK=$((OK+1)); else ERREURS+=("journal des opérations altéré : python3 operations/ile.py verifier"); fi
+ fi
++# Confinement des imports : chaque hook Python doit être lancé en « python3 -I -S » (voir operations/confinement.py)
++for reglages in .claude/settings.json ../.claude/settings.json; do
++  [ -f "$reglages" ] || continue
++  if grep -E '"command": *"[^"]*python' "$reglages" | grep -vq 'python3 -I -S '; then ERREURS+=("hook Python lancé sans « -I -S » dans $reglages (détournement d'import possible)"); else OK=$((OK+1)); fi
++done
+ [ -s operations/capteurs-erreurs.log ] && AVERTISSEMENTS+=("des capteurs (hooks) ont échoué : voir operations/capteurs-erreurs.log")
+ for a in critique-clarte critique-exigence critique-strategie forgeron architecte; do
+   besoin ".claude/agents/$a.md"
+ done
+ 
+ if command -v python3 >/dev/null 2>&1; then
+-  LISTE=$(python3 - <<'PY'
++  LISTE=$(python3 -I -S - <<'PY'
+ import json, sys
+ try:
+     r = json.load(open("registre.json", encoding="utf-8"))
+@@ -77,7 +83,7 @@ if [ "$MODE" = "--hook" ]; then
+ fi
+ 
+ # Inspection complète : tests du registre des opérations
+-if python3 -m unittest discover -s operations/tests >/dev/null 2>&1; then OK=$((OK+1)); else ERREURS+=("tests du registre en échec : python3 -m unittest discover -s operations/tests -v"); fi
++if python3 -I -S -m unittest discover -s operations/tests >/dev/null 2>&1; then OK=$((OK+1)); else ERREURS+=("tests du registre en échec : python3 -m unittest discover -s operations/tests -v"); fi
+ 
+ mkdir -p forge/rapports
+ RAPPORT="forge/rapports/$(date +%F)-inspection.md"
+diff --git a/ile-des-agents/forge/rapports/2026-11-06-inspection.md b/ile-des-agents/forge/rapports/2026-11-06-inspection.md
+index 9b491ca..83a776c 100644
+--- a/ile-des-agents/forge/rapports/2026-11-06-inspection.md
++++ b/ile-des-agents/forge/rapports/2026-11-06-inspection.md
+@@ -1,8 +1,7 @@
+-# Inspection de l'île — 2026-11-06 09:55
++# Inspection de l'île — 2026-11-06 10:43
+ 
+-✔ 39 éléments vérifiés
++✔ 43 éléments vérifiés
+ 
+-## Erreurs (1)
+-- tests du registre en échec : python3 -m unittest discover -s operations/tests -v
++## Erreurs (0)
+ 
+ ## Avertissements (0)
+diff --git a/ile-des-agents/ile b/ile-des-agents/ile
+index 62dd533..4387810 100755
+--- a/ile-des-agents/ile
++++ b/ile-des-agents/ile
+@@ -20,7 +20,7 @@ erreur() { printf 'Erreur : %s\n' "$*" >&2; exit 1; }
+ [ -n "$PY" ] || erreur "python3 introuvable. Sur Mac : ouvre Terminal et lance « xcode-select --install », puis recommence."
+ 
+ sante() {
+-  "$PY" -c "import json,sys,urllib.request
++  "$PY" -I -S -c "import json,sys,urllib.request
+ try:
+     r = urllib.request.urlopen('http://127.0.0.1:%s/api/sante' % sys.argv[1], timeout=1.5)
+     sys.exit(0 if json.load(r).get('ile') == 'Île des Agents' else 1)
+@@ -35,7 +35,7 @@ navigateur() {
+ }
+ 
+ identite() {
+-  ( cd "$ICI" && "$PY" operations/ile.py president statut ) 2>/dev/null | grep -q "^Identité présidentielle :"
++  ( cd "$ICI" && "$PY" -I -S operations/ile.py president statut ) 2>/dev/null | grep -q "^Identité présidentielle :"
+ }
+ 
+ launchd_installe() { [ "$MAC" = 1 ] && [ -f "$PLIST" ]; }
+@@ -46,7 +46,7 @@ demarrer() {
+   if launchd_installe; then
+     launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || launchctl bootstrap "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
+   else
+-    ( cd "$ICI" || exit 1; nohup "$PY" serveur.py --port "$PORT" --sans-navigateur >>"$LOG" 2>&1 & echo $! >"$PIDF" )
++    ( cd "$ICI" || exit 1; nohup "$PY" -I -S serveur.py --port "$PORT" --sans-navigateur >>"$LOG" 2>&1 & echo $! >"$PIDF" )
+   fi
+   for _ in $(seq 1 40); do sante && return 0; sleep 0.25; done
+   dire "Le serveur ne répond pas. Dernières lignes du journal du serveur :"; tail -n 15 "$LOG" 2>/dev/null
+@@ -76,7 +76,7 @@ premiere_fois() {
+       dire "Tu vas choisir une phrase secrète : elle signe toutes tes décisions et n'est écrite NULLE PART (impossible à récupérer, retiens-la)."
+       printf "La créer maintenant ? [O/n] "; read -r r
+       case "${r:-O}" in [nN]*) dire "D'accord : la Résidence restera en lecture seule. Plus tard : ./ile president";;
+-        *) ( cd "$ICI" && "$PY" operations/ile.py president creer ) ;; esac
++        *) ( cd "$ICI" && "$PY" -I -S operations/ile.py president creer ) ;; esac
+     else
+       dire "(Identité présidentielle à créer une fois, dans Terminal : ./ile president)"
+     fi
+@@ -93,10 +93,10 @@ installer() {
+     printf "Continuer quand même ? [o/N] "; read -r r; case "${r:-N}" in [oO]*) ;; *) exit 1;; esac;;
+   esac
+   mkdir -p "$HOME/Library/LaunchAgents" "$ICI/operations"
+-  "$PY" - "$PLIST" "$LABEL" "$PY" "$ICI" "$PORT" "$LOG" <<'EOF'
++  "$PY" -I -S - "$PLIST" "$LABEL" "$PY" "$ICI" "$PORT" "$LOG" <<'EOF'
+ import plistlib, sys
+ plist, label, py, ici, port, log = sys.argv[1:]
+-d = {"Label": label, "ProgramArguments": [py, ici + "/serveur.py", "--port", port, "--sans-navigateur"],
++d = {"Label": label, "ProgramArguments": [py, "-I", "-S", ici + "/serveur.py", "--port", port, "--sans-navigateur"],
+      "WorkingDirectory": ici, "RunAtLoad": True, "KeepAlive": {"SuccessfulExit": False}, "ThrottleInterval": 10,
+      "StandardOutPath": log, "StandardErrorPath": log, "EnvironmentVariables": {"PATH": "/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:/usr/local/bin", "ILE_PORT": port}}
+ with open(plist, "wb") as f:
+@@ -105,7 +105,7 @@ EOF
+   arreter >/dev/null 2>&1 || true
+   launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+   launchctl bootstrap "gui/$(id -u)" "$PLIST" 2>/dev/null || launchctl load -w "$PLIST"
+-  "$PY" - "$HOME/Desktop/Île des Agents.webloc" "$URL/" <<'EOF'
++  "$PY" -I -S - "$HOME/Desktop/Île des Agents.webloc" "$URL/" <<'EOF'
+ import plistlib, sys
+ with open(sys.argv[1], "wb") as f:
+     plistlib.dump({"URL": sys.argv[2]}, f)
+@@ -133,9 +133,9 @@ distant() {
+       identite || erreur "crée d'abord ton identité présidentielle (./ile president) : à distance, tout exige la connexion par ta phrase."
+       demarrer || exit 1
+       tailscale serve --bg "$PORT" || erreur "« tailscale serve » a échoué (voir le message ci-dessus)."
+-      hote="$(tailscale status --json | "$PY" -c 'import json,sys; print(json.load(sys.stdin)["Self"]["DNSName"].rstrip("."))')"
++      hote="$(tailscale status --json | "$PY" -I -S -c 'import json,sys; print(json.load(sys.stdin)["Self"]["DNSName"].rstrip("."))')"
+       [ -n "$hote" ] || erreur "nom Tailscale de ce Mac introuvable."
+-      "$PY" - "$ICI/operations/acces.json" "$hote" <<'EOF'
++      "$PY" -I -S - "$ICI/operations/acces.json" "$hote" <<'EOF'
+ import json, sys
+ json.dump({"hotes_distants": [sys.argv[2]], "note": "géré par ./ile distant"}, open(sys.argv[1], "w"), indent=2)
+ EOF
+@@ -146,14 +146,14 @@ EOF
+       command -v tailscale >/dev/null 2>&1 && tailscale serve --https=443 off >/dev/null 2>&1 || true
+       rm -f "$ICI/operations/acces.json"; dire "Accès distant désactivé.";;
+     *)
+-      if [ -f "$ICI/operations/acces.json" ]; then dire "Accès distant : activé pour $("$PY" -c 'import json,sys;print(", ".join(json.load(open(sys.argv[1]))["hotes_distants"]))' "$ICI/operations/acces.json")"; else dire "Accès distant : désactivé (./ile distant activer)"; fi;;
++      if [ -f "$ICI/operations/acces.json" ]; then dire "Accès distant : activé pour $("$PY" -I -S -c 'import json,sys;print(", ".join(json.load(open(sys.argv[1]))["hotes_distants"]))' "$ICI/operations/acces.json")"; else dire "Accès distant : désactivé (./ile distant activer)"; fi;;
+   esac
+ }
+ 
+ statut() {
+   if sante; then dire "Île ouverte : $URL/   (Résidence : $URL/residence)"; else dire "Île fermée (./ile pour l'ouvrir)"; fi
+   launchd_installe && dire "Démarrage automatique : installé" || { [ "$MAC" = 1 ] && dire "Démarrage automatique : non installé (./ile installer)"; }
+-  ( cd "$ICI" && "$PY" operations/ile.py president statut ) 2>/dev/null
++  ( cd "$ICI" && "$PY" -I -S operations/ile.py president statut ) 2>/dev/null
+   [ -f "$ICI/operations/STOP" ] && dire "⚠ ARRÊT D'URGENCE ACTIF : aucun agent ne peut agir (./ile arret-urgence off)"
+   distant statut
+ }
+@@ -169,10 +169,10 @@ case "${1:-ouvrir}" in
+   installer)      installer;;
+   desinstaller)   desinstaller;;
+   distant)        distant "${2:-statut}";;
+-  president)      ( cd "$ICI" && "$PY" operations/ile.py president "${2:-creer}" );;
++  president)      ( cd "$ICI" && "$PY" -I -S operations/ile.py president "${2:-creer}" );;
+   arret-urgence)  case "${2:-on}" in on) date > "$ICI/operations/STOP"; dire "ARRÊT D'URGENCE : plus aucun agent ne peut agir. Lever : ./ile arret-urgence off";;
+                     off) rm -f "$ICI/operations/STOP"; dire "Arrêt d'urgence levé.";; esac;;
+-  preuves)        ( cd "$ICI" && "$PY" operations/preuves.py "${@:2}" );;
++  preuves)        ( cd "$ICI" && "$PY" -I -S operations/preuves.py "${@:2}" );;
+   aide|-h|--help) sed -n '2,6p' "$0"; dire "Autres : demarrer · arreter · redemarrer · statut · journal · desinstaller · distant activer|desactiver|statut · president [creer|statut|changer-phrase] · arret-urgence on|off · preuves";;
+   *)              erreur "commande inconnue : $1 (./ile aide)";;
+ esac
+diff --git a/ile-des-agents/operations/garde.py b/ile-des-agents/operations/garde.py
+index 8106928..5808d09 100644
+--- a/ile-des-agents/operations/garde.py
++++ b/ile-des-agents/operations/garde.py
+@@ -13,24 +13,58 @@ Limites assumées (voir architecture/ETAPES-2.md) : le garde lit des commandes,
+ volontairement obscurcie (base64, script intermédiaire). La signature présidentielle, elle, ne se contourne pas :
+ un agent qui réussirait à écrire dans le journal ne pourrait toujours pas fabriquer un acte du président.
+ """
+-from __future__ import annotations
+-
+-import json
++# Pas de « from __future__ » ici : ce serait un import lancé AVANT toute protection, donc remplaçable par un fichier
++# operations/__future__.py planté. `sys` est intégré à l'interpréteur ; `os` est déjà chargé au démarrage (ou, en `-I -S`,
++# introuvable ailleurs que dans la bibliothèque standard). Limite : lancé en `-S` SANS `-I` sous Python 3.9, un os.py
++# planté à côté du script serait chargé — aucun point d'entrée de l'île n'est lancé ainsi.
+ import os
+-import re
+-import subprocess
+ import sys
+-from pathlib import Path
++
++_ICI = os.path.dirname(os.path.realpath(__file__))
++if __name__ == "__main__":
++    # Échec FERMÉ dès la première ligne : une exception avant main() (import cassé, module manquant…) donnerait le
++    # code 1, que Claude Code laisse passer. Elle devient un refus (code 2).
++    def _refus_par_prudence(genre, valeur, trace):
++        sys.stderr.write(f"Garde de l'île : erreur interne au démarrage ({genre.__name__}: {valeur}) — action refusée par prudence.\n")
++        os._exit(2)
++    sys.excepthook = _refus_par_prudence
++    # Lancé par Claude Code (`python3 -I -S …/garde.py`) : même sans -I, aucun module planté dans operations/ ou
++    # ailleurs ne peut remplacer un module standard. Le chemin d'import est réduit à la bibliothèque standard AVANT
++    # tout autre import ; les modules de l'île sont ensuite chargés par leur chemin exact (operations/confinement.py).
++    _STD = os.path.dirname(os.path.realpath(os.__file__))
++    sys.path[:] = [p for p in sys.path if p and (os.path.realpath(p) + os.sep).startswith(_STD + os.sep)
++                   and "-packages" not in os.path.realpath(p)]
++    sys.dont_write_bytecode = True
++
++import json  # noqa: E402
++import re  # noqa: E402
++import shlex  # noqa: E402
++import subprocess  # noqa: E402
++from pathlib import Path  # noqa: E402
++from typing import Optional  # noqa: E402
+ 
+ OPS_DIR = Path(__file__).resolve().parent
+ ILE = OPS_DIR.parent
+ DEPOT = ILE.parent
+-STOP = OPS_DIR / "STOP"
++# L'arrêt d'urgence suit ILE_OPS comme le journal : les tests (copie temporaire) ne touchent jamais au vrai STOP.
++# Le vrai operations/STOP arrête TOUJOURS les agents ; celui du dossier ILE_OPS (s'il diffère) aussi.
++STOP_REEL = OPS_DIR / "STOP"
++STOP = Path(os.environ.get("ILE_OPS") or OPS_DIR) / "STOP"
++TEMPORAIRES = ("/tmp/", "/private/tmp/", "/var/folders/", "/private/var/folders/")
+ PROTEGEES = ("main", "master", "production", "prod", "release")
+ LECTURE = {"Read", "Glob", "Grep", "LS", "WebSearch", "TodoWrite", "TodoRead", "Task", "Agent", "ExitPlanMode", "BashOutput", "KillShell", "NotebookRead"}
+ ECRITURE = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
+-FICHIERS_GARDE = [".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/", "operations/garde.py", "operations/president.py",
+-                  "operations/signature.py", "operations/ile.py", "serveur.py"]
++FICHIERS_GARDE = [".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/", "operations/garde.py", "operations/president.py", "operations/tests/",
++                  "operations/signature.py", "operations/ile.py", "operations/confinement.py", "serveur.py"]
++# Tout module Python déposé à côté des garde-fous (operations/*.py, leurs caches .pyc) exige aussi l'accord : le
++# confinement des imports le rend inerte pour le garde, mais on ne laisse pas un agent en semer sans le dire.
++# Lanceurs : le président y tape sa phrase (./ile president) et ils fixent « python3 -I -S ». Comparés par chemin
++# exact seulement (« ile » est un nom trop court pour une recherche dans le texte des commandes).
++LANCEURS = ("ile", "Ouvrir l'île.command", "forge/inspection.sh")
++MOTIF_GARDE = re.compile(r"^operations/(?:.*/)?(?:[^/]+\.py[cod]?|__pycache__(?:/.*)?|[^/]+\.pth)$|^operations/tests/")
++# Dossiers qui contiennent des garde-fous : y copier, y déplacer ou y extraire « en vrac » (dossier, joker, archive,
++# branche git) pourrait remplacer un garde-fou sans le nommer. Le dépôt et ses parents en font partie.
++GIT = "/usr/bin/git" if os.path.exists("/usr/bin/git") else "git"   # pas un « git » placé avant dans le PATH
+ SECRETS = re.compile(r"(?:^|[\s/'\"=])(\.env(?!\.example\b)(?:\.[\w.-]+)?|id_rsa|id_ed25519|id_ecdsa|\.netrc|\.pgpass|\.npmrc|credentials\.json|service[-_]account[\w.-]*\.json|[\w.-]+\.pem|[\w.-]+\.p12|\.aws/credentials|\.ssh/)(?:$|[\s'\";|&)])")
+ 
+ 
+@@ -39,64 +73,275 @@ class Verdict:
+         self.issue, self.categorie, self.regle, self.raison, self.outil, self.cible, self.mode = issue, categorie, regle, raison, outil, cible, mode
+ 
+ 
+-def _branche(cwd: str | None) -> str | None:
++def _branche(cwd: Optional[str]) -> Optional[str]:
+     try:
+-        r = subprocess.run(["git", "-C", cwd or ".", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, timeout=3)
++        r = subprocess.run([GIT, "-c", "core.fsmonitor=false", "-C", cwd or ".", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, timeout=3)
+         return r.stdout.strip() or None
+     except Exception:
+         return None
+ 
+ 
++def _push_implicite_protege(cwd: Optional[str]) -> Optional[str]:
++    """Pour un « git push » sans destination explicite : la configuration (remote.*.push, branche suivie) vise-t-elle
++    une branche protégée ? (ex. remote.origin.push = HEAD:refs/heads/main posé dans .git/config)."""
++    try:
++        r = subprocess.run([GIT, "-c", "core.fsmonitor=false", "-C", cwd or ".", "config", "--get-regexp", r"^(remote\..*\.push|branch\..*\.merge)$"],
++                           capture_output=True, text=True, timeout=3)
++    except Exception:
++        return None
++    branche = _branche(cwd) or ""
++    for ligne in r.stdout.splitlines():
++        cle, _, valeur = ligne.partition(" ")
++        if cle.endswith(".merge") and cle != f"branch.{branche}.merge":
++            continue
++        if re.search(r"(^|[\s:/])(%s)$" % "|".join(PROTEGEES), valeur.strip()):
++            return f"{cle} = {valeur.strip()}"
++    return None
++
++
++def _dossiers_garde():
++    return [ILE, OPS_DIR, OPS_DIR / "tests", OPS_DIR / "__pycache__", ILE / ".claude", ILE / ".claude" / "hooks", ILE / "forge",
++            DEPOT / ".claude", DEPOT / ".git", DEPOT / ".git" / "hooks"]
++
++
++def _dossier_sensible(chemin: str, cwd: Optional[str]) -> bool:
++    """Vrai si le dossier contient (directement ou plus bas) des garde-fous : le dépôt, ses parents, operations/…"""
++    try:
++        p = Path(_norm(chemin, cwd))
++    except Exception:
++        return True
++    return any(d == p or p in d.parents for d in _dossiers_garde())
++
++
++def _copie_vers_garde(verbe: str, args: list, cwd: Optional[str]) -> Optional[str]:
++    """cp / mv / install / ln / rsync : une destination DOSSIER est résolue (dossier/nom de la source) ; une copie en
++    vrac (récursive, joker, « . ») vers un dossier qui contient des garde-fous exige l'accord. Pour mv, déplacer un
++    garde-fou ou un dossier qui en contient aussi."""
++    options = [a for a in args if a.startswith("-")]
++    operandes = [a for a in args if not a.startswith("-")]
++    cible_dossier = None
++    for i, a in enumerate(args):
++        if a in ("-t", "--target-directory") and i + 1 < len(args):
++            cible_dossier = args[i + 1]
++            operandes = [x for x in operandes if x != cible_dossier]
++        elif a.startswith("--target-directory="):
++            cible_dossier = a.split("=", 1)[1]
++    if cible_dossier is None:
++        if len(operandes) < 2:
++            return None
++        dest, sources = operandes[-1], operandes[:-1]
++    else:
++        dest, sources = cible_dossier, operandes
++    recursif = verbe in ("rsync",) or any(re.match(r"^(-[a-zA-Z]*[rRa]|--recursive|--archive)", o) for o in options)
++    if verbe == "mv":
++        for src in sources:
++            if _est_garde(src, cwd) or _dossier_sensible(src, cwd):
++                return f"déplacement d'un garde-fou ou d'un dossier qui en contient : {src}"
++    if _est_garde(dest, cwd):
++        return f"écriture d'un garde-fou : {dest}"
++    est_dossier = cible_dossier is not None or dest.endswith("/") or len(sources) > 1 or os.path.isdir(_norm(dest, cwd))
++    if not est_dossier:
++        return None
++    for src in sources:
++        nom = os.path.basename(src.rstrip("/"))
++        en_vrac = recursif or verbe == "mv" and os.path.isdir(_norm(src, cwd)) or nom in ("", ".", "..") or any(c in src for c in "*?[{")
++        if en_vrac and _dossier_sensible(dest, cwd):
++            return f"copie en vrac vers un dossier qui contient des garde-fous : {src} → {dest}"
++        if _est_garde(os.path.join(dest, nom), cwd):
++            return f"écriture d'un garde-fou : {os.path.join(dest, nom)}"
++    return None
++
++
++def _extraction_vers_garde(cl: str, mots: list, cwd: Optional[str]) -> Optional[str]:
++    """tar / unzip / bsdtar / cpio / 7z : une archive extraite dans un dossier qui contient des garde-fous (ou un de
++    ses parents) peut en remplacer un sans le nommer."""
++    if not mots:
++        return None
++    outil = os.path.basename(mots[0])
++    dest = None
++    if outil in ("tar", "bsdtar", "gtar") and (re.search(r"(^|\s)-?[a-zA-Z]*x[a-zA-Z]*(\s|$)", " ".join(mots[1:2])) or "--extract" in mots or "-x" in mots
++                                              or any(re.match(r"^-[a-zA-Z]*x", m) for m in mots[1:])):
++        for i, m in enumerate(mots):
++            if m in ("-C", "--directory") and i + 1 < len(mots):
++                dest = mots[i + 1]
++            elif m.startswith("--directory="):
++                dest = m.split("=", 1)[1]
++    elif outil == "unzip":
++        for i, m in enumerate(mots):
++            if m == "-d" and i + 1 < len(mots):
++                dest = mots[i + 1]
++    elif outil in ("cpio", "7z", "7za", "ditto"):
++        if outil == "ditto" and len([m for m in mots[1:] if not m.startswith("-")]) >= 2:
++            dest = [m for m in mots[1:] if not m.startswith("-")][-1]
++        elif outil == "7z" and len(mots) > 1 and mots[1] not in ("x", "e"):
++            return None
++        else:
++            dest = next((m[2:] for m in mots if m.startswith("-o")), None)
++    else:
++        return None
++    dest = dest or cwd or os.getcwd()
++    if _dossier_sensible(dest, cwd):
++        return f"extraction d'archive dans un dossier qui contient des garde-fous : {dest}"
++    return None
++
++
++def _git_arbre_garde(s: str, cwd: Optional[str]) -> Optional[str]:
++    """Dans le dépôt de l'île : une commande git qui réécrit l'arbre de travail (changer de branche ou de commit,
++    restaurer un dossier, appliquer un correctif, tirer…) peut remettre un ancien garde-fou ou en installer un
++    autre ; écrire la configuration git (.git/config) peut détourner un push. Les deux exigent l'accord."""
++    m = re.search(r"\bgit((?:\s+-[Cc]\s+\S+|\s+--?[\w-]+(?:=\S+)?)*)\s+([\w-]+)(.*)$", s)
++    if not m:
++        return None
++    globales, sous, reste = m.group(1), m.group(2), m.group(3).split()
++    mc = re.search(r"-C\s+(\S+)", globales)
++    ici = _norm(mc.group(1), cwd) if mc else cwd
++    if not _dans(ici or os.getcwd(), None, DEPOT):
++        return None
++    if sous == "config":
++        lecture = not reste or any(o in reste for o in ("--get", "--get-all", "--get-regexp", "--list", "-l", "--show-origin", "--name-only")) \
++            or len([x for x in reste if not x.startswith("-")]) <= 1 and not any(o in reste for o in ("--unset", "--unset-all", "--add", "--replace-all", "--remove-section", "--rename-section", "-e", "--edit"))
++        return None if lecture else "écriture de la configuration git du dépôt de l'île (.git/config)"
++    if sous in ("remote",) and reste[:1] and reste[0] in ("add", "set-url", "rename", "set-head", "set-branches"):
++        return "modification des dépôts distants de l'île"
++    if sous in ("switch", "checkout"):
++        args = [x for x in reste if x not in ("-q", "--quiet")]
++        if len(args) == 2 and args[0] in ("-b", "-c", "--create"):   # nouvelle branche au même commit : arbre inchangé
++            return None
++        if "--" in args:
++            chemins = args[args.index("--") + 1:]
++            source = [x for x in args[:args.index("--")] if not x.startswith("-")]
++            if not source and chemins and not any(_dossier_sensible(c, ici) or _est_garde(c, ici) or any(j in c for j in "*?[") for c in chemins):
++                return None
++        return "réécriture de l'arbre de travail de l'île (changement de branche ou restauration) : les garde-fous pourraient être remplacés"
++    if sous == "restore":
++        if any(x.startswith(("--source", "-s")) for x in reste):
++            return "restauration de fichiers de l'île depuis un autre commit"
++        chemins = [x for x in reste if not x.startswith("-")]
++        if chemins and not any(_dossier_sensible(c, ici) or _est_garde(c, ici) or any(j in c for j in "*?[") for c in chemins):
++            return None
++        return "restauration d'un garde-fou ou d'un dossier qui en contient"
++    if sous in ("reset",) and any(x in reste for x in ("--hard", "--merge", "--keep")):
++        return "réinitialisation de l'arbre de travail de l'île"
++    if sous == "stash" and reste[:1] and reste[0] in ("pop", "apply", "branch"):
++        return "réapplication d'un remisage dans l'arbre de travail de l'île"
++    if sous in ("pull", "merge", "rebase", "cherry-pick", "revert", "apply", "am", "read-tree", "checkout-index", "worktree", "update-index", "filter-branch", "filter-repo"):
++        return f"git {sous} dans le dépôt de l'île : modifie l'arbre de travail ou l'index (garde-fous compris)"
++    return None
++
++
+ def _segments(cmd: str):
+     """Découpe une ligne de commande en commandes simples (&&, ||, ;, |, retours à la ligne)."""
+     return [s.strip() for s in re.split(r"&&|\|\||;|\||\n", cmd) if s.strip()]
+ 
+ 
+-def _dans(chemin: str, cwd: str | None, base: Path) -> bool:
++def _sans_bruit(s: str) -> str:
++    """Retire les redirections inoffensives (2>&1, >&2, 2>/dev/null…) qui ne sont pas des écritures de fichier."""
++    return re.sub(r"(?:\d*|&)>>?\s*/dev/(?:null|stdout|stderr|tty)\b|\d*>&\s*(?:\d+|-)(?![\w./-])", " ", s)
++
++
++def _cibles_ecriture(s: str):
++    """Fichiers visés par une redirection (>, >>, &>) ou par tee dans une commande simple."""
++    cibles = re.findall(r"(?:\d*|&)>>?\|?\s*([^\s;&|<>()]+)", s)
++    m = re.search(r"\btee\s+(.*)$", s)
++    if m:
++        cibles += [x for x in m.group(1).split() if not x.startswith("-")]
++    return [c.strip("'\"") for c in cibles if c.strip("'\"")]
++
++
++def _norm(chemin: str, cwd: Optional[str]) -> str:
++    """Chemin absolu réel : « .. » résolus et liens symboliques suivis (un /tmp/../ ou un lien ne trompe pas le garde)."""
++    p = os.path.expanduser(chemin.strip("'\""))
++    if not os.path.isabs(p):
++        p = os.path.join(cwd or os.getcwd(), p)
++    return os.path.realpath(p)
++
++
++def _temporaire(chemin: str, cwd: Optional[str]) -> bool:
++    return (_norm(chemin, cwd) + "/").startswith(TEMPORAIRES)
++
++
++def _dans(chemin: str, cwd: Optional[str], base: Path) -> bool:
+     try:
+-        p = Path(os.path.expanduser(chemin))
+-        if not p.is_absolute():
+-            p = Path(cwd or os.getcwd()) / p
+-        p = Path(os.path.normpath(str(p)))
++        p = Path(_norm(chemin, cwd))
+         return p == base or base in p.parents
+     except Exception:
+         return False
+ 
+ 
+-def _relatif_ile(chemin: str, cwd: str | None) -> str | None:
++def _relatif_ile(chemin: str, cwd: Optional[str]) -> Optional[str]:
+     try:
+-        p = Path(os.path.expanduser(chemin))
+-        if not p.is_absolute():
+-            p = Path(cwd or os.getcwd()) / p
+-        return str(Path(os.path.normpath(str(p))).relative_to(ILE)).replace(os.sep, "/")
++        return str(Path(_norm(chemin, cwd)).relative_to(ILE)).replace(os.sep, "/")
+     except Exception:
+         return None
+ 
+ 
+-def analyser_bash(cmd: str, cwd: str | None) -> Verdict:
++def _hors_depot(chemin: str, cwd: Optional[str]) -> bool:
++    """Vrai si le chemin sort du dépôt de l'île (hors fichiers temporaires et /dev)."""
++    if chemin.startswith("$") and not chemin.startswith(("$HOME", "${HOME}")):
++        return False   # variable inconnue : on ne devine pas
++    chemin = chemin.replace("${HOME}", "~").replace("$HOME", "~")
++    n = _norm(chemin, cwd)
++    return not (_dans(n, None, DEPOT) or (n + "/").startswith(TEMPORAIRES) or n.startswith("/dev/"))
++
++
++def analyser_bash(cmd: str, cwd: Optional[str]) -> Verdict:
+     c = " ".join(cmd.split())
+     V = lambda *a, **k: Verdict(*a, outil="Bash", cible=cmd.strip(), **k)
+     # --- interdits absolus : usurper le président, toucher au journal ou à l'identité
+     if re.search(r"--auteur(?:=|\s+)['\"]?president\b", c):
+         return V("bloquer", "president", "usurpation", "seul le président peut agir en son nom (actes signés de sa clé)")
+-    if re.search(r"\b(creer_identite|changer_phrase|ClePresident|nouvelle_identite|_graine|demander_phrase)\b|\bile\.py\b.*\bpresident\b|(^|[\s/])ile\s+president\b", c):
++    if re.search(r"\b(creer_identite|changer_phrase|ClePresident|nouvelle_identite|_graine|demander_phrase)\b"
++                 r"|\bile\.py\b(?:\s+--?[\w-]+(?:[=\s]+(?!-)[^\s;|&]+)?)*\s+['\"]?president\b|(^|[\s/])ile\s+['\"]?president\b", c):
+         return V("bloquer", "president", "identite", "l'identité et les actes présidentiels ne se manipulent que par le président, dans un vrai terminal")
+-    if "journal.jsonl" in c and not all(re.match(r"^(git\s+(add|commit|diff|log|show|status|blame)\b|cat|head|tail|wc|grep|less|ls|stat|sha256sum|shasum)\b", s) and ">" not in s for s in _segments(c) if "journal.jsonl" in s):
++    if "journal.jsonl" in c and not all(re.match(r"^(git\s+(add|commit|diff|log|show|status|blame)\b|cat|head|tail|wc|grep|less|ls|stat|sha256sum|shasum)\b", s) and ">" not in _sans_bruit(s) for s in _segments(c) if "journal.jsonl" in s):
+         return V("bloquer", "journal", "ecriture-journal", "le journal des opérations ne s'écrit qu'à travers operations/ile.py")
+     if re.search(r"\boperations/STOP\b", c) and re.search(r"\b(rm|mv|unlink|truncate)\b", c):
+         return V("bloquer", "arret", "stop", "seul le président lève l'arrêt d'urgence (supprimer operations/STOP lui-même)")
+     # --- opérations sensibles : approbation présidentielle, opération par opération
++    ici = cwd
+     for s in _segments(c):
++        cl = _sans_bruit(s)
++        try:
++            mots = shlex.split(cl)
++        except ValueError:
++            mots = cl.split()
++        if mots[:1] == ["cd"]:   # « cd operations && sed -i … garde.py » : le dossier courant suit la commande
++            ici = _norm(mots[1], ici) if len(mots) > 1 else os.path.expanduser("~")
++            continue
++        mc = re.match(r"^(?:sudo\s+)?(?:\S*/)?(cp|mv|install|ln|rsync|gcp|gmv)\s+(.*)$", cl)
++        if mc:
++            try:
++                args_copie = shlex.split(mc.group(2))
++            except ValueError:
++                args_copie = mc.group(2).split()
++            motif = _copie_vers_garde({"gcp": "cp", "gmv": "mv"}.get(mc.group(1), mc.group(1)), args_copie, ici)
++            if motif:
++                return V("approbation", "garde-fous", "modif-garde-fous", f"modification des garde-fous — {motif}")
++        motif = _extraction_vers_garde(cl, mots, ici)
++        if motif:
++            return V("approbation", "garde-fous", "modif-garde-fous", f"modification des garde-fous — {motif}")
++        if re.search(r"\bgit\b", s):
++            motif = _git_arbre_garde(s, ici)
++            if motif:
++                return V("approbation", "garde-fous", "git-garde-fous", motif)
++        if re.match(r"^(?:sudo\s+)?(?:\S*/)?(rm|unlink|shred)\b", cl) and any(_est_garde(x, ici) or _dossier_sensible(x, ici) for x in mots[1:] if not x.startswith("-")):
++            return V("approbation", "garde-fous", "modif-garde-fous", "suppression d'un garde-fou ou d'un dossier qui en contient")
++        if re.search(r"\b(rm|mv|unlink|truncate)\b", cl) and any(_norm(x, ici) in (str(STOP_REEL), str(STOP)) for x in mots if not x.startswith("-")):
++            return V("bloquer", "arret", "stop", "seul le président lève l'arrêt d'urgence (supprimer operations/STOP lui-même)")
+         if re.match(r"^(sudo\s+)?git\b", s) or re.search(r"\bgit\s", s):
+             if re.search(r"\bpush\b", s):
+                 if re.search(r"(--force\b|--force-with-lease|(\s|^)-[a-zA-Z]*f\b|\s\+\S|--delete\b|(\s|^)-d\b|\s:\S|--tags\b|--mirror\b)", s):
+                     return V("approbation", "git", "push-force", "push forcé, suppression ou publication de tags sur un dépôt distant")
+                 if re.search(r"(^|[\s:/])(%s)\b" % "|".join(PROTEGEES), s):
+                     return V("approbation", "git", "push-protege", "push vers une branche protégée (main, master, production…)")
+-                if not re.search(r"\bpush\s+\S+\s+\S+", s) and _branche(cwd) in PROTEGEES:
+-                    return V("approbation", "git", "push-protege", f"push depuis la branche protégée « {_branche(cwd)} »")
+-            if re.search(r"\b(merge|rebase|cherry-pick|reset\s+--hard|commit|am)\b", s) and _branche(cwd) in PROTEGEES and not re.search(r"\b(merge-base|--abort|--continue)\b", s):
+-                return V("approbation", "git", "branche-protegee", f"modification directe de la branche protégée « {_branche(cwd)} »")
++                if not re.search(r"\bpush\s+\S+\s+\S+", s) and _branche(ici) in PROTEGEES:
++                    return V("approbation", "git", "push-protege", f"push depuis la branche protégée « {_branche(ici)} »")
++                if not re.search(r"\bpush(?:\s+-\S+)*\s+[^-\s]\S*\s+[^-\s]", s):
++                    conf = _push_implicite_protege(ici)
++                    if conf:
++                        return V("approbation", "git", "push-protege", f"push sans destination explicite, mais la configuration vise une branche protégée ({conf})")
++            if re.search(r"\b(merge|rebase|cherry-pick|reset\s+--hard|commit|am)\b", s) and _branche(ici) in PROTEGEES and not re.search(r"\b(merge-base|--abort|--continue)\b", s):
++                return V("approbation", "git", "branche-protegee", f"modification directe de la branche protégée « {_branche(ici)} »")
+             if re.search(r"\bbranch\s+(-D|--delete\s+--force|-d\s+-f)\b|\bclean\s+-[a-zA-Z]*f|\bfilter-(branch|repo)\b|\breflog\s+expire\b", s):
+                 return V("approbation", "git", "destruction-git", "suppression d'historique ou de fichiers non suivis")
+         if re.search(r"\bgh\s+(pr\s+merge|pr\s+review\s+.*--approve|release\s+(create|delete)|repo\s+(create|delete|archive|edit)|secret\s+set|api\b.*(merge|-X\s*(DELETE|PUT)|--method\s*(DELETE|PUT)))", s):
+@@ -105,39 +350,68 @@ def analyser_bash(cmd: str, cwd: str | None) -> Verdict:
+             return V("approbation", "deploiement", "deploiement", "déploiement, migration ou publication en production")
+         if re.search(r"\bnpm\s+run\s+db:reset\b|\bdropdb\b|\bDROP\s+(TABLE|DATABASE|SCHEMA)\b|\bTRUNCATE\s+TABLE\b", s, re.I):
+             return V("approbation", "donnees", "destruction-donnees", "destruction ou réinitialisation de données")
+-        m = re.match(r"^(sudo\s+)?rm\s+(.*)$", s)
+-        if m and re.search(r"(^|\s)-[a-zA-Z]*[rR]", m.group(2)):
+-            cibles = [x for x in m.group(2).split() if not x.startswith("-")]
+-            dangereux = [x for x in cibles if x in ("/", "~", ".", "..", "*", "$HOME", "~/") or x.startswith(("~", "$HOME", "..")) or
+-                         (x.startswith("/") and not x.startswith(("/tmp/", "/private/tmp/", "/var/folders/")) and not _dans(x, cwd, DEPOT))]
++        # rm récursif, y compris « /bin/rm », « command rm », « xargs rm », « (rm … ) », « --recursive »
++        m = re.match(r"^(?:[({`]|\$\()*\s*(?:(?:sudo|command|builtin|exec|nohup|time|nice|env|xargs(?:\s+-\S+)*)\s+)*(?:\S*/)?rm\s+(.*)$", cl)
++        if m and re.search(r"(^|\s)(-[a-zA-Z]*[rR]|--recursive\b)", m.group(1)):
++            cibles = [x.strip("'\")`") for x in m.group(1).split() if not x.startswith("-")]
++            cibles = [x for x in cibles if x]
++            dangereux = [x for x in cibles if x in ("/", "~", ".", "..", "*", "~/") or _hors_depot(x, ici) or _norm(x, ici) in (str(DEPOT), str(ILE))]
+             if dangereux or not cibles:
+                 return V("approbation", "suppression", "rm-hors-projet", f"suppression récursive hors du dépôt ou trop large : {' '.join(dangereux) or '(aucune cible)'}")
++        m = re.match(r"^(?:sudo\s+)?find\s+(.*)$", cl)
++        if m and re.search(r"\s-delete\b|\s-exec(dir)?\s+(\S*/)?rm\b", cl):
++            racines = []
++            for x in m.group(1).split():
++                if x.startswith(("-", "(", "!")):
++                    break
++                racines.append(x.strip("'\""))
++            dangereux = [x for x in (racines or ["."]) if _hors_depot(x, ici)]
++            if dangereux:
++                return V("approbation", "suppression", "rm-hors-projet", f"suppression (find) hors du dépôt : {' '.join(dangereux)}")
+         if SECRETS.search(" " + s + " ") or re.search(r"\bsecurity\s+find-(generic|internet)-password\b|^printenv\b|^env\s*$|^export\s+-p\b", s):
+             return V("approbation", "secret", "secret", "lecture d'un secret (clé, mot de passe, variables d'environnement)")
+-        if re.search(r"\b(curl|wget|http|https|xh)\b", s) and re.search(r"(\s-d\b|--data|\s-F\b|--form|\s-T\b|--upload-file|-X\s*(POST|PUT|PATCH|DELETE)|--request\s*(POST|PUT|PATCH|DELETE)|--post-data|--post-file)", s) \
+-                and not re.search(r"https?://(localhost|127\.0\.0\.1)(:\d+)?/", s):
+-            return V("approbation", "reseau", "envoi-reseau", "envoi de données vers un service extérieur")
++        if re.search(r"\b(curl|wget|http|https|xh)\b", s) and re.search(r"(\s-[a-zA-Z]*[dFT]\b|--data|--json\b|--form|--upload-file|-X\s*(POST|PUT|PATCH|DELETE)|--request[=\s]*(POST|PUT|PATCH|DELETE)|--post-data|--post-file|--body-data|--body-file)", s):
++            hotes = [h.rsplit("@", 1)[-1].rsplit(":", 1)[0].lower() for h in re.findall(r"https?://([^/\s'\"?#]+)", s)]
++            if not hotes or any(h not in ("localhost", "127.0.0.1", "[::1]") for h in hotes):
++                return V("approbation", "reseau", "envoi-reseau", "envoi de données vers un service extérieur")
+         if re.match(r"^(scp|sftp|ssh|nc|ncat|telnet)\b", s) or re.match(r"^rsync\b.*\s\S+:\S*", s):
+             return V("approbation", "reseau", "connexion-distante", "connexion ou copie vers une machine distante")
+-        if any(f in s for f in FICHIERS_GARDE) and re.search(r"(>|\btee\b|\bsed\s+[^|]*-i|\bperl\s+-[a-z]*i|\bmv\b|\bcp\b|\brm\b|\bchmod\b|\bln\b|\btruncate\b|\bpython[0-9.]*\s+-c\b|\bpatch\b|\bgit\s+(checkout|restore)\b)", s):
++        cibles = _cibles_ecriture(cl)
++        verbe = re.search(r"(\btee\b|\bsed\s+[^|]*-i|\bperl\s+-[a-z]*i|\bmv\b|\bcp\b|\brm\b|\bchmod\b|\bln\b|\btruncate\b|\bpython[0-9.]*\s+-c\b|\bpatch\b|\bgit\s+(checkout|restore)\b|\binstall\b|\bdd\b)", cl)
++        if any(_est_garde(x, ici) for x in cibles) or (verbe and (any(f in cl for f in FICHIERS_GARDE) or re.search(r"\boperations/(?:[\w.-]+\.py[cod]?|__pycache__|[\w.-]+\.pth)\b", cl)
++                                                                   or any(_est_garde(x, ici) for x in mots[1:] if not x.startswith("-")))):
+             return V("approbation", "garde-fous", "modif-garde-fous", "modification des garde-fous (hooks, réglages, registre, identité, serveur)")
++        m = re.match(r"^(?:sudo\s+)?(cp|mv|install|ln)\s+(.*)$", cl)
++        dest = [x for x in (m.group(2).split() if m else []) if not x.startswith("-")]
++        externes = [x for x in cibles if _hors_depot(x, ici)] + ([dest[-1]] if len(dest) >= 2 and _hors_depot(dest[-1], ici) else [])
++        if externes:
++            return V("approbation", "projet-externe", "ecriture-externe", f"écriture hors du dépôt de l'île : {' '.join(externes)}")
+     return Verdict()
+ 
+ 
+-def analyser_fichier(outil: str, chemin: str, cwd: str | None, agent: dict) -> Verdict:
+-    V = lambda *a, **k: Verdict(*a, outil="Edit", cible=os.path.normpath(os.path.join(cwd or os.getcwd(), os.path.expanduser(chemin))), **k)
++def _est_garde(chemin: str, cwd: Optional[str]) -> Optional[str]:
++    """Chemin (relatif) du garde-fou visé, ou None."""
+     rel = _relatif_ile(chemin, cwd)
++    if rel and (any(rel == f or (f.endswith("/") and rel.startswith(f)) for f in FICHIERS_GARDE) or rel in LANCEURS or MOTIF_GARDE.match(rel)):
++        return rel
+     try:
+-        rel_depot = str(Path(os.path.normpath(os.path.join(cwd or os.getcwd(), os.path.expanduser(chemin)))).relative_to(DEPOT)).replace(os.sep, "/")
++        rel_depot = str(Path(_norm(chemin, cwd)).relative_to(DEPOT)).replace(os.sep, "/")
+     except ValueError:
+-        rel_depot = None
+-    if rel_depot in (".claude/settings.json", ".claude/settings.local.json"):
+-        return V("approbation", "garde-fous", "modif-garde-fous", f"modification d'un garde-fou : {rel_depot}", mode="fenetre")
++        return None
++    if rel_depot in (".claude/settings.json", ".claude/settings.local.json", ".git/config") or rel_depot.startswith((".git/hooks/", ".git/info/")):
++        return rel_depot
++    return None
++
++
++def analyser_fichier(outil: str, chemin: str, cwd: Optional[str], agent: dict) -> Verdict:
++    V = lambda *a, **k: Verdict(*a, outil="Edit", cible=os.path.normpath(os.path.join(cwd or os.getcwd(), os.path.expanduser(chemin))), **k)
++    rel = _relatif_ile(chemin, cwd)
+     if rel == "operations/journal.jsonl":
+         return V("bloquer", "journal", "ecriture-journal", "le journal des opérations ne s'écrit qu'à travers operations/ile.py")
+-    if rel and any(rel == f or (f.endswith("/") and rel.startswith(f)) for f in FICHIERS_GARDE):
+-        return V("approbation", "garde-fous", "modif-garde-fous", f"modification d'un garde-fou : {rel}", mode="fenetre")
+-    if _dans(chemin, cwd, DEPOT) is False and not str(Path(os.path.expanduser(chemin))).startswith(("/tmp/", "/private/tmp/", "/var/folders/")):
++    garde_fou = _est_garde(chemin, cwd)
++    if garde_fou:
++        return V("approbation", "garde-fous", "modif-garde-fous", f"modification d'un garde-fou : {garde_fou}", mode="fenetre")
++    if not _dans(chemin, cwd, DEPOT) and not _temporaire(chemin, cwd):
+         if SECRETS.search(" " + chemin + " "):
+             return V("approbation", "secret", "secret", "écriture d'un fichier de secrets")
+         return V("approbation", "projet-externe", "ecriture-externe", "écriture hors du dépôt de l'île (projet externe)", mode="fenetre")
+@@ -152,7 +426,7 @@ def analyser_fichier(outil: str, chemin: str, cwd: str | None, agent: dict) -> V
+     return Verdict()
+ 
+ 
+-def _siege_du_chef(role: str) -> str | None:
++def _siege_du_chef(role: str) -> Optional[str]:
+     try:
+         for b in json.loads((ILE / "registre.json").read_text(encoding="utf-8")).get("batiments", []):
+             if Path(b.get("agent", "")).stem == role:
+@@ -167,21 +441,40 @@ def analyser(payload: dict) -> Verdict:
+     ti = payload.get("tool_input") or {}
+     cwd = payload.get("cwd")
+     agent = {k: payload.get(k) for k in ("agent_type", "agent_id", "session_id") if payload.get(k)}
+-    if STOP.exists() and outil not in LECTURE:
++    if (STOP_REEL.exists() or STOP.exists()) and outil not in LECTURE:
+         return Verdict("bloquer", "arret", "stop", "ARRÊT D'URGENCE actif (operations/STOP) : aucune action n'est permise tant que le président ne l'a pas levé", outil, str(ti)[:300])
+     if outil == "Bash":
+         return analyser_bash(ti.get("command") or "", cwd)
+     if outil in ECRITURE:
+         return analyser_fichier(outil, ti.get("file_path") or ti.get("notebook_path") or "", cwd, agent)
+-    if outil == "Read" and SECRETS.search(" " + (ti.get("file_path") or "") + " "):
+-        return Verdict("approbation", "secret", "secret", "lecture d'un fichier de secrets", "Read", ti.get("file_path"))
++    if outil in ("Read", "Grep") and SECRETS.search(" " + (ti.get("file_path") or ti.get("path") or "") + " "):
++        return Verdict("approbation", "secret", "secret", "lecture d'un fichier de secrets", outil, ti.get("file_path") or ti.get("path"))
+     if outil.startswith("mcp__") and re.search(r"merge|delete|create_repository|auto_merge|fork_repository|run_secret|actions_run_trigger", outil):
+         return Verdict("approbation", "github", "mcp-sensible", f"outil distant sensible : {outil}", outil, json.dumps(ti, sort_keys=True, ensure_ascii=False)[:1500])
+-    if outil.startswith("mcp__") and re.search(r"push_files|create_or_update_file", outil) and str(ti.get("branch", "")) in PROTEGEES:
++    if outil.startswith("mcp__") and re.search(r"push_files|create_or_update_file", outil) and re.sub(r"^refs/heads/", "", str(ti.get("branch", ""))) in PROTEGEES:
+         return Verdict("approbation", "github", "mcp-branche-protegee", "écriture distante sur une branche protégée", outil, json.dumps(ti, sort_keys=True, ensure_ascii=False)[:1500])
+     return Verdict()
+ 
+ 
++def _confinement():
++    """operations/confinement.py, chargé par son chemin exact (jamais par le chemin d'import)."""
++    chemin = str(OPS_DIR / "confinement.py")
++    c = sys.modules.get("confinement")
++    if c is None:
++        c = type(sys)("confinement")
++        c.__file__ = chemin
++        with open(chemin, "rb") as f:
++            exec(compile(f.read(), chemin, "exec", dont_inherit=True), c.__dict__)
++        sys.modules["confinement"] = c
++    elif os.path.realpath(getattr(c, "__file__", None) or "") != chemin:
++        raise ImportError(f"module « confinement » inattendu ({getattr(c, '__file__', None)!r}) : refusé")
++    return c
++
++
++def _module_ile():
++    return _confinement().charger("ile")
++
++
+ def main():
+     try:
+         payload = json.loads(sys.stdin.read() or "{}")
+@@ -195,8 +488,7 @@ def main():
+         return 2
+     if v.issue == "autoriser":
+         return 0
+-    sys.path.insert(0, str(OPS_DIR))
+-    import ile
++    ile = _module_ile()
+     if v.issue == "approbation":
+         a = ile.approbation_valide(v.outil, v.cible)
+         if a:
+@@ -216,4 +508,11 @@ def main():
+ 
+ 
+ if __name__ == "__main__":
+-    sys.exit(main())
++    # Claude Code ne bloque que sur le code 2 : toute autre sortie (exception, import cassé, sys.exit(1)…) laisserait
++    # passer l'action. Le garde échoue donc FERMÉ : tout incident devient un refus.
++    try:
++        code = main()
++    except BaseException as e:   # noqa: BLE001 — y compris SystemExit : main() ne quitte jamais elle-même
++        print(f"Garde de l'île : erreur interne ({type(e).__name__}: {e}) — action refusée par prudence.", file=sys.stderr)
++        code = 2
++    sys.exit(code if code in (0, 2) else 2)
+diff --git a/ile-des-agents/operations/ile.py b/ile-des-agents/operations/ile.py
+index 6448368..05c2b13 100644
+--- a/ile-des-agents/operations/ile.py
++++ b/ile-des-agents/operations/ile.py
+@@ -16,20 +16,41 @@ Usage rapide :
+   python3 operations/ile.py classer
+   python3 operations/ile.py verifier
+ """
+-from __future__ import annotations
+-
+-import argparse
+-import datetime as dt
+-import hashlib
+-import json
++# Pas de « from __future__ » : ce serait un import exécuté avant le confinement ci-dessous.
+ import os
+-import re
+ import sys
+-import tempfile
+-from pathlib import Path
+ 
+-sys.path.insert(0, str(Path(__file__).resolve().parent))
+-import president  # noqa: E402
++if __name__ == "__main__":
++    # Commande lancée directement (hooks, président, lanceur) : confinement des imports AVANT tout autre import
++    # (voir operations/confinement.py). `sys` est intégré ; `os` est préchargé, ou introuvable hors de la bibliothèque
++    # standard en `-I -S` (limite : `-S` sans `-I` sous Python 3.9, voir garde.py).
++    _STD = os.path.dirname(os.path.realpath(os.__file__))
++    sys.path[:] = [p for p in sys.path if p and (os.path.realpath(p) + os.sep).startswith(_STD + os.sep)
++                   and "-packages" not in os.path.realpath(p)]
++    _CONF = os.path.join(os.path.dirname(os.path.realpath(__file__)), "confinement.py")
++    _c = type(sys)("confinement")
++    _c.__file__ = _CONF
++    with open(_CONF, "rb") as _f:
++        exec(compile(_f.read(), _CONF, "exec", dont_inherit=True), _c.__dict__)
++    sys.modules["confinement"] = _c
++    _c.confiner()
++
++import argparse  # noqa: E402
++import datetime as dt  # noqa: E402
++import hashlib  # noqa: E402
++import json  # noqa: E402
++import re  # noqa: E402
++import tempfile  # noqa: E402
++from pathlib import Path  # noqa: E402
++from typing import Optional  # noqa: E402
++
++# Processus confiné (garde, serveur, hooks, commande directe) : `president` est chargé par son chemin exact, depuis
++# la source. Import ordinaire seulement hors confinement (tests unitaires, outils de développement).
++_CONFINEMENT = sys.modules.get("confinement")
++if _CONFINEMENT is not None:
++    president = _CONFINEMENT.charger("president")
++else:
++    import president  # noqa: E402
+ 
+ RACINE = Path(__file__).resolve().parent.parent                      # ile-des-agents/
+ OPS = Path(os.environ.get("ILE_OPS") or (RACINE / "operations"))      # surchargeable pour les tests
+@@ -90,7 +111,7 @@ def _message_signe(ev: dict) -> bytes:
+ _SIG_OK: dict = {}   # cache (empreinte d'événement, clé) -> bool, en mémoire seulement
+ 
+ 
+-def signature_valide(ev: dict, publique: str | None) -> bool:
++def signature_valide(ev: dict, publique: Optional[str]) -> bool:
+     if not publique or not ev.get("signature"):
+         return False
+     k = (ev.get("hash"), publique, ev.get("signature"))
+@@ -154,7 +175,7 @@ def ajouter(type_: str, donnees: dict, auteur: dict, completer=None, cle=None) -
+     return ev
+ 
+ 
+-def verifier(evs: list[dict] | None = None) -> dict:
++def verifier(evs: Optional[list] = None) -> dict:
+     """Recalcule la chaîne. Renvoie {ok, n, erreurs[]} ; vérifie aussi les artefacts encore présents."""
+     erreurs = []
+     try:
+@@ -182,7 +203,7 @@ def verifier(evs: list[dict] | None = None) -> dict:
+     return {"ok": not erreurs, "n": len(evs), "erreurs": erreurs, "dernier": evs[-1]["hash"] if evs else GENESE}
+ 
+ 
+-def _rejet_presidentiel(ev: dict, publique: str | None) -> str | None:
++def _rejet_presidentiel(ev: dict, publique: Optional[str]) -> Optional[str]:
+     """None si l'événement est acceptable ; sinon la raison du rejet. Seuls les actes présidentiels sont concernés."""
+     t, role = ev.get("type"), ev.get("auteur", {}).get("role")
+     if t != "president.identite" and role != "president" and t not in TYPES_PRESIDENTIELS and not (t == "mission.statut" and (ev["donnees"].get("de"), ev["donnees"].get("vers")) in RESERVE_PRESIDENT):
+@@ -220,7 +241,7 @@ def sieges_connus() -> dict:
+     return {b["id"]: b for b in registre().get("batiments", [])}
+ 
+ 
+-def siege_de_role(role: str) -> str | None:
++def siege_de_role(role: str) -> Optional[str]:
+     """chef-rev-em -> rev-em, d'après le champ `agent` du registre."""
+     for b in registre().get("batiments", []):
+         if Path(b.get("agent", "")).stem == role and b.get("type") == "maison":
+@@ -374,7 +395,7 @@ def _auteur(role: str, verifie: str = "declare", **extra) -> dict:
+     return a
+ 
+ 
+-def auteur_cli(role: str, run: str | None = None) -> dict:
++def auteur_cli(role: str, run: Optional[str] = None) -> dict:
+     """Identité déclarée en ligne de commande, confirmée si elle correspond à une exécution ouverte."""
+     if role == "president":
+         raise ErreurIle("« --auteur president » n'existe plus : les actes du président sont signés (Résidence déverrouillée, ou « ile.py president … » dans un vrai terminal)")
+@@ -386,7 +407,7 @@ def auteur_cli(role: str, run: str | None = None) -> dict:
+     return _auteur(role, "declare")
+ 
+ 
+-def _siege_valide(sid: str | None, obligatoire=True):
++def _siege_valide(sid: Optional[str], obligatoire=True):
+     if sid is None and not obligatoire:
+         return
+     if sid not in sieges_connus():
+@@ -441,7 +462,7 @@ def changer_statut(mission, vers, auteur, motif=None, cle=None):
+     return ajouter("mission.statut", {"mission": mission, "siege": m["siege"], "de": de, "vers": vers, "motif": motif}, auteur or {}, cle=cle)
+ 
+ 
+-def score_mission(m: dict, priorite: str | None) -> tuple[float, dict, str]:
++def score_mission(m: dict, priorite: Optional[str]) -> tuple:
+     """Score objectif et explicable (0–100). Les notes manquantes valent 3 et sont signalées."""
+     manq = [k for k in ("valeur", "urgence", "effort", "risque") if m.get(k) is None]
+     v, u, e, r = (m.get(k) if m.get(k) is not None else 3 for k in ("valeur", "urgence", "effort", "risque"))
+diff --git a/ile-des-agents/operations/president.py b/ile-des-agents/operations/president.py
+index e329a3c..8449ba3 100644
+--- a/ile-des-agents/operations/president.py
++++ b/ile-des-agents/operations/president.py
+@@ -9,16 +9,20 @@
+   une sans la phrase. Un agent qui tourne sous le même utilisateur système peut lire tous les
+   fichiers du projet : il n'y trouvera aucun secret.
+ """
+-from __future__ import annotations
+-
+ import hashlib
+ import hmac
+ import os
+ import secrets
++import sys
+ import time
+ import unicodedata
+ 
+-import signature
++# Processus confiné (garde, serveur, hooks, commandes présidentielles) : `signature` est chargé par son chemin exact,
++# depuis la source (voir operations/confinement.py). Import ordinaire seulement hors confinement (tests).
++if sys.modules.get("confinement") is not None:
++    signature = sys.modules["confinement"].charger("signature")
++else:
++    import signature
+ 
+ ITERATIONS = 600_000
+ LONGUEUR_MIN = 12
+diff --git a/ile-des-agents/operations/preuves.py b/ile-des-agents/operations/preuves.py
+index f21d789..cf6c384 100644
+--- a/ile-des-agents/operations/preuves.py
++++ b/ile-des-agents/operations/preuves.py
+@@ -7,18 +7,27 @@
+ Tout ce qui écrit travaille sur une COPIE du journal, avec une identité présidentielle DE TEST : le vrai registre
+ n'est jamais modifié, et la vraie phrase du président n'est jamais nécessaire.
+ """
+-import json
+ import os
+-import plistlib
+-import shutil
+-import socket
+-import subprocess
+ import sys
+-import tempfile
+-import time
+-import urllib.error
+-import urllib.request
+-from pathlib import Path
++
++if __name__ == "__main__":
++    # Le rapport de preuves fait foi auprès du président : aucun module planté (operations/argparse.py…) ne doit
++    # pouvoir le falsifier. Confinement des imports comme pour le garde (voir operations/confinement.py).
++    _STD = os.path.dirname(os.path.realpath(os.__file__))
++    sys.path[:] = [p for p in sys.path if p and (os.path.realpath(p) + os.sep).startswith(_STD + os.sep)
++                   and "-packages" not in os.path.realpath(p)]
++    sys.dont_write_bytecode = True
++
++import json  # noqa: E402
++import plistlib  # noqa: E402
++import shutil  # noqa: E402
++import socket  # noqa: E402
++import subprocess  # noqa: E402
++import tempfile  # noqa: E402
++import time  # noqa: E402
++import urllib.error  # noqa: E402
++import urllib.request  # noqa: E402
++from pathlib import Path  # noqa: E402
+ 
+ ILE = Path(__file__).resolve().parents[1]
+ DEPOT = ILE.parent
+@@ -108,16 +117,19 @@ def main():
+         shutil.copy(ILE / "operations" / "journal.jsonl", tmp / "journal.jsonl")
+     env = dict(os.environ, ILE_OPS=str(tmp))
+     os.environ["ILE_OPS"] = str(tmp)
+-    sys.path.insert(0, str(ILE / "operations"))
+-    import ile
+-    import president
+-    import signature
++    chemin = str(ILE / "operations" / "confinement.py")      # modules de l'île : chemin exact, depuis la source
++    conf = type(sys)("confinement")
++    conf.__file__ = chemin
++    with open(chemin, "rb") as f:
++        exec(compile(f.read(), chemin, "exec", dont_inherit=True), conf.__dict__)
++    sys.modules["confinement"] = conf
++    ile, president, signature = conf.charger("ile"), conf.charger("president"), conf.charger("signature")
+     president.ITERATIONS = 20000                      # identité de test : dérivation rapide (le nombre est inscrit dans l'identité)
+     cle_test = ile.creer_identite(PHRASE_TEST, canal="preuves (identité de test)")
+     acces_json = ILE / "operations" / "acces.json"
+     acces_existant = acces_json.exists()
+     port = port_libre()
+-    srv = subprocess.Popen([sys.executable, str(ILE / "serveur.py"), "--port", str(port), "--sans-navigateur"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
++    srv = subprocess.Popen([sys.executable, "-I", "-S", str(ILE / "serveur.py"), "--port", str(port), "--sans-navigateur"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+     for _ in range(80):
+         try:
+             socket.create_connection(("127.0.0.1", port), timeout=.2).close(); break
+@@ -151,7 +163,7 @@ def main():
+             st2, _, _ = C.post("/api/president/deverrouiller", {"phrase": PHRASE_TEST})
+             st3, r, _ = C.post("/api/instruction", {"texte": "Instruction de preuve"})
+             ev = next(e for e in ile.lire() if e["id"] == r["evenement"])
+-            out = subprocess.run([sys.executable, str(ILE / "operations" / "ile.py"), "capteur", "session"], input=json.dumps({"session_id": "preuves"}), capture_output=True, text=True, env=env).stdout
++            out = subprocess.run([sys.executable, "-I", "-S", str(ILE / "operations" / "ile.py"), "capteur", "session"], input=json.dumps({"session_id": "preuves"}), capture_output=True, text=True, env=env).stdout
+             ctx = json.loads(out)["hookSpecificOutput"]["additionalContext"]
+             lue = ile.etat()["instructions"][r["evenement"]]["statut"]
+             return ok_refus and st2 == 200 and st3 == 200 and ev["auteur"]["verifie"] == "signature" and "Instruction de preuve" in ctx and lue == "lue", \
+@@ -193,7 +205,7 @@ def main():
+         check("C1.1", "Tests automatisés (registre, identité, signatures, approbations, garde)", c11)
+ 
+         def c12():
+-            r = subprocess.run([sys.executable, str(ILE / "operations" / "ile.py"), "verifier"], capture_output=True, text=True, env={k: v for k, v in os.environ.items() if k != "ILE_OPS"})
++            r = subprocess.run([sys.executable, "-I", "-S", str(ILE / "operations" / "ile.py"), "verifier"], capture_output=True, text=True, env={k: v for k, v in os.environ.items() if k != "ILE_OPS"})
+             return r.returncode == 0, r.stdout.strip()
+         check("C1.2", "Le VRAI journal est intègre (chaîne et actes présidentiels)", c12)
+ 
+@@ -302,6 +314,36 @@ def main():
+             codes = [X.post("/api/president/deverrouiller", {"phrase": "mauvaise phrase " + str(i)})[0] for i in range(6)]
+             return codes[:5] == [403] * 5 and codes[5] == 429, f"5 mauvaises phrases → 403, la 6e → 429 (verrouillage 10 min)"
+ 
++        def c28():
++            """L'attaque de l'audit, rejouée sur une COPIE de l'île avec les commandes exactes de .claude/settings.json."""
++            with tempfile.TemporaryDirectory() as t:
++                depot = Path(t) / "depot"; copie = depot / "ile-des-agents"; marques = Path(t) / "marques"
++                shutil.copytree(ILE, copie, ignore=shutil.ignore_patterns("__pycache__", "journal.jsonl", "STOP", "*.log", ".serveur.pid", "node_modules"))
++                (depot / ".claude").mkdir(parents=True); marques.mkdir()
++                shutil.copy(DEPOT / ".claude" / "settings.json", depot / ".claude" / "settings.json")
++                for d in (copie / "operations", copie, copie / ".claude" / "hooks", depot):
++                    for n in ("json", "re", "hashlib", "hmac", "secrets", "unicodedata", "getpass", "subprocess", "tempfile", "datetime", "__future__"):
++                        (d / f"{n}.py").write_text("import posix\nposix.close(posix.open(%r, posix.O_WRONLY | posix.O_CREAT, 0o644))\nposix._exit(0)\n"
++                                                   % str(marques / f"{d.name}-{n}"))
++                s = json.loads((depot / ".claude" / "settings.json").read_text())
++                commande = lambda evt: s["hooks"][evt][0]["hooks"][-1]["command"].replace("$CLAUDE_PROJECT_DIR", str(depot))
++                lancer = lambda evt, payload: subprocess.run(["bash", "-c", commande(evt)], input=json.dumps(payload), capture_output=True, text=True,
++                                                            env=dict(env, CLAUDE_PROJECT_DIR=str(depot)), cwd=str(depot), timeout=60).returncode
++                base = {"cwd": str(copie), "session_id": "preuves"}
++                codes = {
++                    "garde · git push origin main": lancer("PreToolUse", {**base, "tool_name": "Bash", "tool_input": {"command": "git push origin main"}}),
++                    "garde · usurpation (ile + president chargés)": lancer("PreToolUse", {**base, "tool_name": "Bash", "tool_input": {"command": "python3 operations/ile.py --auteur president x"}}),
++                    "garde · ls": lancer("PreToolUse", {**base, "tool_name": "Bash", "tool_input": {"command": "ls"}}),
++                    "SessionStart": lancer("SessionStart", base),
++                    "SubagentStart": lancer("SubagentStart", {**base, "agent_type": "forgeron", "agent_id": "preuves"}),
++                    "Stop (etat-ile repos)": lancer("Stop", base),
++                }
++                executes = sorted(p.name for p in marques.iterdir())
++            attendu = {"garde · git push origin main": 2, "garde · usurpation (ile + president chargés)": 2, "garde · ls": 0, "SessionStart": 0, "SubagentStart": 0, "Stop (etat-ile repos)": 0}
++            return codes == attendu and not executes, \
++                f"modules piégés (json, hmac, getpass…) plantés dans operations/, ile-des-agents/, .claude/hooks/ et à la racine : codes {codes} · modules piégés exécutés : {executes or 'aucun'}"
++        check("C2.8", "Détournement d'import (attaque de l'audit) : aucun module planté n'est exécuté par le garde ni par les hooks", c28)
++
+         print("\n— Accès direct —")
+ 
+         def c31():
+@@ -321,7 +363,10 @@ def main():
+                 code = (ILE / "ile").read_text().split("<<'EOF'")[1].split("EOF")[0]
+                 subprocess.run([sys.executable, "-", str(f), "com.ile-des-agents.serveur", "/usr/bin/python3", str(ILE), "7777", "/tmp/x.log"], input=code, text=True, check=True)
+                 d = plistlib.loads(f.read_bytes())
+-            ok = d["RunAtLoad"] is True and d["ProgramArguments"][1].endswith("serveur.py") and d["KeepAlive"] == {"SuccessfulExit": False}
++            ok = d["RunAtLoad"] is True and d["ProgramArguments"][1:3] == ["-I", "-S"] and d["ProgramArguments"][3].endswith("serveur.py") \
++                and d["KeepAlive"] == {"SuccessfulExit": False}
++            if not ok:
++                return False, f"fichier launchd incorrect : {d}"
+             return "partiel", "fichier launchd généré et valide (RunAtLoad, KeepAlive, journal) · chargement par launchctl NON TESTÉ : aucun Mac dans cette session"
+         check("C3.2", "Démarrage automatique sur Mac (LaunchAgent)", c32)
+ 
+diff --git a/ile-des-agents/serveur.py b/ile-des-agents/serveur.py
+index 91bb1c6..88f2963 100644
+--- a/ile-des-agents/serveur.py
++++ b/ile-des-agents/serveur.py
+@@ -15,24 +15,50 @@ Sécurité :
+     y exige une connexion par la phrase présidentielle ; tentatives limitées ;
+   - les fichiers internes du registre ne sont jamais servis bruts.
+ """
+-import functools
+-import http.server
+-import json
+ import os
+-import posixpath
+-import re
+-import secrets
+ import sys
+-import threading
+-import time
+-import urllib.request
+-import webbrowser
+-from pathlib import Path
+-from urllib.parse import parse_qs, quote, unquote, urlparse
++
++if __name__ == "__main__":
++    # Le serveur garde la clé présidentielle en mémoire pendant une session déverrouillée : aucun module planté
++    # (ile-des-agents/json.py, operations/hmac.py…) ne doit pouvoir s'y exécuter. Lancé en `python3 -I -S`, et même
++    # sans : chemin d'import réduit à la bibliothèque standard AVANT tout autre import (operations/confinement.py).
++    _STD = os.path.dirname(os.path.realpath(os.__file__))
++    sys.path[:] = [p for p in sys.path if p and (os.path.realpath(p) + os.sep).startswith(_STD + os.sep)
++                   and "-packages" not in os.path.realpath(p)]
++    sys.dont_write_bytecode = True
++
++import functools  # noqa: E402
++import http.server  # noqa: E402
++import json  # noqa: E402
++import posixpath  # noqa: E402
++import re  # noqa: E402
++import secrets  # noqa: E402
++import threading  # noqa: E402
++import time  # noqa: E402
++import urllib.request  # noqa: E402
++import webbrowser  # noqa: E402
++from pathlib import Path  # noqa: E402
++from urllib.parse import parse_qs, quote, unquote, urlparse  # noqa: E402
+ 
+ RACINE = Path(__file__).resolve().parent
+-sys.path.insert(0, str(RACINE / "operations"))
+-import ile  # noqa: E402
++
++
++def _confinement():
++    """operations/confinement.py, chargé par son chemin exact (jamais par le chemin d'import)."""
++    chemin = str(RACINE / "operations" / "confinement.py")
++    c = sys.modules.get("confinement")
++    if c is None:
++        c = type(sys)("confinement")
++        c.__file__ = chemin
++        with open(chemin, "rb") as f:
++            exec(compile(f.read(), chemin, "exec", dont_inherit=True), c.__dict__)
++        sys.modules["confinement"] = c
++    elif os.path.realpath(getattr(c, "__file__", None) or "") != chemin:
++        raise ImportError(f"module « confinement » inattendu ({getattr(c, '__file__', None)!r}) : refusé")
++    return c
++
++
++ile = _confinement().charger("ile")
+ 
+ PORT_DEFAUT = int(os.environ.get("ILE_PORT", "7777"))
+ SIGNATURE_SERVEUR = "Île des Agents"
+@@ -81,7 +107,7 @@ def protections():
+             settings[str(f.relative_to(RACINE.parent))] = "garde.py" in f.read_text(encoding="utf-8")
+         except OSError:
+             settings[str(f.relative_to(RACINE.parent))] = False
+-    return {"garde_branche": settings, "arret_urgence": (RACINE / "operations" / "STOP").exists(), "acces_distant": acces()["hotes_distants"]}
++    return {"garde_branche": settings, "arret_urgence": (RACINE / "operations" / "STOP").exists() or (ile.OPS / "STOP").exists(), "acces_distant": acces()["hotes_distants"]}
+ 
+ 
+ def residence(session=None):
