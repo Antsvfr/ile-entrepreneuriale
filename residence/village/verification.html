@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vérification publique</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4ecdc; --paper:#fbf6ec; --ink:#231c13; --muted:#76664f; --rule:#e2d4ba; --chip:#efe3cb;
+  --gold:#b8891c; --accent:#c4553a; --ok:#2f7d4f; --warn:#b06a10; --bad:#b3261e; --night:#14202e;
+  --display:"Caprasimo","Cooper Black",Georgia,serif; --body:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--body)}
+a{color:inherit}
+.topbar{background:var(--night);color:var(--paper)}
+.topbar .in{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.brand{font:400 22px var(--display)}
+.topbar nav{display:flex;gap:6px;flex-wrap:wrap}
+.topbar nav a{color:var(--paper);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:7px;padding:5px 10px;font:600 12.5px var(--body);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.kicker{font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:400 clamp(30px,6vw,46px)/1.05 var(--display);margin:6px 0 10px}
+h2{font:400 24px var(--display);margin:30px 0 8px}
+.lead{max-width:760px;color:#3f3424}
+.cartes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px}
+.carte{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:14px 16px}
+.carte .v{font:400 28px var(--display);margin-top:4px}
+.carte .l{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.ok{color:var(--ok)} .ko{color:var(--bad)} .att{color:var(--warn)}
+code,.mono{font:13px var(--mono);overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:10px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top;font-size:14px}
+th{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--chip)}
+.table{overflow-x:auto}
+ul.err{margin:8px 0 0;padding-left:18px;color:var(--bad)}
+button{font:600 14px var(--body);background:var(--night);color:var(--paper);border:0;border-radius:9px;padding:9px 14px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.note{font-size:13px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <span class="brand">Île entrepreneuriale</span>
+  <nav aria-label="Navigation"><a id="n-acc" href="../../index.html">Accueil</a><a id="n-met" href="index.html">Métropole 3D</a><a id="n-res" href="residence.html">Résidence</a></nav>
+</div></header>
+<main class="wrap">
+  <div class="kicker">Registre des opérations · contrôle indépendant</div>
+  <h1>Vérification publique</h1>
+  <p class="lead">Cette page recalcule <b>dans votre navigateur</b> l'intégralité du journal de l'île : la numérotation, le chaînage
+    de chaque ligne à la précédente, l'empreinte SHA-256 de chaque événement, la validité des actes présidentiels (signatures
+    Ed25519 de la clé en vigueur, preuve de possession des identités) et l'empreinte des documents gelés. Rien n'est envoyé nulle part ;
+    il n'y a ni compte ni connexion. Le même contrôle se lance en local : <code>python3 -I -S orchestrateur/ile.py verifier</code>.</p>
+  <button id="go" type="button">Relancer la vérification</button>
+  <div class="cartes" id="cartes" aria-live="polite"></div>
+  <ul class="err" id="erreurs"></ul>
+  <h2>Identité présidentielle</h2>
+  <div id="identite" class="carte">—</div>
+  <h2>Documents gelés</h2>
+  <p class="lead">Un document déposé au journal ne doit plus jamais changer. Chaque emplacement où il peut se trouver (chemin d'origine et chemin après migration) est contrôlé.</p>
+  <div class="table"><table><thead><tr><th>Événement</th><th>Document</th><th>Résultat</th></tr></thead><tbody id="artefacts"><tr><td colspan="3">—</td></tr></tbody></table></div>
+  <p class="note" id="source"></p>
+</main>
+<script src="source.js"></script>
+<script src="verification.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const carte = (l, v, cls, sous) => `<div class="carte"><div class="l">${esc(l)}</div><div class="v ${cls || ""}">${v}</div>${sous ? `<div class="note">${sous}</div>` : ""}</div>`;
+async function texte(url){ const r = await fetch(url, {cache:"no-store"}); if(!r.ok) throw new Error(url + " : " + r.status); return r.text(); }
+async function verifier(){
+  $("#go").disabled = true; $("#cartes").innerHTML = carte("Vérification", "…"); $("#erreurs").innerHTML = "";
+  try{
+    const mode = await IleSource.detecter();
+    $("#n-acc").href = IleSource.lien("accueil"); $("#n-met").href = IleSource.lien("metropole"); $("#n-res").href = IleSource.lien("residence");
+    const m = await IleSource.infos();
+    let r;
+    if(mode === "publie"){
+      r = await IleVerification.verifierJournal(await texte(IleSource.lien("fichier", m.journal)), m);
+      $("#source").innerHTML = `Journal vérifié : <code>${esc(m.journal)}</code> tel que publié dans le dépôt. Instantané de la version web : ${esc(new Date(m.genere).toLocaleString("fr-FR"))}, ${m.evenements} événements, dernière empreinte <code>${esc(m.dernier_hash.slice(0,16))}…</code>.`;
+    } else {   // le serveur local ne sert pas le journal brut : il le vérifie lui-même
+      const v = await (await IleSource.get("/api/verifier")).json();
+      r = {ok: v.ok, n: v.n, dernier: v.dernier, erreurs: v.erreurs, actes_presidentiels: null, actes_valides: null, identite: null};
+      $("#source").textContent = "Résidence locale : vérification faite par le serveur de l'île (ile.py verifier).";
+    }
+    const accord = mode !== "publie" || r.dernier === m.dernier_hash;
+    $("#cartes").innerHTML =
+      carte("Journal", r.ok ? "Intègre" : "Altéré", r.ok ? "ok" : "ko", `${r.n} événements vérifiés`) +
+      carte("Dernière empreinte", `<span class="mono">${esc(r.dernier.slice(0, 16))}…</span>`, accord ? "" : "att", accord ? "identique à celle de l'instantané publié" : "différente de l'instantané : régénérer la version web (./ile publier)") +
+      (r.actes_presidentiels === null ? "" : carte("Actes présidentiels", `${r.actes_valides}/${r.actes_presidentiels}`, r.actes_valides === r.actes_presidentiels ? "ok" : "ko", "signatures Ed25519 valides"));
+    $("#erreurs").innerHTML = r.erreurs.slice(0, 20).map(e => `<li>${esc(e)}</li>`).join("");
+    $("#identite").innerHTML = r.identite ? `Clé publique en vigueur : <code>${esc(r.identite)}</code>`
+      : (r.actes_presidentiels === null ? "Voir la Résidence locale." : "Aucune identité présidentielle n'est encore inscrite au journal : aucun acte ne peut être signé au nom du président. Le président la crée lui-même, dans un vrai terminal : <code>./ile president</code>.");
+    await artefacts(mode === "publie" ? await texte(IleSource.lien("fichier", m.journal)) : null, m);
+  }catch(e){ $("#cartes").innerHTML = carte("Vérification impossible", "—", "ko", esc(e.message)); }
+  finally{ $("#go").disabled = false; }
+}
+async function artefacts(journalTexte, m){
+  const tb = $("#artefacts");
+  if(!journalTexte){ tb.innerHTML = `<tr><td colspan="3">Contrôlés par le serveur local (voir ci-dessus).</td></tr>`; return; }
+  const liste = IleVerification.artefactsDuJournal(journalTexte);
+  if(!liste.length){ tb.innerHTML = `<tr><td colspan="3">Aucun document gelé.</td></tr>`; return; }
+  const lignes = [];
+  for(const a of liste){
+    const etats = [];
+    for(const chemin of IleVerification.emplacements(a.chemin, m.anciens_chemins)){
+      try{ const r = await fetch(IleSource.lien("fichier", chemin), {cache:"no-store"}); if(!r.ok) continue;
+           const s = await IleVerification.sha256(new Uint8Array(await r.arrayBuffer())); etats.push([chemin, s === a.sha256]); }catch(_){}
+    }
+    const res = !etats.length ? `<span class="ko">introuvable</span>` : etats.map(([c, ok]) => `<span class="${ok ? "ok" : "ko"}">${ok ? "intact" : "MODIFIÉ"}</span> <code>${esc(c)}</code>`).join("<br>");
+    lignes.push(`<tr><td><code>${esc(a.id)}</code></td><td><code>${esc(a.chemin)}</code></td><td>${res}</td></tr>`);
+  }
+  tb.innerHTML = lignes.join("");
+}
+$("#go").onclick = verifier;
+verifier();
+</script>
+</body>
+</html>

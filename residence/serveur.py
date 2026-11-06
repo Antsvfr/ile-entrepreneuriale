@@ -380,8 +380,45 @@ def deja_lance(port) -> bool:
         return False
 
 
+def instantane(dossier: Path) -> dict:
+    """Écrit la version publiée (lecture seule) des données de la Résidence : les MÊMES projections que les routes
+    /api/… du serveur, calculées par le même code, figées dans des fichiers JSON que la version web (GitHub Pages) lit.
+    Rien de secret : le journal est déjà dans le dépôt ; seuls les noms d'hôte de l'accès distant (non versionnés)
+    sont retirés. Aucune session n'est ouverte : la version publiée ne peut ni signer ni agir."""
+    dossier.mkdir(parents=True, exist_ok=True)
+    evs = ile.lire()
+    v = ile.verifier(evs)
+    res = residence(None)
+    res["securite"]["acces_distant_masques"] = len(res["securite"].get("acces_distant") or [])   # noms d'hôte non publiés
+    res["securite"]["acces_distant"] = []
+    i = ile.identite_courante()
+    fichiers = {
+        "residence.json": res,
+        "etat.json": ile.etat_3d(ile.etat()),
+        "journal.json": {"evenements": evs[::-1], "total": len(evs)},
+        "verifier.json": v,
+        "president.json": {"identite": {"empreinte": i["empreinte"], "quand": i["quand"]} if i else None, "deverrouille": False},
+        "meta.json": {
+            "version": 1, "genere": ile.maintenant(), "evenements": v["n"], "dernier_hash": v["dernier"], "integre": v["ok"],
+            "journal": "orchestrateur/registre/journal.jsonl",
+            # règles du registre, exportées par le code Python lui-même pour la vérification dans le navigateur
+            "types_presidentiels": sorted(ile.TYPES_PRESIDENTIELS), "reserve_president": sorted(map(list, ile.RESERVE_PRESIDENT)),
+            "anciens_chemins": [list(x) for x in ile.ANCIENS_CHEMINS],
+        },
+    }
+    for nom, contenu in fichiers.items():
+        (dossier / nom).write_text(json.dumps(contenu, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    return fichiers["meta.json"]
+
+
 def main():
     args = sys.argv[1:]
+    if "--instantane" in args:                                   # ./ile publier
+        i = args.index("--instantane")
+        cible = Path(args[i + 1]) if i + 1 < len(args) else RACINE / "residence" / "instantane"
+        m = instantane(cible)
+        print(f"Instantané publié dans {cible} : {m['evenements']} événements, journal {'intègre' if m['integre'] else 'ALTÉRÉ'}, dernière empreinte {m['dernier_hash'][:16]}…")
+        return 0 if m["integre"] else 1
     port = PORT_DEFAUT
     if "--port" in args:
         port = int(args[args.index("--port") + 1])

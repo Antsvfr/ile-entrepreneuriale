@@ -1,0 +1,68 @@
+{
+ "anciens_chemins": [
+  [
+   "architecture/",
+   "docs/architecture/"
+  ],
+  [
+   "conseil/",
+   "audit/conseil/"
+  ],
+  [
+   "forge/rapports/",
+   "audit/rapports/"
+  ],
+  [
+   "maisons/",
+   "projets/"
+  ],
+  [
+   "innovation/",
+   "projets/innovation/"
+  ],
+  [
+   "operations/tests/",
+   "tests/"
+  ]
+ ],
+ "dernier_hash": "1c31913324d5a0739ba57405433820c42068921c3aa0a07e95dbe18774a6e968",
+ "evenements": 53,
+ "genere": "2026-11-06T13:30:27+00:00",
+ "integre": true,
+ "journal": "orchestrateur/registre/journal.jsonl",
+ "reserve_president": [
+  [
+   "attente_president",
+   "planifiee"
+  ],
+  [
+   "attente_president",
+   "rejetee"
+  ],
+  [
+   "proposee",
+   "rejetee"
+  ],
+  [
+   "proposee",
+   "reportee"
+  ],
+  [
+   "reportee",
+   "proposee"
+  ],
+  [
+   "reportee",
+   "rejetee"
+  ]
+ ],
+ "types_presidentiels": [
+  "approbation.accordee",
+  "approbation.refusee",
+  "decision.tranchee",
+  "instruction.donnee",
+  "president.identite",
+  "siege.priorite"
+ ],
+ "version": 1
+}

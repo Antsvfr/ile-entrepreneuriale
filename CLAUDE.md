@@ -56,6 +56,7 @@ Questions rapides (une définition, une info) : réponds directement, sans circu
 - `/conseil <prompt>` — faire passer un prompt devant le Conseil, sans exécuter.
 - `/nouvelle-maison <nom>` — construire une branche (dossier, agent, registre, bâtiment 3D).
 - `/inspection` — la Forge inspecte toute l'île et répare.
+- Version web publiée (lecture seule) : https://antsvfr.github.io/ile-entrepreneuriale/ — la mettre à jour avec `./ile publier` (instantané `residence/instantane/`, généré par le code du serveur) puis commit et push. Elle n'exécute rien et ne signe rien (`docs/architecture/APPLICATION-WEB.md`).
 - Ouvrir l'île : `./ile` (ou double-clic sur « Ouvrir l'île.command ») → http://localhost:7777/ ; Résidence : `/residence` ; un bâtiment : `/batiment/<id>`. `./ile aide` pour le reste (installer, distant, president, arret-urgence, statut). Options de la métropole : `?heure=jour|crepuscule|nuit`, `?qualite=bas|moyen|haut`, `?vue=<quartier>`, `?ouvrir=<id>`.
 
 ## Registre des opérations et Résidence (étapes 0 et 1)

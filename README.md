@@ -6,6 +6,11 @@ directeurs de projet, sous l'autorité d'un président dont les actes sont sign�
 Migrée le 6 novembre 2026 depuis `Antsvfr/simulation-questionnaire` (dossier `ile-des-agents/`), corrections de sécurité
 de l'étape 2 comprises. **Étape 2 : NON VALIDÉE** — voir `audit/rapports/2026-11-06-finalisation-etape-2.md`.
 
+## Version web (lecture seule)
+**https://antsvfr.github.io/ile-entrepreneuriale/** — métropole 3D, Résidence en consultation, vérification publique du
+registre dans le navigateur. Les actes présidentiels se signent dans la Résidence locale (ci-dessous). Détails :
+`docs/architecture/APPLICATION-WEB.md`. Mettre à jour la version web : `./ile publier`, puis commit et push.
+
 ## Ouvrir l'île
 ```bash
 ./ile

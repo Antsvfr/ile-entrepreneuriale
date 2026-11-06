@@ -6,7 +6,10 @@ const T = THREE;
 const Q = new URLSearchParams(location.search);
 
 async function chargerRegistre(){
-  for(const url of ["../registre.json", "../../registre.json"]){   // /village/ (serveur) ou residence/village/ (fichier)
+  // version publiée (GitHub Pages) : le registre est à la racine du site ; serveur local : /registre.json (alias /village/)
+  let urls = ["../registre.json", "../../registre.json"];
+  if(window.IleSource){ try{ if(await IleSource.detecter() === "publie") urls = [IleSource.lien("fichier", "registre.json")]; }catch(_){} }
+  for(const url of urls){
     try{ const r = await fetch(url,{cache:"no-store"}); if(r.ok) return await r.json(); }catch(e){}
   }
   return FALLBACK;
@@ -677,7 +680,11 @@ const pt = {x:0,z:0,h:0};
 let ETAT = null, ETAT2 = null, MODE = "demo";   // MODE : reel (registre v2) · ancien (etat-de-l-ile.json) · demo (aucune donnée)
 const LEG = {conseil:0, maison:1, forge:2, "terminé":3}, ETAPES = {conseil:"Conseil", maison:"Maison", forge:"Forge", "terminé":"Terminé"};
 const maisonActive = () => (ETAT && (ETAT.etape === "maison" || ETAT.etape === "forge")) ? ETAT.maison : null;
+const PUBLIEE = () => window.IleSource && IleSource.mode === "publie";
 async function lireV2(){
+  if(window.IleSource){                                          // serveur local (/api/etat) ou instantané publié
+    try{ await IleSource.detecter(); const r = await IleSource.get("/api/etat"); if(r.ok){ const e = await r.json(); if(e && e.version === 2) return sansExpires(e); } }catch(_){}
+  }
   for(const url of ["/api/etat", "../orchestrateur/registre/etat.json"]){
     try{ const r = await fetch(url, {cache:"no-store"}); if(!r.ok) continue; const e = await r.json(); if(e && e.version === 2) return sansExpires(e); }catch(_){}
   }
@@ -703,8 +710,17 @@ async function lireEtat(){
   majBandeau(); majBadge(); rafraichirJournal();
 }
 const nomDe = id => B.find(b => b.id === id)?.nom || id;
+let lienFait = false;
 function majBandeau(){
   const el = document.getElementById("now");
+  if(window.IleSource && IleSource.mode && !lienFait){ lienFait = true; const a = document.getElementById("lien-residence"); if(a) a.href = IleSource.lien("residence"); }
+  if(MODE === "reel" && PUBLIEE()){                               // version publiée : état figé à la date de l'instantané
+    const R = ETAT2.runs_actifs, extra = [];
+    if(ETAT2.decisions_en_attente) extra.push(`${ETAT2.decisions_en_attente} décision(s) en attente`);
+    el.textContent = `Version publiée (lecture seule) · instantané du ${ETAT2.maj ? new Date(ETAT2.maj).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"}) : "—"} · ` +
+      (R.length ? `${R.length} agent(s) au travail à cette date` : "aucun agent au travail à cette date") + (extra.length ? " · " + extra.join(" · ") : "");
+    el.hidden = false; return;
+  }
   if(MODE === "reel"){
     const R = ETAT2.runs_actifs, extra = [];
     if(ETAT2.decisions_en_attente) extra.push(`${ETAT2.decisions_en_attente} décision(s) vous attendent à la Résidence`);
@@ -712,7 +728,7 @@ function majBandeau(){
     el.textContent = (R.length ? `${R.length} agent(s) au travail : ` + R.slice(0,3).map(r => `${r.role} → ${r.siege ? nomDe(r.siege) : "hors siège"}`).join(", ") + (R.length > 3 ? "…" : "") : "Aucun agent au travail") + (extra.length ? " · " + extra.join(" · ") : "");
     el.hidden = false; return;
   }
-  if(MODE === "demo"){ el.textContent = "Mode démonstration : aucun registre trouvé, les courriers sont décoratifs (lance python3 serveur.py)."; el.hidden = false; return; }
+  if(MODE === "demo"){ el.textContent = "Mode démonstration : aucun registre trouvé, les courriers sont décoratifs (lance ./ile)."; el.hidden = false; return; }
   if(!ETAT){ el.hidden = true; return; }
   const m = B.find(b => b.id === ETAT.maison), h = ETAT.maj ? new Date(ETAT.maj).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"medium"}) : "";
   const quoi = `${m ? " · " + m.nom : ""}${ETAT.sujet ? " — " + ETAT.sujet : ""}`, tail = h ? " · " + h : "";
@@ -751,13 +767,26 @@ function majBadge(){
 }
 async function rafraichirJournal(){
   const box = document.getElementById("jr"); if(!box) return; const b = B.find(x => x.id === box.dataset.id); if(!b || !b.dossier) return;
-  try{ const r = await fetch(`../${b.dossier}/journal.md`, {cache:"no-store"}); if(!r.ok) throw 0; const txt = await r.text(); if(txt === dernierJournal && !box.hidden) return; dernierJournal = txt;
+  try{ const r = await fetch(PUBLIEE() ? IleSource.lien("fichier", b.dossier + "/journal.md") : `../${b.dossier}/journal.md`, {cache:"no-store"}); if(!r.ok) throw 0; const txt = await r.text(); if(txt === dernierJournal && !box.hidden) return; dernierJournal = txt;
     const l = txt.split("\n").map(s => s.trim()).filter(s => /^[-*] /.test(s)).map(s => s.slice(2)).slice(-5).reverse(); if(document.getElementById("jr") !== box) return;
     box.querySelector("ul").innerHTML = l.length ? l.map(s => `<li>${esc(s)}</li>`).join("") : "<li>Journal vide.</li>"; box.hidden = false;
   }catch(_){ box.hidden = true; }
 }
 const ring = new T.Mesh(new T.RingGeometry(1,1.18,64), new T.MeshBasicMaterial({color:"#ffffff", transparent:true, opacity:.85, side:T.DoubleSide, depthWrite:false, toneMapped:false}));
 ring.rotation.x = -Math.PI/2; ring.visible = false; scene.add(ring);
+// Chaque bâtiment mène à sa fonction réelle : la section de la Résidence qui l'administre, son dossier dans le dépôt.
+const DEPOT_WEB = "https://github.com/Antsvfr/ile-entrepreneuriale/tree/main/";
+const SECTIONS = {residence: [["Résidence présidentielle", ""], ["À trancher", "#trancher"], ["Sécurité", "#securite"]],
+  mairie: [["Projets et priorités", "#projets"], ["Missions classées", "#missions"], ["Instructions", "#instructions"], ["Journal des opérations", "#journal"]],
+  conseil: [["Rapports des directeurs", "#rapports"]], forge: [["Tests et preuves", "#tests"], ["Sécurité", "#securite"]],
+  maison: [["Fiche du projet", "#projets"], ["Missions", "#missions"]]};
+function accesBatiment(b){
+  const res = window.IleSource ? IleSource.lien("residence") : "/residence", l = [];
+  for(const [titre, ancre] of (SECTIONS[b.type] || [])) l.push(`<a href="${esc(res + ancre)}">${esc(titre)} ↗</a>`);
+  if(b.type === "residence" || b.type === "forge") l.push(`<a href="verification.html">Vérification publique du journal ↗</a>`);
+  if(b.dossier) l.push(`<a href="${esc(DEPOT_WEB + (b.dossier === "." ? "" : b.dossier))}" target="_blank" rel="noopener">Dossier dans le dépôt ↗</a>`);
+  return l.length ? `<div class="f"><span>Accéder</span><div class="acces">${l.join("")}</div></div>` : "";
+}
 function ouvrir(id, focus=true){
   current = B.findIndex(b => b.id === id); const b = B[current];
   document.getElementById("pKind").textContent = KINDS[b.type] || b.type; document.getElementById("pName").textContent = b.nom; document.getElementById("pSw").style.background = b.couleur;
@@ -771,6 +800,7 @@ function ouvrir(id, focus=true){
     ${b.branches ? `<div class="f"><span>Branches (${b.branches.length})</span><ul class="env">${b.branches.map(x => `<li>${x.nom === b.branche_active ? "★ " : ""}${esc(x.nom)}${x.sha ? " · " + esc(x.sha) : ""}<br><small>${esc(x.role)}</small></li>`).join("")}</ul></div>` : ""}
     ${b.dossier ? `<div class="f"><span>Dossier</span><code>${esc(b.dossier === "." ? "/ (racine)" : b.dossier + "/")}</code></div>` : ""}
     ${b.type === "maison" ? `<div class="f" id="jr" data-id="${esc(b.id)}" hidden><span>Journal · 5 dernières entrées</span><ul class="jr"></ul></div>` : ""}
+    ${b.type === "chantier" ? "" : accesBatiment(b)}
     <div class="f"><span>${b.type === "chantier" ? "Environnement prévu" : "Environnement"}</span><ul class="env">${(b.environnement||[]).map(e => `<li>${esc(e)}</li>`).join("")}</ul></div>
     ${b.type === "residence" ? `<a class="tag" style="text-decoration:none;border-style:solid;font-size:14px;padding:8px 12px" href="residence.html">Entrer dans la Résidence : tableau de bord →</a>` : ""}
     <div class="f"><span>Dans Claude Code</span><div class="cmd"><code id="cmdTxt">${esc(b.commande)}</code><button id="copy">Copier</button></div></div>`;
@@ -805,10 +835,10 @@ controls.addEventListener("start", () => { tw = null; controls.autoRotate = fals
 const nav = document.getElementById("hud");
 DISTRICTS.forEach(d => { const b = document.createElement("button"); b.textContent = d.nom; b.dataset.d = d.id; b.onclick = () => goDistrict(d.id); nav.appendChild(b); });
 document.getElementById("tour").onclick = () => tourTimer ? stopTour() : startTour();
-{ const r = document.createElement("a"); r.href = "/residence"; r.textContent = "Résidence ↗"; r.className = "res-lien"; r.title = "Ouvrir la Résidence présidentielle (touche R)"; nav.prepend(r); }
+{ const r = document.createElement("a"); r.href = "/residence"; r.id = "lien-residence"; r.textContent = "Résidence ↗"; r.className = "res-lien"; r.title = "Ouvrir la Résidence présidentielle (touche R)"; nav.prepend(r); }
 document.querySelectorAll("[data-time]").forEach(b => b.onclick = () => setTime(b.dataset.time));
 document.getElementById("qsel").onchange = e => { qualAuto = e.target.value === "auto"; setQuality(qualAuto ? "moyen" : e.target.value); };
-addEventListener("keydown", e => { if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) return; if(e.key === "r" || e.key === "R"){ location.href = "/residence"; return; } if(e.key === "Escape") goDistrict("aerien"); else if(/^[1-9]$/.test(e.key)) goDistrict(DISTRICTS[+e.key-1].id); });
+addEventListener("keydown", e => { if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "")) return; if(e.key === "r" || e.key === "R"){ location.href = window.IleSource ? IleSource.lien("residence") : "/residence"; return; } if(e.key === "Escape") goDistrict("aerien"); else if(/^[1-9]$/.test(e.key)) goDistrict(DISTRICTS[+e.key-1].id); });
 
 // clic dans la scène
 const ray = new T.Raycaster(), ptr = new T.Vector2(); let down = null;

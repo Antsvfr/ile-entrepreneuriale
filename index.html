@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Île entrepreneuriale</title>
+<meta name="description" content="L'Île entrepreneuriale : métropole 3D, institutions, registre des opérations et vérification publique.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --night:#14202e; --deep:#0d1621; --paper:#fbf6ec; --sand:#f4ecdc; --gold:#f5d27a; --gold2:#b8891c; --accent:#c4553a;
+  --ok:#7fd3a0; --bad:#ff9b8f; --muted:#b9c3cf; --rule:rgba(251,246,236,.16);
+  --display:"Caprasimo","Cooper Black",Georgia,serif; --body:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(1200px 600px at 75% -10%,#2a4258 0%,transparent 60%),radial-gradient(900px 500px at -10% 110%,#3a2a1c 0%,transparent 55%),var(--deep);color:var(--paper);font:16px/1.55 var(--body)}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 16px 64px}
+.kicker{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+h1{font:400 clamp(40px,9vw,84px)/.98 var(--display);margin:10px 0 14px;letter-spacing:-.01em}
+h1 span{color:var(--gold)}
+.lead{max-width:720px;font-size:clamp(16px,2.2vw,19px);color:#dfe5ec}
+.etat{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 6px}
+.puce{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--rule);background:rgba(255,255,255,.05);border-radius:999px;padding:5px 12px;font:500 13px var(--body)}
+.puce b{font-weight:600}.puce .ok{color:var(--ok)}.puce .ko{color:var(--bad)}
+.entrees{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:26px}
+.entree{display:flex;flex-direction:column;gap:6px;text-decoration:none;border:1px solid var(--rule);background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border-radius:16px;padding:18px 18px 16px;transition:transform .15s,border-color .15s}
+.entree:hover,.entree:focus-visible{transform:translateY(-2px);border-color:var(--gold);outline:none}
+.entree .t{font:400 24px var(--display)}
+.entree .d{color:#cfd7e0;font-size:14.5px}
+.entree .go{margin-top:auto;font:600 13px var(--mono);color:var(--gold)}
+.entree.principale{background:linear-gradient(150deg,#f5d27a,#e7b453);color:var(--night);border-color:transparent}
+.entree.principale .d{color:#3a2c12}.entree.principale .go{color:var(--night)}
+h2{font:400 28px var(--display);margin:44px 0 6px}
+.sous{color:var(--muted);font-size:14.5px;max-width:760px;margin:0 0 14px}
+.inst{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.inst a{display:flex;gap:12px;align-items:flex-start;text-decoration:none;border:1px solid var(--rule);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.03)}
+.inst a:hover,.inst a:focus-visible{border-color:var(--gold);outline:none}
+.inst .pastille{flex:0 0 12px;height:12px;border-radius:50%;margin-top:6px}
+.inst .n{font-weight:600}.inst .r{font-size:13px;color:var(--muted)}
+.limites{margin-top:40px;border:1px dashed rgba(245,210,122,.55);border-radius:14px;padding:16px 18px;background:rgba(245,210,122,.06)}
+.limites h3{margin:0 0 6px;font:400 20px var(--display);color:var(--gold)}
+.limites ul{margin:6px 0 0;padding-left:18px;color:#dfe5ec}.limites li{margin:4px 0}
+code{font:13px var(--mono);background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px}
+footer{margin-top:40px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="kicker">Entreprise d'agents · gouvernance signée</div>
+  <h1>Île <span>entrepreneuriale</span></h1>
+  <p class="lead">Une métropole d'agents gouvernée par un Maire, un Conseil des critiques et une Forge, sous l'autorité d'un président dont chaque acte est signé de sa clé. Tout ce que fait l'île est inscrit dans un registre chaîné, vérifiable par tous.</p>
+  <div class="etat" id="etat" aria-live="polite"><span class="puce">Chargement de l'état de l'île…</span></div>
+
+  <nav class="entrees" aria-label="Entrer dans l'île">
+    <a class="entree principale" href="residence/village/index.html"><span class="t">Métropole 3D</span><span class="d">Survoler l'île, ses quartiers et ses sièges ; chaque bâtiment ouvre sa fonction.</span><span class="go">Entrer →</span></a>
+    <a class="entree" href="residence/village/residence.html"><span class="t">Résidence</span><span class="d">Tableau de bord du président : projets, missions, décisions, rapports, tests, sécurité, journal.</span><span class="go">Consulter →</span></a>
+    <a class="entree" href="residence/village/verification.html"><span class="t">Vérification publique</span><span class="d">Recalculer dans votre navigateur le journal, les signatures présidentielles et les documents gelés.</span><span class="go">Vérifier →</span></a>
+    <a class="entree" href="https://github.com/Antsvfr/ile-entrepreneuriale" rel="noopener"><span class="t">Code et archives</span><span class="d">Le dépôt : institutions, rapports de la Forge, procès-verbaux du Conseil, architecture.</span><span class="go">GitHub →</span></a>
+  </nav>
+
+  <h2>Institutions et sièges</h2>
+  <p class="sous">Chaque institution est inscrite au registre de l'île. Un clic ouvre son siège dans la métropole.</p>
+  <div class="inst" id="institutions"></div>
+
+  <section class="limites" aria-labelledby="t-lim">
+    <h3 id="t-lim">Ce que cette version web fait — et ne fait pas</h3>
+    <ul>
+      <li><b>Elle montre</b> l'état réel de l'île à la date de l'instantané indiqué ci-dessus, et <b>vérifie</b> le registre dans votre navigateur.</li>
+      <li><b>Elle n'exécute rien</b> : pas de compte, pas de connexion, aucune commande, aucun agent lancé depuis Internet.</li>
+      <li><b>Les actes présidentiels</b> (décisions, priorités, instructions, accords) se signent dans la Résidence locale de l'île (<code>./ile</code>) : la phrase du président ne quitte jamais son ordinateur.</li>
+      <li id="li-identite">Identité présidentielle : —</li>
+    </ul>
+  </section>
+  <footer id="pied">Île entrepreneuriale · <a href="https://github.com/Antsvfr/ile-entrepreneuriale/blob/main/audit/rapports/rapport-deploiement-application-web.md" rel="noopener">rapport de déploiement</a></footer>
+</main>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const json = async u => { const r = await fetch(u, {cache:"no-store"}); if(!r.ok) throw new Error(u + " " + r.status); return r.json(); };
+(async () => {
+  try{
+    const [m, res, reg] = await Promise.all([json("residence/instantane/meta.json"), json("residence/instantane/residence.json"), json("registre.json")]);
+    const att = res.decisions.length + res.approbations.length, actifs = res.agents_actifs.length;
+    $("#etat").innerHTML = [
+      `<span class="puce">Registre <b class="${m.integre ? "ok" : "ko"}">${m.integre ? "intègre" : "ALTÉRÉ"}</b> · ${m.evenements} événements</span>`,
+      `<span class="puce">${res.sieges.length} projets · ${res.missions.length} missions</span>`,
+      `<span class="puce">${att} décision(s) en attente</span>`,
+      `<span class="puce">${actifs ? actifs + " agent(s) au travail" : "aucun agent au travail"}</span>`,
+      `<span class="puce">Instantané du ${esc(new Date(m.genere).toLocaleString("fr-FR", {dateStyle:"long", timeStyle:"short"}))}</span>`].join("");
+    $("#li-identite").innerHTML = res.president.identite
+      ? `Identité présidentielle inscrite : empreinte <code>${esc(res.president.identite.empreinte)}</code>, du ${esc(new Date(res.president.identite.quand).toLocaleDateString("fr-FR"))}.`
+      : `<b>Identité présidentielle : pas encore créée.</b> Le président la crée lui-même dans un vrai terminal (<code>./ile president</code>) ; d'ici là, aucun acte présidentiel ne peut être signé.`;
+    const ordre = {residence:0, mairie:1, conseil:2, forge:3, maison:4, chantier:5};
+    const bats = reg.batiments.slice().sort((a, b) => (ordre[a.type] ?? 9) - (ordre[b.type] ?? 9));
+    $("#institutions").innerHTML = bats.map(b => `<a href="residence/village/index.html?ouvrir=${encodeURIComponent(b.id)}"><span class="pastille" style="background:${esc(/^#[0-9a-f]{3,8}$/i.test(b.couleur || "") ? b.couleur : "#f5d27a")}"></span>
+      <span><span class="n">${esc(b.nom)}</span>${b.type === "chantier" ? " · <i>chantier</i>" : ""}<br><span class="r">${esc((b.role || "").slice(0, 120))}</span></span></a>`).join("");
+  }catch(e){ $("#etat").innerHTML = `<span class="puce"><b class="ko">État indisponible</b> : ${esc(e.message)}</span>`; }
+})();
+</script>
+</body>
+</html>

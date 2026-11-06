@@ -173,6 +173,7 @@ case "${1:-ouvrir}" in
   arret-urgence)  case "${2:-on}" in on) date > "$ICI/securite/STOP"; dire "ARRÊT D'URGENCE : plus aucun agent ne peut agir. Lever : ./ile arret-urgence off";;
                     off) rm -f "$ICI/securite/STOP"; dire "Arrêt d'urgence levé.";; esac;;
   preuves)        ( cd "$ICI" && "$PY" -I -S audit/preuves.py "${@:2}" );;
-  aide|-h|--help) sed -n '2,6p' "$0"; dire "Autres : demarrer · arreter · redemarrer · statut · journal · desinstaller · distant activer|desactiver|statut · president [creer|statut|changer-phrase] · arret-urgence on|off · preuves";;
+  publier)        ( cd "$ICI" && "$PY" -I -S residence/serveur.py --instantane residence/instantane ) && dire "Version web à jour localement. Pour la mettre en ligne : git add residence/instantane && git commit -m \"Instantané de l'île\" && git push (GitHub Pages publie main).";;
+  aide|-h|--help) sed -n '2,6p' "$0"; dire "Autres : demarrer · arreter · redemarrer · statut · journal · desinstaller · distant activer|desactiver|statut · president [creer|statut|changer-phrase] · arret-urgence on|off · preuves · publier";;
   *)              erreur "commande inconnue : $1 (./ile aide)";;
 esac

@@ -90,7 +90,7 @@ dialog h3{font:400 24px var(--display)}
   <div class="in">
     <span class="brand">Résidence</span>
     <nav aria-label="Navigation">
-      <a href="/village/">Métropole 3D</a>
+      <a href="/village/" id="lien-metropole">Métropole 3D</a><a href="verification.html">Vérification</a>
       <a href="#trancher">À trancher</a><a href="#projets">Projets</a><a href="#rapports">Rapports</a><a href="#missions">Missions</a><a href="#instructions">Instructions</a><a href="#tests">Tests</a><a href="#securite">Sécurité</a><a href="#journal">Journal</a>
       <select id="aller" aria-label="Aller à un bâtiment"><option value="">Bâtiments…</option></select>
     </nav>
@@ -102,6 +102,7 @@ dialog h3{font:400 24px var(--display)}
 <div class="wrap">
   <div class="kicker">Île des Agents · centre de contrôle du président</div>
   <h1>Résidence présidentielle</h1>
+  <div id="publie" class="banner" hidden></div>
   <div id="hors-ligne" class="banner" hidden>Le serveur de l'île ne répond pas. Ouvre-la avec <code>./ile</code> (ou double-clic sur « Ouvrir l'île.command »), puis recharge cette page.</div>
   <div id="sans-identite" class="banner" hidden>Ton identité présidentielle n'existe pas encore : la Résidence est en lecture seule. Ouvre <b>Terminal</b> dans le dossier de l'île et lance <code>./ile president</code> (une seule fois) pour choisir ta phrase secrète.</div>
   <div class="kpis" id="kpis" aria-live="polite"></div>
@@ -200,6 +201,7 @@ dialog h3{font:400 24px var(--display)}
 </dialog>
 <div class="toast" id="toast" role="status"></div>
 
+<script src="source.js"></script>
 <script>
 "use strict";
 const $ = s => document.querySelector(s);
@@ -211,7 +213,10 @@ let JETON = null, D = null, apresDeverrouillage = null;
 
 function toast(t){ const el = $("#toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("on"), 3600); }
 async function jeton(force){ if(!JETON || force){ const r = await fetch("/api/session"); JETON = (await r.json()).jeton; } return JETON; }
+const PUBLIE = () => IleSource.mode === "publie";
+const HORS_LIGNE = "action indisponible dans la version publiée : elle se fait dans la Résidence locale (./ile), où ta phrase ne quitte jamais ton ordinateur";
 async function post(path, body, retry = true){
+  if(PUBLIE()) throw new Error(HORS_LIGNE);
   const r = await fetch(path, {method:"POST", headers:{"Content-Type":"application/json","X-Ile-Jeton":await jeton()}, body:JSON.stringify(body)});
   const j = await r.json().catch(() => ({}));
   if(r.status === 403 && retry && /jeton/.test(j.erreur || "")){ await jeton(true); return post(path, body, false); }
@@ -219,7 +224,7 @@ async function post(path, body, retry = true){
   if(!r.ok) throw new Error(j.erreur || ("erreur " + r.status));
   return j;
 }
-async function get(path){ const r = await fetch(path, {cache:"no-store"}); if(r.status === 401){ location.href = "/connexion?suite=" + encodeURIComponent(location.pathname); throw new Error("connexion"); } if(!r.ok) throw new Error(r.status); return r.json(); }
+async function get(path){ const r = await IleSource.get(path); if(r.status === 401){ location.href = "/connexion?suite=" + encodeURIComponent(location.pathname); throw new Error("connexion"); } if(!r.ok) throw new Error(r.status); return r.json(); }
 async function acte(path, body, ok){
   try{ const r = await post(path, body); toast(`${ok} — signé et inscrit (${r.evenement}).`); await charger(); return true; }
   catch(e){ if(e.verrou){ apresDeverrouillage = () => acte(path, body, ok); ouvrirVerrou(); } else toast("Refusé : " + e.message); return false; }
@@ -228,6 +233,7 @@ const auteur = a => a ? `${esc(a.role)}${a.run ? " · " + esc(a.run) : ""} <span
 const src = s => s ? `<div class="src">source : ${esc(s)}</div>` : "";
 
 function ouvrirVerrou(){
+  if(PUBLIE()){ toast("Pas de déverrouillage dans la version publiée : " + HORS_LIGNE.split(" : ")[1] + "."); return; }
   if(!D?.president?.identite){ toast("Crée d'abord ton identité : ./ile president dans Terminal."); return; }
   $("#lock-err").textContent = ""; $("#phrase").value = ""; $("#dlg-lock").showModal(); setTimeout(() => $("#phrase").focus(), 50);
 }
@@ -243,6 +249,7 @@ $("#f-lock").addEventListener("submit", async ev => {
 function identite(d){
   const p = d.president, el = $("#chip-id");
   $("#sans-identite").hidden = !!p.identite;
+  if(PUBLIE()){ el.innerHTML = `<span>🌐 Version publiée · lecture seule</span>`; return; }
   if(!p.identite){ el.innerHTML = `<span>Identité : non créée</span>`; return; }
   el.innerHTML = p.deverrouille
     ? `<span>🔓 Déverrouillée jusqu'à ${esc(p.expire)}</span><button type="button" id="b-lock" class="on">Verrouiller</button>`
@@ -306,7 +313,7 @@ function projet(s){
     <div class="f"><span class="lbl">Prochaines actions recommandées</span>${actions}</div>
     <div class="f"><span class="lbl">Problèmes détectés</span>${pbs}</div>
     <div class="f"><span class="lbl">Derniers tests</span>${tests}</div>
-    <div class="row"><a class="btn" href="/batiment/${encodeURIComponent(s.id)}">Siège en 3D</a><button class="btn" type="button" data-ecrire="${esc(s.id)}">Instruction pour ce projet</button></div>
+    <div class="row"><a class="btn" href="${esc(IleSource.lien("batiment", s.id))}">Siège en 3D</a><button class="btn" type="button" data-ecrire="${esc(s.id)}">Instruction pour ce projet</button></div>
   </article>`;
 }
 
@@ -354,7 +361,7 @@ function securite(d){
       <li>Identité présidentielle : ${d.president.identite ? `<b>${esc(d.president.identite.empreinte)}</b> <span class="src">créée ${quand(d.president.identite.quand)}</span>` : "<b>non créée</b> (./ile president)"}</li>
       ${gb.map(([f, on]) => `<li>Garde branché dans <code>${esc(f)}</code> : ${on ? '<span class="tag PASS">oui</span>' : '<span class="tag FAIL">non</span>'}</li>`).join("")}
       <li>Arrêt d'urgence : ${s.arret_urgence ? '<span class="tag FAIL">ACTIF</span> (./ile arret-urgence off)' : '<span class="tag okk">inactif</span> <span class="src">./ile arret-urgence on</span>'}</li>
-      <li>Accès distant : ${s.acces_distant.length ? s.acces_distant.map(esc).join(", ") + " (connexion obligatoire)" : "désactivé"}</li>
+      <li>Accès distant : ${s.acces_distant.length ? s.acces_distant.map(esc).join(", ") + " (connexion obligatoire)" : (s.acces_distant_masques ? "configuré (noms d'hôte non publiés)" : "désactivé")}</li>
       <li>Intégrité du journal : ${d.integrite.ok ? '<span class="tag PASS">vérifiée</span>' : '<span class="tag FAIL">altéré</span>'} <span class="src">${esc(d.integrite.dernier_hash.slice(0,16))}…</span></li>
     </ul></article>
     <article class="card"><h3>Tentatives bloquées (${s.refus.length})</h3>${s.refus.length ? `<ul class="plain">${s.refus.map(r => `<li><span class="tag bloquant">${esc(r.categorie)}</span> ${esc(r.raison)}<div class="src">${quand(r.quand)} · ${esc(r.agent?.agent_type || "session principale")} · ${esc((r.extrait || "").slice(0,120))}</div></li>`).join("")}</ul>` : `<div class="nr">Aucune.</div>`}</article>
@@ -368,7 +375,7 @@ function historique(d){
 
 function organisation(d){
   $("#organisation").innerHTML = d.organisation.length ? d.organisation.map(o => `<article class="card"><div class="row" style="justify-content:space-between"><h3>${esc(o.nom)}</h3><span class="tag ${o.statut_reel === "actif" ? "okk" : "none"}">${esc(o.statut_reel === "actif" ? "actif" : (o.statut || "prévu"))}</span></div>
-    <div>${esc(o.mission)}</div>${o.batiment ? `<div class="src">bâtiment : <a href="/batiment/${encodeURIComponent(o.batiment)}">${esc(o.batiment)}</a></div>` : ""}
+    <div>${esc(o.mission)}</div>${o.batiment ? `<div class="src">bâtiment : <a href="${esc(IleSource.lien("batiment", o.batiment))}">${esc(o.batiment)}</a></div>` : ""}
     <div class="src">agents : ${o.agents?.length ? o.agents.map(esc).join(", ") : "aucun pour l'instant"}${o.prevus?.length ? " · prévus : " + o.prevus.map(esc).join(", ") : ""}</div></article>`).join("") : `<p class="nr">Organisation non décrite dans le registre.</p>`;
 }
 
@@ -380,14 +387,34 @@ async function journal(){
 }
 function resume(e){ const d = e.donnees; return d.titre || d.texte || d.raison || d.intitule || (d.mission ? `${d.mission} ${d.de ? d.de + " → " + d.vers : ""}` : "") || d.approbation || d.run || d.empreinte || d.siege || e.type; }
 
+let publieInit = false;
+async function versionPubliee(){
+  // Bandeau honnête : date de l'instantané, intégrité, fraîcheur par rapport au journal publié dans le dépôt.
+  publieInit = true;
+  $("#lien-metropole").href = IleSource.lien("metropole"); document.body.classList.add("publie");
+  const m = await IleSource.infos();
+  let fraicheur = "";
+  try{ const t = await (await fetch(IleSource.lien("fichier", m.journal), {cache:"no-store"})).text(); const n = t.split("\n").filter(l => l.trim()).length;
+       fraicheur = n === m.evenements ? " · à jour avec le journal publié" : ` · ⚠ le journal publié contient ${n} événements : instantané à régénérer (<code>./ile publier</code>)`; }catch(e){}
+  const b = $("#publie"); b.hidden = false;
+  b.innerHTML = `<b>Version publiée — lecture seule.</b> Instantané du ${esc(quand(m.genere))} : ${m.evenements} événements, journal ${m.integre ? "intègre" : "<b>ALTÉRÉ</b>"}${fraicheur}.
+    Décisions, priorités, instructions et accords se signent dans la <b>Résidence locale</b> (<code>./ile</code>) : ta phrase ne quitte jamais ton ordinateur.
+    <a href="verification.html">Vérifier soi-même le journal et les signatures →</a>`;
+}
+function desactiverActions(){
+  document.querySelectorAll("[data-appr],[data-dec],[data-mis],[data-prio],[data-ecrire],#f-ins button,#f-ins textarea,#f-ins select,#f-ins input")
+    .forEach(e => { e.disabled = true; e.title = "Disponible dans la Résidence locale (./ile)"; });
+}
 async function charger(){
   try{
+    await IleSource.detecter(); if(PUBLIE() && !publieInit) await versionPubliee();
     const d = await get("/api/residence"); D = d; $("#hors-ligne").hidden = true;
     identite(d); kpis(d); trancher(d); $("#projets-liste").innerHTML = d.sieges.map(projet).join(""); rapports(d); missions(d); instructions(d); runs(d); tests(d); securite(d); historique(d); organisation(d);
     for(const sel of ["#ins-siege", "#jr-siege"]){ const el = $(sel); if(el.options.length <= 1) d.sieges.forEach(s => el.add(new Option(s.nom, s.id))); }
-    if($("#aller").options.length <= 1) fetch("/registre.json").then(r => r.json()).then(r => r.batiments.forEach(b => $("#aller").add(new Option(b.nom, b.id)))).catch(() => {});
+    if($("#aller").options.length <= 1) fetch(IleSource.lien("fichier", "registre.json")).then(r => r.json()).then(r => r.batiments.forEach(b => $("#aller").add(new Option(b.nom, b.id)))).catch(() => {});
     await journal();
-  }catch(e){ if(e.message !== "connexion") $("#hors-ligne").hidden = false; }
+    if(PUBLIE()) desactiverActions();
+  }catch(e){ if(e.message !== "connexion"){ $("#hors-ligne").hidden = false; if(PUBLIE()) $("#hors-ligne").textContent = "Instantané de l'île introuvable ou illisible : " + e.message; } }
 }
 
 document.addEventListener("click", ev => {
@@ -401,12 +428,12 @@ document.addEventListener("click", ev => {
 });
 document.addEventListener("change", ev => {
   const s = ev.target.closest("[data-prio]"); if(s && s.value) acte("/api/priorite", {siege:s.dataset.prio, priorite:s.value}, `Priorité ${s.value} fixée`);
-  if(ev.target.id === "aller" && ev.target.value) location.href = "/batiment/" + encodeURIComponent(ev.target.value);
+  if(ev.target.id === "aller" && ev.target.value) location.href = IleSource.lien("batiment", ev.target.value);
 });
 $("#f-ins").addEventListener("submit", async ev => { ev.preventDefault(); const t = $("#ins-texte").value.trim(); if(!t) return;
   if(await acte("/api/instruction", {texte:t, siege:$("#ins-siege").value || null}, "Instruction transmise au DG")) $("#ins-texte").value = ""; });
 $("#jr-siege").addEventListener("change", journal); $("#jr-type").addEventListener("change", journal);
-charger(); setInterval(() => { if(!$("#dlg-lock").open && !["TEXTAREA","SELECT","INPUT"].includes(document.activeElement?.tagName)) charger(); }, 6000);
+charger(); setInterval(() => { if(!PUBLIE() && !$("#dlg-lock").open && !["TEXTAREA","SELECT","INPUT"].includes(document.activeElement?.tagName)) charger(); }, 6000);
 </script>
 </body>
 </html>

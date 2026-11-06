@@ -1,0 +1,2015 @@
+{
+ "agents_actifs": [],
+ "agents_expires": [
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:54:55+00:00",
+   "fin": null,
+   "mission": null,
+   "resultat": null,
+   "role": "forgeron",
+   "run": "R-0005",
+   "session_id": null,
+   "siege": "forge",
+   "source": "declare",
+   "transcript": null
+  }
+ ],
+ "approbations": [],
+ "decisions": [
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "contexte": "Votre compte GitHub peut écrire, mais le rattachement en écriture a été refusé par le contrôle d'autorisation de la session : il faut l'autoriser dans les réglages de session, ou travailler sur le Mac.",
+   "id": "E-000002",
+   "mission": null,
+   "quand": "2026-11-06T09:07:09+00:00",
+   "question": "Accepter que les agents poussent des branches de travail ile/* et ouvrent des PR en brouillon sur Antsvfr/LexNote (jamais sur main, jamais de fusion sans vous) ?",
+   "siege": "lexnote",
+   "source": "architecture/ENTREPRISE-IA.md §1.3 ; maisons/lexnote/etat-des-lieux.md (Limite de cette session)",
+   "titre": "Autoriser l'entreprise à écrire sur le dépôt LexNote",
+   "verdict": null
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "contexte": "Le code n'existe que sur votre Mac, sans historique ni copie : risque de perte. Les règles du projet interdisent tout push et tout cloud.",
+   "id": "E-000003",
+   "mission": null,
+   "quand": "2026-11-06T09:07:09+00:00",
+   "question": "Lancer git init dans le dossier du projet sur votre Mac, sans aucun dépôt distant, avec un .gitignore qui exclut data/ ?",
+   "siege": "upsa-sales-pilot",
+   "source": "maisons/upsa-sales-pilot/branches.md (Proposition) ; maisons/upsa-sales-pilot/CLAUDE.md (règles 2 et 4)",
+   "titre": "Initialiser git en local sur le Mac pour UPSA Sales Pilot",
+   "verdict": null
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "contexte": "Tests rejoués le 06/11 sur ffd1f95 : 50/55 fichiers OK ; le seul échec réel (import-center-ui, scénario 8) est identique sur main ; 4 fichiers non exécutés faute de PostgreSQL. Le zip local correspond exactement à cette branche.",
+   "id": "E-000004",
+   "mission": null,
+   "quand": "2026-11-06T09:07:09+00:00",
+   "question": "Fusionner la PR #26 dans main (ce qui la met en ligne sur GitHub Pages), la garder en attente, ou demander d'abord une mission de vérification ?",
+   "siege": "rev-em",
+   "source": "maisons/rev-em/etat-des-lieux.md (Tests exécutés le 2026-11-06)",
+   "titre": "Sort de la PR #26 de REV-EM (import fiable sans IA)",
+   "verdict": null
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "contexte": "Aucun dépôt ni dossier trouvé : la maison n'a que sa documentation.",
+   "id": "E-000005",
+   "mission": null,
+   "quand": "2026-11-06T09:07:09+00:00",
+   "question": "Indiquer le dépôt GitHub ou le dossier du Mac qui contient les outils d'EM'ERGENCY, ou confirmer qu'il n'y a pas encore de code.",
+   "siege": "bde-emergency",
+   "source": "architecture/ENTREPRISE-IA.md §1.3",
+   "titre": "Où se trouvent les outils d'EM'ERGENCY ?",
+   "verdict": null
+  }
+ ],
+ "historique": [],
+ "innovation": {
+  "dossier": "projets/innovation/",
+  "statut": "prévu — étape 6 de la roadmap"
+ },
+ "instructions": [],
+ "integrite": {
+  "dernier_hash": "1c31913324d5a0739ba57405433820c42068921c3aa0a07e95dbe18774a6e968",
+  "erreurs": [],
+  "evenements": 53,
+  "ok": true
+ },
+ "maj": "2026-11-06T13:30:27+00:00",
+ "missions": [
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 4,
+     "valeur": 5
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "npm run typecheck, npm test, npm run test:e2e exécutés et résultats reportés tels quels (local, données fictives)",
+    "Versions Node/npm et liste des migrations constatées ; présence de data/reel/ et de ses sauvegardes constatée par comptage de fichiers uniquement",
+    "Archive du code créée hors du dossier de travail, excluant data/ et node_modules/, emplacement non synchronisé validé par Anton ; aucun fichier supprimé ni modifié",
+    "Indépendant de la décision git init (E-000003) : pas de git init dans cette mission"
+   ],
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-003",
+   "objectif": "Avec accord d'Anton, via Claude Code sur le Mac ou Remote Control : revérifier les indicateurs annoncés et mettre le code X20 hors exemplaire unique, sans toucher à data/reel/ ni lire de valeur réelle",
+   "origine": "chef-upsa-sales-pilot",
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 1,
+   "risque": 2,
+   "score": 52.6,
+   "sensible": true,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000011 ; E-000014 ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2, §4 ; etat-des-lieux.md"
+   ],
+   "statut": "proposee",
+   "titre": "Sur le Mac : constat de l'état réel et copie de sécurité du code (conditionné à l'accès au Mac)",
+   "urgence": 4,
+   "valeur": 5
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 4,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "Pour chaque PR : numéro, branche, SHA de tête, base, brouillon oui/non, statut CI, relevés avec la commande utilisée",
+    "Empilement vérifié par git merge-base --is-ancestor pour chaque paire main→#12→#10→#11→#13→#14 ; tout écart consigné sans rien corriger",
+    "Liste des fichiers supabase/migrations sur #12 et #14 comparée à main (5 fichiers) et au relevé du dossier §5 (07→13 en prod, 14→18 absentes)",
+    "branches.md et etat-des-lieux.md mis à jour dans maisons/lexnote, journal.md complété ; aucun fichier du dépôt modifié, aucun fetch dans /home/user/antsvfr sans accord"
+   ],
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-004",
+   "objectif": "Remplacer les éléments « repris du dossier » par des faits vérifiés : état des PR #12/#10/#11/#13/#14, CI de caf8b40, empilement réel de la chaîne et noms des migrations 12→18, pour trancher l'écart E-000017. Nécessite d'élargir la lecture (fetch des branches dans une copie de lecture ou API GitHub en lecture), sans aucune écriture sur le dépôt.",
+   "origine": "chef-lexnote",
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 2,
+   "risque": 1,
+   "score": 52.0,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "maisons/lexnote/etat-des-lieux.md (« non revérifié ») ; dossier-projet.md §2 et §5 ; E-000017"
+   ],
+   "statut": "proposee",
+   "titre": "Vérifier en lecture seule la chaîne de PR, la CI et les migrations de #12 à #14",
+   "urgence": 4,
+   "valeur": 4
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 4,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "Chaque commande est reliée à une porte de release/gates.json (nom exact repris du dossier §5) et indique le résultat attendu",
+    "Couvre les 7 PASS « à rejouer sur le dernier SHA » + integration-diagnostic, integration-real-e2e, ai-killswitch-local, browsers-firefox-webkit, pwa-manual et les 6 points du test micro",
+    "Aucune étape ne touche la production, ses données ou ses secrets ; la sauvegarde de production (§7.5) et ai-real-smoke sont explicitement exclus et renvoyés à une décision",
+    "Aucun secret dans la fiche ; aucune porte n'est marquée PASS ; la fiche dit ce qui reste local et non cloud"
+   ],
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-005",
+   "objectif": "Regrouper en une seule séquence à lancer sur le Mac tout ce qui rejoue les preuves invalidées par caf8b40 et fait passer les portes NOT_RUN locales (deux stacks Supabase, Firefox/WebKit, test micro, checklist PWA), conformément à la consigne du dossier de regrouper les demandes en une commande unique. Livrable rédigé dans maisons/lexnote uniquement.",
+   "origine": "chef-lexnote",
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 3,
+   "risque": 1,
+   "score": 52.0,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "dossier-projet.md §5, §6, §7 et §9 (mode de travail) ; E-000016"
+   ],
+   "statut": "proposee",
+   "titre": "Préparer pour Anton une fiche unique de rejeu des portes sur caf8b40 (Mac, 0 €, hors production)",
+   "urgence": 4,
+   "valeur": 4
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 3,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "Chaque point de la check-list renvoie à une ligne de SECURITY.md ou du dossier (§6.3, §8, §10) et se vérifie par oui/non sans lire aucune valeur commerciale",
+    "Le plan de test n'utilise que npm run start:demo et le jeu fictif ; il ne mentionne jamais db:reset sur l'espace réel",
+    "Il précise ce qui reste à décider par Anton (code d'accès, chiffrement applicatif, autorisation Q1) sans le trancher"
+   ],
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-002",
+   "objectif": "Produire, sans le code, une check-list à faire exécuter par Anton sur le Mac avant tout import réel (prérequis de SECURITY.md) et un plan de test de sauvegarde puis restauration manuelle, à dérouler uniquement dans l'espace démo",
+   "origine": "chef-upsa-sales-pilot",
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 4,
+   "risque": 1,
+   "score": 48.1,
+   "sensible": false,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000013 ; dossier/projet/docs/SECURITY.md ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §6.3, §8, §10, §13"
+   ],
+   "statut": "proposee",
+   "titre": "Rédiger la check-list « avant usage de l'espace réel » et le plan de test sauvegarde/restauration",
+   "urgence": 3,
+   "valeur": 4
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 1,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 3,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "index.html charge mammoth par une URL avec version exacte (esm.run/mammoth@X.Y.Z), plus aucune occurrence de \"esm.run/mammoth\" sans @version (grep)",
+    "supabase-js épinglé à une version exacte dans index.html et dans supabase/functions/_shared/integration/runtime.ts (aligné sur _shared/lib.ts @2.45.0 ou version justifiée)",
+    "tests/import-center-ui.test.mjs passe ses 142 vérifications avec mammoth installé à la MÊME version (scénario 8 compris), sortie consignée",
+    "compat-syntax, import-without-ai et import-picker restent verts ; statuts PASS / NOT TESTED honnêtes dans le compte rendu"
+   ],
+   "effort": 1,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-007",
+   "objectif": "Supprimer les dépendances CDN flottantes de l'import DOCX et du SDK Supabase, sur une branche de travail partant de la PR #26, sans toucher main.",
+   "origine": "chef-rev-em",
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 5,
+   "risque": 2,
+   "score": 47.8,
+   "sensible": false,
+   "siege": "rev-em",
+   "sources": [
+    "E-000026, E-000028 ; /home/user/rev-em/index.html:11001,5524"
+   ],
+   "statut": "proposee",
+   "titre": "Épingler mammoth et le SDK Supabase à une version exacte",
+   "urgence": 3,
+   "valeur": 4
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 1,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 3,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "Au moins deux options par porte, chacune avec coût (0 € ou non), ce qu'elle prouve et ce qu'elle ne prouve pas",
+    "Aucune option ne transforme une validation locale en PASS cloud ; la règle « jamais de PASS sans exécution réelle » est rappelée",
+    "Document dans maisons/lexnote, puis une demande de décision inscrite au registre ; release/gates.json non modifié"
+   ],
+   "effort": 1,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-006",
+   "objectif": "Donner à Anton de quoi trancher les deux portes que le budget 0 € empêche de passer : options, ce que chaque option prouve réellement (local ≠ cloud), impact sur le verdict READY, et ce qui reste à faire dans gates.json une fois l'écriture autorisée.",
+   "origine": "chef-lexnote",
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 6,
+   "risque": 2,
+   "score": 43.1,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "dossier-projet.md §5 (rollback-rehearsed, ai-real-smoke) et §7 point 6 ; E-000018"
+   ],
+   "statut": "proposee",
+   "titre": "Rédiger le dossier de décision : scission de rollback-rehearsed en local/cloud et sort de ai-real-smoke à 0 €",
+   "urgence": 3,
+   "valeur": 3
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 2,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "Chaque modification proposée cite sa source (fichier et section) ; aucune règle métier nouvelle",
+    "ROADMAP comporte une ligne X20, DATA_MODEL décrit la migration 3 (5 éléments), les chemins de sauvegarde sont harmonisés en data/<espace>/backups/",
+    "Les 9 points de BUSINESS_RULES et les 17 questions du dossier sont réconciliés dans une seule liste",
+    "Le lot est formulé comme demande à exécuter par Claude Code sur le Mac, avec consigne de comparer d'abord aux docs/ du Mac (les copies reçues peuvent différer)"
+   ],
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-001",
+   "objectif": "Rédiger, dans la maison, les modifications à appliquer sur le Mac aux fichiers docs/ (ROADMAP, DATA_MODEL, BUSINESS_RULES, SECURITY, ARCHITECTURE, IMPORT_SPEC) et au CLAUDE.md du projet pour qu'ils décrivent X20 et les espaces réel/démo, uniquement à partir de 00_LIRE_EN_PREMIER_DOSSIER.md et COCKPIT_X20.md",
+   "origine": "chef-upsa-sales-pilot",
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 7,
+   "risque": 1,
+   "score": 39.0,
+   "sensible": false,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000012 ; dossier/projet/docs/ ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md ; dossier/COCKPIT_X20.md"
+   ],
+   "statut": "proposee",
+   "titre": "Préparer le lot de mise à jour de docs/ pour intégrer le connecteur X20",
+   "urgence": 2,
+   "valeur": 3
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 3,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 2,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "un script versionné (ex. scripts/test-deps.sh) installe les versions exactes : pdfjs-dist@4.0.379, mammoth, pg, @supabase/supabase-js, playwright ; aucun bundler ajouté",
+    "un workflow GitHub Actions sur pull_request lance la suite avec un service PostgreSQL : oauth-integration, user-data, security-audit et real-sdk-sync sont exécutés ou portent un NOT TESTED explicite avec la raison",
+    "le passage CI sur la branche de travail est vert ou chaque échec est documenté comme préexistant (comparaison avec main 763ad74)",
+    "aucun secret dans le workflow ; aucun déclenchement de déploiement Pages"
+   ],
+   "effort": 3,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-008",
+   "objectif": "Qu'un rejeu des 55 fichiers de test donne le même résultat partout, sans dépendance installée à la main, en respectant le choix sans bundler (installation --no-save documentée au §12).",
+   "origine": "chef-rev-em",
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 8,
+   "risque": 2,
+   "score": 37.1,
+   "sensible": false,
+   "siege": "rev-em",
+   "sources": [
+    "E-000027 ; maisons/rev-em/etat-des-lieux.md ; maisons/rev-em/dossier-projet.md §12"
+   ],
+   "statut": "proposee",
+   "titre": "Rendre la suite de tests reproductible : dépendances déclarées et CI sur les PR",
+   "urgence": 2,
+   "valeur": 4
+  },
+  {
+   "artefacts": [],
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.84,
+     "effort": 3,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 3,
+     "urgence": 2,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "criteres": [
+    "saveCourseFileBlob / getCourseFileBlob / deleteCourseFileBlob (index.html ~10919-10945) préfixent la clé par currentStorageNamespace() ; un invité garde le comportement actuel",
+    "un PDF enregistré sous l'ancienne clé reste lisible (repli puis migration vers la nouvelle clé), testé",
+    "test Playwright : compte A importe un PDF, compte B sur le même navigateur ne peut ni le lire ni le supprimer ; retour sur A, le PDF est intact",
+    "aucune régression des suites course-import, import-center-ui et course-hub-ui"
+   ],
+   "effort": 3,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-009",
+   "objectif": "Aligner le stockage des PDF importés (base rev-em-files, clé = identifiant de chapitre seul) sur le cloisonnement par compte de lsGet/lsSet, avec compatibilité ascendante pour les fichiers déjà enregistrés.",
+   "origine": "chef-rev-em",
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 9,
+   "risque": 3,
+   "score": 29.5,
+   "sensible": true,
+   "siege": "rev-em",
+   "sources": [
+    "/home/user/rev-em/index.html:10904-10945 et 7157 ; dossier-projet.md §5 et §14.5"
+   ],
+   "statut": "proposee",
+   "titre": "Cloisonner par compte les PDF de cours stockés en IndexedDB",
+   "urgence": 2,
+   "valeur": 3
+  }
+ ],
+ "organisation": [
+  {
+   "agents": [
+    "(session principale : le Maire)"
+   ],
+   "agents_presents": [
+    "(session principale : le Maire)"
+   ],
+   "batiment": "mairie",
+   "id": "direction-generale",
+   "mission": "Reçoit les instructions du président, classe les propositions des directeurs, planifie, rend compte.",
+   "nom": "Direction générale",
+   "statut": "actif",
+   "statut_reel": "actif"
+  },
+  {
+   "agents": [
+    "critique-clarte",
+    "critique-exigence",
+    "critique-strategie"
+   ],
+   "agents_presents": [
+    "critique-clarte",
+    "critique-exigence",
+    "critique-strategie"
+   ],
+   "batiment": "conseil",
+   "id": "strategie-analyse",
+   "mission": "Critique et sélection des propositions : clarté, exigence, stratégie ; analyses chiffrées.",
+   "nom": "Stratégie et analyse",
+   "prevus": [
+    "analyste"
+   ],
+   "statut": "actif",
+   "statut_reel": "actif"
+  },
+  {
+   "agents": [
+    "forgeron"
+   ],
+   "agents_presents": [
+    "forgeron"
+   ],
+   "batiment": "forge",
+   "id": "qualite-securite",
+   "mission": "Vérifie et répare ce qui sort des équipes ; le garde bloque techniquement les opérations interdites ou sensibles.",
+   "nom": "Qualité et sécurité",
+   "prevus": [
+    "testeur-qa",
+    "responsable-securite"
+   ],
+   "statut": "actif",
+   "statut_reel": "actif"
+  },
+  {
+   "agents": [],
+   "agents_presents": [],
+   "batiment": "observatoire",
+   "id": "technique",
+   "mission": "Architecture, développement sur branches de travail isolées, design UX/UI.",
+   "nom": "Direction technique et développement",
+   "prevus": [
+    "architecte-logiciel",
+    "developpeur",
+    "designer-ux"
+   ],
+   "statut": "prévu — étape 3",
+   "statut_reel": "prévu"
+  },
+  {
+   "agents": [],
+   "agents_presents": [],
+   "batiment": "innovation",
+   "id": "innovation",
+   "mission": "Opportunités commerciales, études de marché et de concurrence, business models, projets potentiellement rentables. Ne dépense rien, ne contacte personne, ne crée rien sans décision du président.",
+   "nom": "Innovation & Business",
+   "prevus": [
+    "veilleur",
+    "analyste-business"
+   ],
+   "statut": "prévu — étape 6",
+   "statut_reel": "prévu"
+  },
+  {
+   "agents": [
+    "chef-rev-em",
+    "chef-lexnote",
+    "chef-upsa-sales-pilot",
+    "chef-bde-emergency",
+    "chef-cuvee-campus",
+    "chef-vetotri",
+    "chef-ecole"
+   ],
+   "agents_presents": [
+    "chef-rev-em",
+    "chef-lexnote",
+    "chef-upsa-sales-pilot",
+    "chef-bde-emergency",
+    "chef-cuvee-campus",
+    "chef-vetotri",
+    "chef-ecole"
+   ],
+   "batiment": null,
+   "id": "sieges",
+   "mission": "Un directeur par projet : revues régulières (/revue), problèmes vérifiés, missions proposées au DG.",
+   "nom": "Équipes par projet",
+   "statut": "actif",
+   "statut_reel": "actif"
+  }
+ ],
+ "president": {
+  "deverrouille": false,
+  "expire": null,
+  "identite": null
+ },
+ "rapports": [
+  {
+   "debut": "2026-11-06T09:07:20+00:00",
+   "decisions": [],
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "tests_unitaires_api",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2",
+      "valeur": "99/99 au 22/10 (fictif, non revérifié)"
+     },
+     {
+      "nom": "parcours_e2e",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2",
+      "valeur": "7/7 au 22/10 (fictif, non revérifié)"
+     },
+     {
+      "nom": "phases_terminees",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §12",
+      "valeur": "6 sur 8 + X20 (phase 4 en attente, phase 8 partielle)"
+     },
+     {
+      "nom": "questions_ouvertes",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §13",
+      "valeur": "17"
+     },
+     {
+      "nom": "import_reel_x20",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §8",
+      "valeur": "inconnu"
+     }
+    ],
+    "phase": "V1 sur données fictives : phases 1-3 et 5-7 faites, connecteur X20 fait, phase 8 partielle, phase 4 en attente des formats ; code uniquement sur le Mac",
+    "resume": "Indicateurs repris de la documentation du 6/11/2026 (dossier de reprise), NON revérifiables ici : aucun code, aucune base, aucun Git dans la maison. Les tests annoncés portent sur données fictives. Statut de l'import réel X20 inconnu. Les copies de docs/ reçues ne décrivent pas encore le travail X20.",
+    "siege": "upsa-sales-pilot",
+    "source": "maisons/upsa-sales-pilot/dossier/ (documentation du 6/11/2026)"
+   },
+   "fin": "2026-11-06T09:10:11+00:00",
+   "missions": [
+    {
+     "id": "M-20261106-001",
+     "titre": "Préparer le lot de mise à jour de docs/ pour intégrer le connecteur X20"
+    },
+    {
+     "id": "M-20261106-002",
+     "titre": "Rédiger la check-list « avant usage de l'espace réel » et le plan de test sauvegarde/restauration"
+    },
+    {
+     "id": "M-20261106-003",
+     "titre": "Sur le Mac : constat de l'état réel et copie de sécurité du code (conditionné à l'accès au Mac)"
+    }
+   ],
+   "problemes": [
+    {
+     "id": "E-000012",
+     "titre": "Documentation docs/ reçue périmée par rapport au connecteur X20 du 22/10"
+    },
+    {
+     "id": "E-000013",
+     "titre": "Espace réel prêt à recevoir des données alors que les prérequis sécurité « avant données réelles » ne sont pas confirmés"
+    },
+    {
+     "id": "E-000014",
+     "titre": "Travail X20 en exemplaire unique sur le Mac, sans copie de code connue"
+    }
+   ],
+   "resultat": "revue terminée : 1 état, 3 problèmes, 3 missions proposées",
+   "role": "chef-upsa-sales-pilot",
+   "run": "R-0003",
+   "siege": "upsa-sales-pilot"
+  },
+  {
+   "debut": "2026-11-06T09:07:19+00:00",
+   "decisions": [],
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "pr26_diff",
+      "source": "git diff --stat main pr26 (/home/user/rev-em)",
+      "valeur": "19 fichiers, +1590/-96"
+     },
+     {
+      "nom": "tests_fichiers",
+      "source": "ls tests | grep -cE '.test.(js|mjs)$' (/home/user/rev-em, pr26)",
+      "valeur": "55"
+     },
+     {
+      "nom": "tests_resultat",
+      "source": "maisons/rev-em/etat-des-lieux.md",
+      "valeur": "50/55 OK, 4 NOT TESTED, 1 echec aussi sur main"
+     },
+     {
+      "nom": "i18n_parite",
+      "source": "translations.js (comptage des cles par langue, pr26)",
+      "valeur": "1263 cles x 5 langues, 0 manquante"
+     },
+     {
+      "nom": "ci",
+      "source": "ls /home/user/rev-em/.github /home/user/rev-em/package.json",
+      "valeur": "absente (pas de .github, pas de package.json)"
+     }
+    ],
+    "phase": "PR #26 prête, en attente de décision (E-000004) ; main publiée = 763ad74",
+    "resume": "PR #26 (ffd1f95) : 19 fichiers, +1590/-96 face à main (import sans IA, correctifs du hub, sélecteur de fichiers). Tests rejoués : 50/55 OK, 4 NOT TESTED faute de pg/PostgreSQL, 1 échec identique sur main. Parité i18n complète. Pas de CI, dépendances de test installées à la main. Historique local superficiel : les 5 commits annoncés de la PR ne sont pas vérifiables ici.",
+    "siege": "rev-em",
+    "source": "/home/user/rev-em (pr26, ffd1f95) ; maisons/rev-em/etat-des-lieux.md"
+   },
+   "fin": "2026-11-06T09:11:26+00:00",
+   "missions": [
+    {
+     "id": "M-20261106-007",
+     "titre": "Épingler mammoth et le SDK Supabase à une version exacte"
+    },
+    {
+     "id": "M-20261106-008",
+     "titre": "Rendre la suite de tests reproductible : dépendances déclarées et CI sur les PR"
+    },
+    {
+     "id": "M-20261106-009",
+     "titre": "Cloisonner par compte les PDF de cours stockés en IndexedDB"
+    }
+   ],
+   "problemes": [
+    {
+     "id": "E-000026",
+     "titre": "mammoth (import DOCX) chargé depuis le CDN sans version épinglée"
+    },
+    {
+     "id": "E-000027",
+     "titre": "Aucune CI ni liste versionnée des dépendances de test : résultats dépendants de l'environnement"
+    },
+    {
+     "id": "E-000028",
+     "titre": "Échec du scénario 8 d'import-center-ui : cause probable = mammoth absent de l'environnement de test, pas un bug"
+    },
+    {
+     "id": "E-000029",
+     "titre": "Documentation de référence périmée ou contradictoire avec le code de la PR #26"
+    }
+   ],
+   "resultat": "revue terminée : 1 état, 4 problèmes, 3 missions proposées",
+   "role": "chef-rev-em",
+   "run": "R-0001",
+   "siege": "rev-em"
+  },
+  {
+   "debut": "2026-11-06T09:07:19+00:00",
+   "decisions": [],
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "branches_distantes",
+      "source": "git ls-remote --heads Antsvfr/LexNote, vérifié 2026-11-06",
+      "valeur": "15"
+     },
+     {
+      "nom": "tete_PR14",
+      "source": "git ls-remote, vérifié 2026-11-06",
+      "valeur": "caf8b40 (identique au dernier SHA du dossier)"
+     },
+     {
+      "nom": "main",
+      "source": "git log + ls supabase/migrations sur /home/user/antsvfr/lexnote, vérifié 2026-11-06",
+      "valeur": "981d9aa du 2026-10-08, 5 migrations 20261007→20261011, pas de .github/workflows"
+     },
+     {
+      "nom": "portes_production",
+      "source": "dossier-projet.md §5, NON revérifié",
+      "valeur": "15 PASS / 8 NOT_RUN / 0 FAIL, NOT READY, preuves sur 2cd7c88 à rejouer"
+     },
+     {
+      "nom": "tests_correctif_micro",
+      "source": "dossier-projet.md §6, NON revérifié",
+      "valeur": "753 unitaires + 129 Playwright Chromium passés sur caf8b40"
+     }
+    ],
+    "phase": "Pré-production : chaîne de PR #12→#10→#11→#13→#14 en attente, NOT READY",
+    "resume": "Vérifié le 6/11 (lecture seule) : 15 branches distantes, tête #14 = caf8b40 (identique au dossier), main = 981d9aa (fusion PR #3 du 8/10) qui n'a ni release/gates.json, ni scripts/prod/release-gates, ni mic.ts, ni .github/workflows, et seulement 5 migrations (20261007→20261011). Le message fautif « Aucun microphone détecté » sur NotFoundError/OverconstrainedError est toujours dans main (controller.ts:526). Non revérifié (dossier du 6/11 §5) : état des PR et de la CI, portes 15 PASS / 8 NOT_RUN / 0 FAIL avec preuves établies sur 2cd7c88 et invalidées par caf8b40. Écriture sur le dépôt non autorisée (décision E-000002 en attente).",
+    "siege": "lexnote",
+    "source": "maisons/lexnote/dossier-projet.md ; git ls-remote ; copie /home/user/antsvfr/lexnote"
+   },
+   "fin": "2026-11-06T09:10:11+00:00",
+   "missions": [
+    {
+     "id": "M-20261106-004",
+     "titre": "Vérifier en lecture seule la chaîne de PR, la CI et les migrations de #12 à #14"
+    },
+    {
+     "id": "M-20261106-005",
+     "titre": "Préparer pour Anton une fiche unique de rejeu des portes sur caf8b40 (Mac, 0 €, hors production)"
+    },
+    {
+     "id": "M-20261106-006",
+     "titre": "Rédiger le dossier de décision : scission de rollback-rehearsed en local/cloud et sort de ai-real-smoke à 0 €"
+    }
+   ],
+   "problemes": [
+    {
+     "id": "E-000015",
+     "titre": "Le correctif micro (caf8b40) n'est pas sur main : le faux « Aucun microphone détecté » reste en production"
+    },
+    {
+     "id": "E-000016",
+     "titre": "Portes de mise en production NOT READY : 8 NOT_RUN et preuves des 15 PASS invalidées par caf8b40"
+    },
+    {
+     "id": "E-000017",
+     "titre": "main ne porte que 5 migrations (20261007→20261011) alors que la base de production en aurait 07→13 appliquées"
+    },
+    {
+     "id": "E-000018",
+     "titre": "La porte rollback-rehearsed ne peut pas passer à 0 € sans décision de scission local/cloud"
+    }
+   ],
+   "resultat": "revue terminée : 1 état, 4 problèmes, 3 missions proposées",
+   "role": "chef-lexnote",
+   "run": "R-0002",
+   "siege": "lexnote"
+  }
+ ],
+ "runs": [
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:54:55+00:00",
+   "fin": null,
+   "mission": null,
+   "resultat": null,
+   "role": "forgeron",
+   "run": "R-0005",
+   "session_id": null,
+   "siege": "forge",
+   "source": "declare",
+   "transcript": null
+  },
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:17:01+00:00",
+   "fin": "2026-11-06T09:25:13+00:00",
+   "mission": null,
+   "resultat": "inspection terminée : 5 défauts réparés, 5 problèmes inscrits (E-000040 à E-000044)",
+   "role": "forgeron",
+   "run": "R-0004",
+   "session_id": null,
+   "siege": "forge",
+   "source": "declare",
+   "transcript": null
+  },
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:07:20+00:00",
+   "fin": "2026-11-06T09:10:11+00:00",
+   "mission": null,
+   "resultat": "revue terminée : 1 état, 3 problèmes, 3 missions proposées",
+   "role": "chef-upsa-sales-pilot",
+   "run": "R-0003",
+   "session_id": null,
+   "siege": "upsa-sales-pilot",
+   "source": "declare",
+   "transcript": null
+  },
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:07:19+00:00",
+   "fin": "2026-11-06T09:11:26+00:00",
+   "mission": null,
+   "resultat": "revue terminée : 1 état, 4 problèmes, 3 missions proposées",
+   "role": "chef-rev-em",
+   "run": "R-0001",
+   "session_id": null,
+   "siege": "rev-em",
+   "source": "declare",
+   "transcript": null
+  },
+  {
+   "agent_id": null,
+   "debut": "2026-11-06T09:07:19+00:00",
+   "fin": "2026-11-06T09:10:11+00:00",
+   "mission": null,
+   "resultat": "revue terminée : 1 état, 4 problèmes, 3 missions proposées",
+   "role": "chef-lexnote",
+   "run": "R-0002",
+   "session_id": null,
+   "siege": "lexnote",
+   "source": "declare",
+   "transcript": null
+  }
+ ],
+ "securite": {
+  "acces_distant": [],
+  "acces_distant_masques": 0,
+  "arret_urgence": false,
+  "garde_branche": {
+   ".claude/settings.json": true
+  },
+  "refus": [],
+  "rejets": []
+ },
+ "sieges": [
+  {
+   "agents_actifs": [],
+   "couleur": "#1f6f6a",
+   "decisions": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "contexte": "Votre compte GitHub peut écrire, mais le rattachement en écriture a été refusé par le contrôle d'autorisation de la session : il faut l'autoriser dans les réglages de session, ou travailler sur le Mac.",
+     "id": "E-000002",
+     "mission": null,
+     "quand": "2026-11-06T09:07:09+00:00",
+     "question": "Accepter que les agents poussent des branches de travail ile/* et ouvrent des PR en brouillon sur Antsvfr/LexNote (jamais sur main, jamais de fusion sans vous) ?",
+     "siege": "lexnote",
+     "source": "architecture/ENTREPRISE-IA.md §1.3 ; maisons/lexnote/etat-des-lieux.md (Limite de cette session)",
+     "titre": "Autoriser l'entreprise à écrire sur le dépôt LexNote",
+     "verdict": null
+    }
+   ],
+   "depot": "https://github.com/Antsvfr/LexNote",
+   "derniere_activite": "2026-11-06T09:10:11+00:00",
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "branches_distantes",
+      "source": "git ls-remote --heads Antsvfr/LexNote, vérifié 2026-11-06",
+      "valeur": "15"
+     },
+     {
+      "nom": "tete_PR14",
+      "source": "git ls-remote, vérifié 2026-11-06",
+      "valeur": "caf8b40 (identique au dernier SHA du dossier)"
+     },
+     {
+      "nom": "main",
+      "source": "git log + ls supabase/migrations sur /home/user/antsvfr/lexnote, vérifié 2026-11-06",
+      "valeur": "981d9aa du 2026-10-08, 5 migrations 20261007→20261011, pas de .github/workflows"
+     },
+     {
+      "nom": "portes_production",
+      "source": "dossier-projet.md §5, NON revérifié",
+      "valeur": "15 PASS / 8 NOT_RUN / 0 FAIL, NOT READY, preuves sur 2cd7c88 à rejouer"
+     },
+     {
+      "nom": "tests_correctif_micro",
+      "source": "dossier-projet.md §6, NON revérifié",
+      "valeur": "753 unitaires + 129 Playwright Chromium passés sur caf8b40"
+     }
+    ],
+    "par": "chef-lexnote",
+    "phase": "Pré-production : chaîne de PR #12→#10→#11→#13→#14 en attente, NOT READY",
+    "quand": "2026-11-06T09:08:53+00:00",
+    "resume": "Vérifié le 6/11 (lecture seule) : 15 branches distantes, tête #14 = caf8b40 (identique au dossier), main = 981d9aa (fusion PR #3 du 8/10) qui n'a ni release/gates.json, ni scripts/prod/release-gates, ni mic.ts, ni .github/workflows, et seulement 5 migrations (20261007→20261011). Le message fautif « Aucun microphone détecté » sur NotFoundError/OverconstrainedError est toujours dans main (controller.ts:526). Non revérifié (dossier du 6/11 §5) : état des PR et de la CI, portes 15 PASS / 8 NOT_RUN / 0 FAIL avec preuves établies sur 2cd7c88 et invalidées par caf8b40. Écriture sur le dépôt non autorisée (décision E-000002 en attente).",
+    "source": "maisons/lexnote/dossier-projet.md ; git ls-remote ; copie /home/user/antsvfr/lexnote"
+   },
+   "etat_des_lieux": {
+    "chemin": "projets/lexnote/etat-des-lieux.md",
+    "extrait": [
+     "**Vérifié aujourd'hui :** 15 branches distantes ; `main` = 981d9aa ; `caf8b40` = tête de `claude/production-readiness-observability` ; stack confirmée par `package.json` (React, Tiptap, Supabase, Vite ; scripts `dev build preview typecheck test test:e2e build:mock`) ; `supabase/` et `vercel.json` présents ; 283 fichiers, 1 marqueur « à faire » dans le code de `main`.",
+     "**Repris du dossier, non revérifié ici :** état des PR et de la CI, 15 PASS / 8 NOT_RUN / 0 FAIL sur les 23 portes (NOT READY), preuves liées au SHA `2cd7c88` invalidées par `caf8b40` (à rejouer).",
+     "**Reste à Anton (hors de portée d'ici) :** tester le correctif micro sur la prévisualisation, lancer les deux stacks Supabase locales, Firefox/WebKit, checklist PWA, sauvegarde de production en lecture seule, décider de la scission de `rollback-rehearsed` et du fournisseur IA.",
+     "**Limite de cette session :** copie en lecture seule de `main` (ancienne). Pour travailler sur la chaîne de PR, il faut attacher le dépôt en écriture ou travailler sur le Mac."
+    ]
+   },
+   "id": "lexnote",
+   "missions_en_cours": [],
+   "nom": "LexNote",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [
+    {
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000015",
+     "ouvert": true,
+     "preuve": "Vérifié le 6/11 : sur main, classifyMediaError mappe NotFoundError et OverconstrainedError vers « Aucun microphone détecté. Branchez-en un puis réessayez. » ; src/services/capture/mic.ts (le correctif) est absent de main. Que la production Vercel soit servie depuis main vient du dossier §2, non revérifié ici.",
+     "quand": "2026-11-06T09:09:09+00:00",
+     "siege": "lexnote",
+     "source": "/home/user/antsvfr/lexnote src/services/capture/controller.ts:525-526 (main 981d9aa) ; dossier-projet.md §2 et §6",
+     "titre": "Le correctif micro (caf8b40) n'est pas sur main : le faux « Aucun microphone détecté » reste en production"
+    },
+    {
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "gravite": "bloquant",
+     "id": "E-000016",
+     "ouvert": true,
+     "preuve": "Dossier §5 : 15 PASS / 8 NOT_RUN / 0 FAIL → NOT READY ; preuves liées au SHA établies sur 2cd7c88, invalidées par caf8b40. Vérifié le 6/11 : caf8b40 est bien la tête actuelle de claude/production-readiness-observability (git ls-remote), donc les preuves restent à rejouer.",
+     "quand": "2026-11-06T09:09:09+00:00",
+     "siege": "lexnote",
+     "source": "dossier-projet.md §5 (6/11), non revérifié : release/gates.json n'existe pas sur main et la branche #14 n'est pas lisible ici",
+     "titre": "Portes de mise en production NOT READY : 8 NOT_RUN et preuves des 15 PASS invalidées par caf8b40"
+    },
+    {
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000017",
+     "ouvert": true,
+     "preuve": "Vérifié : main contient 20261007_lexnote_init … 20261011_integration_links (5 fichiers). Dossier §5 : production lue en lecture seule, migrations 07→13 appliquées, 14→18 absentes. Si « 07→13 » désigne les mêmes horodatages, 12 et 13 sont appliquées en production sans être dans main (écart que #12 doit réconcilier) : interprétation à faire vérifier, on ne tranche pas.",
+     "quand": "2026-11-06T09:09:09+00:00",
+     "siege": "lexnote",
+     "source": "ls supabase/migrations sur /home/user/antsvfr/lexnote (main 981d9aa) ; dossier-projet.md §5 porte migration-status",
+     "titre": "main ne porte que 5 migrations (20261007→20261011) alors que la base de production en aurait 07→13 appliquées"
+    },
+    {
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000018",
+     "ouvert": true,
+     "preuve": "Dossier §5 : rollback-rehearsed NOT_RUN, exige un projet Supabase de TEST hébergé et Vercel ; proposition de scinder en local/cloud non appliquée. §7.6 : décision laissée à Anton. Même situation pour ai-real-smoke (fournisseur IA payant, hors budget).",
+     "quand": "2026-11-06T09:09:09+00:00",
+     "siege": "lexnote",
+     "source": "dossier-projet.md §5 et §7 point 6 (6/11), non revérifié",
+     "titre": "La porte rollback-rehearsed ne peut pas passer à 0 € sans décision de scission local/cloud"
+    }
+   ],
+   "prochaines_actions": [
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 1.0,
+       "effort": 2,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 1,
+       "urgence": 4,
+       "valeur": 4
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "Pour chaque PR : numéro, branche, SHA de tête, base, brouillon oui/non, statut CI, relevés avec la commande utilisée",
+      "Empilement vérifié par git merge-base --is-ancestor pour chaque paire main→#12→#10→#11→#13→#14 ; tout écart consigné sans rien corriger",
+      "Liste des fichiers supabase/migrations sur #12 et #14 comparée à main (5 fichiers) et au relevé du dossier §5 (07→13 en prod, 14→18 absentes)",
+      "branches.md et etat-des-lieux.md mis à jour dans maisons/lexnote, journal.md complété ; aucun fichier du dépôt modifié, aucun fetch dans /home/user/antsvfr sans accord"
+     ],
+     "effort": 2,
+     "historique": [
+      {
+       "par": "chef-lexnote",
+       "quand": "2026-11-06T09:09:34+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-004",
+     "objectif": "Remplacer les éléments « repris du dossier » par des faits vérifiés : état des PR #12/#10/#11/#13/#14, CI de caf8b40, empilement réel de la chaîne et noms des migrations 12→18, pour trancher l'écart E-000017. Nécessite d'élargir la lecture (fetch des branches dans une copie de lecture ou API GitHub en lecture), sans aucune écriture sur le dépôt.",
+     "origine": "chef-lexnote",
+     "proposee": "2026-11-06T09:09:34+00:00",
+     "rang": 2,
+     "risque": 1,
+     "score": 52.0,
+     "sensible": false,
+     "siege": "lexnote",
+     "sources": [
+      "maisons/lexnote/etat-des-lieux.md (« non revérifié ») ; dossier-projet.md §2 et §5 ; E-000017"
+     ],
+     "statut": "proposee",
+     "titre": "Vérifier en lecture seule la chaîne de PR, la CI et les migrations de #12 à #14",
+     "urgence": 4,
+     "valeur": 4
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 1.0,
+       "effort": 2,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 1,
+       "urgence": 4,
+       "valeur": 4
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "Chaque commande est reliée à une porte de release/gates.json (nom exact repris du dossier §5) et indique le résultat attendu",
+      "Couvre les 7 PASS « à rejouer sur le dernier SHA » + integration-diagnostic, integration-real-e2e, ai-killswitch-local, browsers-firefox-webkit, pwa-manual et les 6 points du test micro",
+      "Aucune étape ne touche la production, ses données ou ses secrets ; la sauvegarde de production (§7.5) et ai-real-smoke sont explicitement exclus et renvoyés à une décision",
+      "Aucun secret dans la fiche ; aucune porte n'est marquée PASS ; la fiche dit ce qui reste local et non cloud"
+     ],
+     "effort": 2,
+     "historique": [
+      {
+       "par": "chef-lexnote",
+       "quand": "2026-11-06T09:09:34+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-005",
+     "objectif": "Regrouper en une seule séquence à lancer sur le Mac tout ce qui rejoue les preuves invalidées par caf8b40 et fait passer les portes NOT_RUN locales (deux stacks Supabase, Firefox/WebKit, test micro, checklist PWA), conformément à la consigne du dossier de regrouper les demandes en une commande unique. Livrable rédigé dans maisons/lexnote uniquement.",
+     "origine": "chef-lexnote",
+     "proposee": "2026-11-06T09:09:34+00:00",
+     "rang": 3,
+     "risque": 1,
+     "score": 52.0,
+     "sensible": false,
+     "siege": "lexnote",
+     "sources": [
+      "dossier-projet.md §5, §6, §7 et §9 (mode de travail) ; E-000016"
+     ],
+     "statut": "proposee",
+     "titre": "Préparer pour Anton une fiche unique de rejeu des portes sur caf8b40 (Mac, 0 €, hors production)",
+     "urgence": 4,
+     "valeur": 4
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-lexnote",
+      "run": "R-0002",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 0.92,
+       "effort": 1,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 2,
+       "urgence": 3,
+       "valeur": 3
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "Au moins deux options par porte, chacune avec coût (0 € ou non), ce qu'elle prouve et ce qu'elle ne prouve pas",
+      "Aucune option ne transforme une validation locale en PASS cloud ; la règle « jamais de PASS sans exécution réelle » est rappelée",
+      "Document dans maisons/lexnote, puis une demande de décision inscrite au registre ; release/gates.json non modifié"
+     ],
+     "effort": 1,
+     "historique": [
+      {
+       "par": "chef-lexnote",
+       "quand": "2026-11-06T09:09:34+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-006",
+     "objectif": "Donner à Anton de quoi trancher les deux portes que le budget 0 € empêche de passer : options, ce que chaque option prouve réellement (local ≠ cloud), impact sur le verdict READY, et ce qui reste à faire dans gates.json une fois l'écriture autorisée.",
+     "origine": "chef-lexnote",
+     "proposee": "2026-11-06T09:09:34+00:00",
+     "rang": 6,
+     "risque": 2,
+     "score": 43.1,
+     "sensible": false,
+     "siege": "lexnote",
+     "sources": [
+      "dossier-projet.md §5 (rollback-rehearsed, ai-real-smoke) et §7 point 6 ; E-000018"
+     ],
+     "statut": "proposee",
+     "titre": "Rédiger le dossier de décision : scission de rollback-rehearsed en local/cloud et sort de ai-real-smoke à 0 €",
+     "urgence": 3,
+     "valeur": 3
+    }
+   ],
+   "role": "Prise de notes de cours, transcription, documents et consolidation, pour le droit et toutes filières. Local-first, PWA, Supabase.",
+   "tests": []
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#d6402b",
+   "decisions": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "contexte": "Aucun dépôt ni dossier trouvé : la maison n'a que sa documentation.",
+     "id": "E-000005",
+     "mission": null,
+     "quand": "2026-11-06T09:07:09+00:00",
+     "question": "Indiquer le dépôt GitHub ou le dossier du Mac qui contient les outils d'EM'ERGENCY, ou confirmer qu'il n'y a pas encore de code.",
+     "siege": "bde-emergency",
+     "source": "architecture/ENTREPRISE-IA.md §1.3",
+     "titre": "Où se trouvent les outils d'EM'ERGENCY ?",
+     "verdict": null
+    }
+   ],
+   "depot": null,
+   "derniere_activite": "2026-11-06T09:07:09+00:00",
+   "etat": null,
+   "etat_des_lieux": null,
+   "id": "bde-emergency",
+   "missions_en_cours": [],
+   "nom": "QG EM'ERGENCY",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [],
+   "prochaines_actions": [],
+   "role": "Campagne BDE BBA : programme chiffré, entraînement à l'entretien de candidature, communication de la liste.",
+   "tests": []
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#b8572b",
+   "decisions": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "contexte": "Tests rejoués le 06/11 sur ffd1f95 : 50/55 fichiers OK ; le seul échec réel (import-center-ui, scénario 8) est identique sur main ; 4 fichiers non exécutés faute de PostgreSQL. Le zip local correspond exactement à cette branche.",
+     "id": "E-000004",
+     "mission": null,
+     "quand": "2026-11-06T09:07:09+00:00",
+     "question": "Fusionner la PR #26 dans main (ce qui la met en ligne sur GitHub Pages), la garder en attente, ou demander d'abord une mission de vérification ?",
+     "siege": "rev-em",
+     "source": "maisons/rev-em/etat-des-lieux.md (Tests exécutés le 2026-11-06)",
+     "titre": "Sort de la PR #26 de REV-EM (import fiable sans IA)",
+     "verdict": null
+    }
+   ],
+   "depot": "https://github.com/Antsvfr/REV-EM",
+   "derniere_activite": "2026-11-06T09:53:27+00:00",
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "pr26_diff",
+      "source": "git diff --stat main pr26 (/home/user/rev-em)",
+      "valeur": "19 fichiers, +1590/-96"
+     },
+     {
+      "nom": "tests_fichiers",
+      "source": "ls tests | grep -cE '.test.(js|mjs)$' (/home/user/rev-em, pr26)",
+      "valeur": "55"
+     },
+     {
+      "nom": "tests_resultat",
+      "source": "maisons/rev-em/etat-des-lieux.md",
+      "valeur": "50/55 OK, 4 NOT TESTED, 1 echec aussi sur main"
+     },
+     {
+      "nom": "i18n_parite",
+      "source": "translations.js (comptage des cles par langue, pr26)",
+      "valeur": "1263 cles x 5 langues, 0 manquante"
+     },
+     {
+      "nom": "ci",
+      "source": "ls /home/user/rev-em/.github /home/user/rev-em/package.json",
+      "valeur": "absente (pas de .github, pas de package.json)"
+     }
+    ],
+    "par": "chef-rev-em",
+    "phase": "PR #26 prête, en attente de décision (E-000004) ; main publiée = 763ad74",
+    "quand": "2026-11-06T09:09:57+00:00",
+    "resume": "PR #26 (ffd1f95) : 19 fichiers, +1590/-96 face à main (import sans IA, correctifs du hub, sélecteur de fichiers). Tests rejoués : 50/55 OK, 4 NOT TESTED faute de pg/PostgreSQL, 1 échec identique sur main. Parité i18n complète. Pas de CI, dépendances de test installées à la main. Historique local superficiel : les 5 commits annoncés de la PR ne sont pas vérifiables ici.",
+    "source": "/home/user/rev-em (pr26, ffd1f95) ; maisons/rev-em/etat-des-lieux.md"
+   },
+   "etat_des_lieux": {
+    "chemin": "projets/rev-em/etat-des-lieux.md",
+    "extrait": [
+     "**Vérifié aujourd'hui :** 8 branches distantes ; `main` = 763ad74 (08/10/2026) ; `b7773d5` = tête de `claude/lexnote-sso-launch` ; copie de `main` : 228 fichiers, 2 marqueurs « à faire » ; `.claude/CLAUDE.md` et skills présents.",
+     "**Le zip du code source = la tête de la PR #26** (`claude/anaquizz-rebrand-restructure-ddinml`, commit `ffd1f95` du 27/10/2026). Comparé fichier par fichier aux 7 branches distantes : 1 seule différence sur 243 fichiers (le zip n'a pas le dossier `vendor/` ; il a en plus ton dossier de reprise). C'est donc le travail de la PR #26 en attente de fusion, **pas** l'état publié (`main` en diffère de ~20 fichiers). Rien n'est à importer : la branche existe sur GitHub.",
+     "**Repris des dossiers, non revérifié ici :** PR en attente (#24, #26, et #25 selon l'autre dossier), cache `rev-em-v17`, tests, absence de CI.",
+     "**Limite de cette session :** copie en lecture seule de `main`. Pour travailler sur une branche, il faut attacher le dépôt en écriture."
+    ]
+   },
+   "id": "rev-em",
+   "missions_en_cours": [],
+   "nom": "REV-EM",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [
+    {
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000026",
+     "ouvert": true,
+     "preuve": "index.html:11001 import(\"https://esm.run/mammoth\") sans version, alors que pdf.js est épinglé (index.html:10951, @4.0.379) et WebLLM aussi (ai-engine.js:32, dont le commentaire explique justement le danger d'une version flottante). Le SDK Supabase n'est épinglé qu'à la majeure : index.html:5524 (supabase-js@2) et supabase/functions/_shared/integration/runtime.ts:4 (esm.sh/@supabase/supabase-js@2). Une nouvelle version publiée sur le CDN change l'import DOCX en production sans aucun commit.",
+     "quand": "2026-11-06T09:10:10+00:00",
+     "siege": "rev-em",
+     "source": "/home/user/rev-em/index.html:11001 (pr26 et main)",
+     "titre": "mammoth (import DOCX) chargé depuis le CDN sans version épinglée"
+    },
+    {
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000027",
+     "ouvert": true,
+     "preuve": "Pas de dossier .github ni de package.json dans pr26. node_modules (ignoré par git) ne contient que @mapbox, path2d-polyfill et pdfjs-dist : mammoth, pg et @supabase/supabase-js manquent, d'où 4 fichiers de test NOT TESTED (oauth-integration, user-data, security-audit, real-sdk-sync) lors du rejeu du 2026-11-06. Les dépendances ne sont décrites qu'en prose (dossier-projet.md §12).",
+     "quand": "2026-11-06T09:10:10+00:00",
+     "siege": "rev-em",
+     "source": "ls /home/user/rev-em/.github /home/user/rev-em/package.json ; ls /home/user/rev-em/node_modules ; maisons/rev-em/etat-des-lieux.md",
+     "titre": "Aucune CI ni liste versionnée des dépendances de test : résultats dépendants de l'environnement"
+    },
+    {
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "gravite": "mineur",
+     "id": "E-000028",
+     "ouvert": true,
+     "preuve": "Le test lit node_modules/mammoth/mammoth.browser.js (l.55) et, s'il est absent, INTERROMPT la requête vers https://esm.run/mammoth (l.107 : r.abort()). mammoth n'est pas installé. Le scénario 8 est le SEUL qui utilise un .docx (l.337) et attend l'extraction 15 s (l.341) : cela explique l'échec, identique sur main. Cause déduite par lecture du code, non confirmée par un nouveau passage (tests interdits dans cette revue). Corrige la mention « cause non établie » de etat-des-lieux.md.",
+     "quand": "2026-11-06T09:10:10+00:00",
+     "siege": "rev-em",
+     "source": "/home/user/rev-em/tests/import-center-ui.test.mjs:55,107,331-345 ; ls /home/user/rev-em/node_modules",
+     "titre": "Échec du scénario 8 d'import-center-ui : cause probable = mammoth absent de l'environnement de test, pas un bug"
+    },
+    {
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "gravite": "mineur",
+     "id": "E-000029",
+     "ouvert": true,
+     "preuve": "index.html compte 25 292 lignes, mais .claude/CLAUDE.md:24 et .claude/skills/frontend-architecture/SKILL.md:3,10 disent ~20 800. dossier-projet.md §4.2/§12 annonce 64 fichiers de test : il y en a 55 (+2 bancs d'essai et helpers/). maisons/rev-em/CLAUDE.md annonce les migrations 000-009 : main et pr26 n'ont que 000-007. dossier-projet.md §5 nomme la base IndexedDB em-lyon-revision-files ; le code (index.html:10904) utilise rev-em-files.",
+     "quand": "2026-11-06T09:10:10+00:00",
+     "siege": "rev-em",
+     "source": "wc -l index.html ; ls tests ; ls supabase/migrations ; grep COURSE_FILES_DB_NAME index.html (/home/user/rev-em, pr26)",
+     "titre": "Documentation de référence périmée ou contradictoire avec le code de la PR #26"
+    }
+   ],
+   "prochaines_actions": [
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 0.92,
+       "effort": 1,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 2,
+       "urgence": 3,
+       "valeur": 4
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "index.html charge mammoth par une URL avec version exacte (esm.run/mammoth@X.Y.Z), plus aucune occurrence de \"esm.run/mammoth\" sans @version (grep)",
+      "supabase-js épinglé à une version exacte dans index.html et dans supabase/functions/_shared/integration/runtime.ts (aligné sur _shared/lib.ts @2.45.0 ou version justifiée)",
+      "tests/import-center-ui.test.mjs passe ses 142 vérifications avec mammoth installé à la MÊME version (scénario 8 compris), sortie consignée",
+      "compat-syntax, import-without-ai et import-picker restent verts ; statuts PASS / NOT TESTED honnêtes dans le compte rendu"
+     ],
+     "effort": 1,
+     "historique": [
+      {
+       "par": "chef-rev-em",
+       "quand": "2026-11-06T09:10:26+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-007",
+     "objectif": "Supprimer les dépendances CDN flottantes de l'import DOCX et du SDK Supabase, sur une branche de travail partant de la PR #26, sans toucher main.",
+     "origine": "chef-rev-em",
+     "proposee": "2026-11-06T09:10:26+00:00",
+     "rang": 5,
+     "risque": 2,
+     "score": 47.8,
+     "sensible": false,
+     "siege": "rev-em",
+     "sources": [
+      "E-000026, E-000028 ; /home/user/rev-em/index.html:11001,5524"
+     ],
+     "statut": "proposee",
+     "titre": "Épingler mammoth et le SDK Supabase à une version exacte",
+     "urgence": 3,
+     "valeur": 4
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 0.92,
+       "effort": 3,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 2,
+       "urgence": 2,
+       "valeur": 4
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "un script versionné (ex. scripts/test-deps.sh) installe les versions exactes : pdfjs-dist@4.0.379, mammoth, pg, @supabase/supabase-js, playwright ; aucun bundler ajouté",
+      "un workflow GitHub Actions sur pull_request lance la suite avec un service PostgreSQL : oauth-integration, user-data, security-audit et real-sdk-sync sont exécutés ou portent un NOT TESTED explicite avec la raison",
+      "le passage CI sur la branche de travail est vert ou chaque échec est documenté comme préexistant (comparaison avec main 763ad74)",
+      "aucun secret dans le workflow ; aucun déclenchement de déploiement Pages"
+     ],
+     "effort": 3,
+     "historique": [
+      {
+       "par": "chef-rev-em",
+       "quand": "2026-11-06T09:10:26+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-008",
+     "objectif": "Qu'un rejeu des 55 fichiers de test donne le même résultat partout, sans dépendance installée à la main, en respectant le choix sans bundler (installation --no-save documentée au §12).",
+     "origine": "chef-rev-em",
+     "proposee": "2026-11-06T09:10:26+00:00",
+     "rang": 8,
+     "risque": 2,
+     "score": 37.1,
+     "sensible": false,
+     "siege": "rev-em",
+     "sources": [
+      "E-000027 ; maisons/rev-em/etat-des-lieux.md ; maisons/rev-em/dossier-projet.md §12"
+     ],
+     "statut": "proposee",
+     "titre": "Rendre la suite de tests reproductible : dépendances déclarées et CI sur les PR",
+     "urgence": 2,
+     "valeur": 4
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-rev-em",
+      "run": "R-0001",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 0.84,
+       "effort": 3,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 3,
+       "urgence": 2,
+       "valeur": 3
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "saveCourseFileBlob / getCourseFileBlob / deleteCourseFileBlob (index.html ~10919-10945) préfixent la clé par currentStorageNamespace() ; un invité garde le comportement actuel",
+      "un PDF enregistré sous l'ancienne clé reste lisible (repli puis migration vers la nouvelle clé), testé",
+      "test Playwright : compte A importe un PDF, compte B sur le même navigateur ne peut ni le lire ni le supprimer ; retour sur A, le PDF est intact",
+      "aucune régression des suites course-import, import-center-ui et course-hub-ui"
+     ],
+     "effort": 3,
+     "historique": [
+      {
+       "par": "chef-rev-em",
+       "quand": "2026-11-06T09:10:26+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-009",
+     "objectif": "Aligner le stockage des PDF importés (base rev-em-files, clé = identifiant de chapitre seul) sur le cloisonnement par compte de lsGet/lsSet, avec compatibilité ascendante pour les fichiers déjà enregistrés.",
+     "origine": "chef-rev-em",
+     "proposee": "2026-11-06T09:10:26+00:00",
+     "rang": 9,
+     "risque": 3,
+     "score": 29.5,
+     "sensible": true,
+     "siege": "rev-em",
+     "sources": [
+      "/home/user/rev-em/index.html:10904-10945 et 7157 ; dossier-projet.md §5 et §14.5"
+     ],
+     "statut": "proposee",
+     "titre": "Cloisonner par compte les PDF de cours stockés en IndexedDB",
+     "urgence": 2,
+     "valeur": 3
+    }
+   ],
+   "role": "Plateforme de révision pour étudiants : cours, quiz, flashcards, planning, assistant IA local, maths, liaison avec LexNote.",
+   "tests": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "commande": "node tests/*.test.{js,mjs} avec le dépôt servi sur le port 9109",
+     "details": null,
+     "execute_le": "2026-11-06T01:40:00+00:00",
+     "id": "E-000049",
+     "intitule": "Suite de tests de la PR #26 (ffd1f95)",
+     "mission": null,
+     "preuve": "maisons/rev-em/etat-des-lieux.md",
+     "quand": "2026-11-06T09:53:27+00:00",
+     "resultat": "PARTIEL",
+     "resume": "50/55 fichiers OK ; import-center-ui scénario 8 en échec (identique sur main) ; 4 fichiers NOT TESTED (PostgreSQL et pg absents)",
+     "siege": "rev-em"
+    }
+   ]
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#7a3f8f",
+   "decisions": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "contexte": "Le code n'existe que sur votre Mac, sans historique ni copie : risque de perte. Les règles du projet interdisent tout push et tout cloud.",
+     "id": "E-000003",
+     "mission": null,
+     "quand": "2026-11-06T09:07:09+00:00",
+     "question": "Lancer git init dans le dossier du projet sur votre Mac, sans aucun dépôt distant, avec un .gitignore qui exclut data/ ?",
+     "siege": "upsa-sales-pilot",
+     "source": "maisons/upsa-sales-pilot/branches.md (Proposition) ; maisons/upsa-sales-pilot/CLAUDE.md (règles 2 et 4)",
+     "titre": "Initialiser git en local sur le Mac pour UPSA Sales Pilot",
+     "verdict": null
+    }
+   ],
+   "depot": null,
+   "derniere_activite": "2026-11-06T09:10:11+00:00",
+   "etat": {
+    "indicateurs": [
+     {
+      "nom": "tests_unitaires_api",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2",
+      "valeur": "99/99 au 22/10 (fictif, non revérifié)"
+     },
+     {
+      "nom": "parcours_e2e",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2",
+      "valeur": "7/7 au 22/10 (fictif, non revérifié)"
+     },
+     {
+      "nom": "phases_terminees",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §12",
+      "valeur": "6 sur 8 + X20 (phase 4 en attente, phase 8 partielle)"
+     },
+     {
+      "nom": "questions_ouvertes",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §13",
+      "valeur": "17"
+     },
+     {
+      "nom": "import_reel_x20",
+      "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §8",
+      "valeur": "inconnu"
+     }
+    ],
+    "par": "chef-upsa-sales-pilot",
+    "phase": "V1 sur données fictives : phases 1-3 et 5-7 faites, connecteur X20 fait, phase 8 partielle, phase 4 en attente des formats ; code uniquement sur le Mac",
+    "quand": "2026-11-06T09:08:54+00:00",
+    "resume": "Indicateurs repris de la documentation du 6/11/2026 (dossier de reprise), NON revérifiables ici : aucun code, aucune base, aucun Git dans la maison. Les tests annoncés portent sur données fictives. Statut de l'import réel X20 inconnu. Les copies de docs/ reçues ne décrivent pas encore le travail X20.",
+    "source": "maisons/upsa-sales-pilot/dossier/ (documentation du 6/11/2026)"
+   },
+   "etat_des_lieux": {
+    "chemin": "projets/upsa-sales-pilot/etat-des-lieux.md",
+    "extrait": [
+     "**Reçu :** `UPSA_dossier_complet.zip` (23 fichiers, 184 Ko) : dossier de reprise, prompt fondateur v3, description du cockpit X20, `CLAUDE.md`, `README`, `docs/` (8 fichiers), `.claude/references/` (3 fichiers), bilans de sessions 1 et 2. Importé dans `dossier/`. Le dossier précise qu'il ne contient aucune donnée commerciale réelle.",
+     "**Absent :** tout le code, toute base de données, le travail X20. Le zip de code du 19 octobre, mentionné par le dossier, n'a pas été fourni et serait de toute façon périmé.",
+     "**Non vérifiable d'ici :** les 99 tests et 7 parcours, la version de Node, l'état de la base réelle.",
+     "**Pour faire avancer ce projet,** deux voies : connecter le dossier du Mac à une session (Réglages → Claude Code → Remote Control), ou travailler dans Claude Code sur le Mac avec `dossier/` comme contexte."
+    ]
+   },
+   "id": "upsa-sales-pilot",
+   "missions_en_cours": [],
+   "nom": "UPSA Sales Pilot",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [
+    {
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000012",
+     "ouvert": true,
+     "preuve": "grep -i 'x20|cockpit|migration 3' sur projet/docs/ : aucune occurrence (ROADMAP sans ligne X20, DATA_MODEL sans migration 3). Sauvegardes : data/backups/ dans BUSINESS_RULES, SECURITY, BILAN_SESSION_2 contre data/<espace>/backups/ dans 00_LIRE et COCKPIT_X20. Points à confirmer : 9 dans BUSINESS_RULES contre 17 questions au §13 du dossier. §11 annonce 26 skills mais en liste 27.",
+     "quand": "2026-11-06T09:09:04+00:00",
+     "siege": "upsa-sales-pilot",
+     "source": "dossier/projet/docs/*.md, dossier/00_LIRE_EN_PREMIER_DOSSIER.md, dossier/COCKPIT_X20.md",
+     "titre": "Documentation docs/ reçue périmée par rapport au connecteur X20 du 22/10"
+    },
+    {
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000013",
+     "ouvert": true,
+     "preuve": "SECURITY.md exige avant données réelles le chiffrement du disque (obligatoire), un emplacement hors dossier synchronisé et envisage un code d'accès ; §6.3 : chiffrement applicatif et code d'accès non disponibles ; §8 : npm start = espace réel data/reel/, import réel non confirmé ; SECURITY.md indique encore « Claude Code lit les fichiers du projet : données fictives seulement », ce que l'espace réel rend caduc. Aucune trace de vérification de ces prérequis dans le dossier.",
+     "quand": "2026-11-06T09:09:04+00:00",
+     "siege": "upsa-sales-pilot",
+     "source": "dossier/projet/docs/SECURITY.md, dossier/00_LIRE_EN_PREMIER_DOSSIER.md §6.3, §8, §10, §13 Q1-Q2",
+     "titre": "Espace réel prêt à recevoir des données alors que les prérequis sécurité « avant données réelles » ne sont pas confirmés"
+    },
+    {
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "gravite": "majeur",
+     "id": "E-000014",
+     "ouvert": true,
+     "preuve": "Le zip du 19/10 ne contient pas le travail X20 (migration 3, src/domain/cockpit/, écrans Cockpit, start:demo) ; la version à jour n'existe que sur le Mac ; pas de dépôt Git connu (décision git init déjà demandée : E-000003). Les sauvegardes décrites ne portent que sur la base (VACUUM INTO), pas sur le code.",
+     "quand": "2026-11-06T09:09:04+00:00",
+     "siege": "upsa-sales-pilot",
+     "source": "dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2, maisons/upsa-sales-pilot/CLAUDE.md, etat-des-lieux.md",
+     "titre": "Travail X20 en exemplaire unique sur le Mac, sans copie de code connue"
+    }
+   ],
+   "prochaines_actions": [
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 0.92,
+       "effort": 2,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 2,
+       "urgence": 4,
+       "valeur": 5
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "npm run typecheck, npm test, npm run test:e2e exécutés et résultats reportés tels quels (local, données fictives)",
+      "Versions Node/npm et liste des migrations constatées ; présence de data/reel/ et de ses sauvegardes constatée par comptage de fichiers uniquement",
+      "Archive du code créée hors du dossier de travail, excluant data/ et node_modules/, emplacement non synchronisé validé par Anton ; aucun fichier supprimé ni modifié",
+      "Indépendant de la décision git init (E-000003) : pas de git init dans cette mission"
+     ],
+     "effort": 2,
+     "historique": [
+      {
+       "par": "chef-upsa-sales-pilot",
+       "quand": "2026-11-06T09:09:19+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-003",
+     "objectif": "Avec accord d'Anton, via Claude Code sur le Mac ou Remote Control : revérifier les indicateurs annoncés et mettre le code X20 hors exemplaire unique, sans toucher à data/reel/ ni lire de valeur réelle",
+     "origine": "chef-upsa-sales-pilot",
+     "proposee": "2026-11-06T09:09:19+00:00",
+     "rang": 1,
+     "risque": 2,
+     "score": 52.6,
+     "sensible": true,
+     "siege": "upsa-sales-pilot",
+     "sources": [
+      "E-000011 ; E-000014 ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2, §4 ; etat-des-lieux.md"
+     ],
+     "statut": "proposee",
+     "titre": "Sur le Mac : constat de l'état réel et copie de sécurité du code (conditionné à l'accès au Mac)",
+     "urgence": 4,
+     "valeur": 5
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 1.0,
+       "effort": 2,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 1,
+       "urgence": 3,
+       "valeur": 4
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "Chaque point de la check-list renvoie à une ligne de SECURITY.md ou du dossier (§6.3, §8, §10) et se vérifie par oui/non sans lire aucune valeur commerciale",
+      "Le plan de test n'utilise que npm run start:demo et le jeu fictif ; il ne mentionne jamais db:reset sur l'espace réel",
+      "Il précise ce qui reste à décider par Anton (code d'accès, chiffrement applicatif, autorisation Q1) sans le trancher"
+     ],
+     "effort": 2,
+     "historique": [
+      {
+       "par": "chef-upsa-sales-pilot",
+       "quand": "2026-11-06T09:09:19+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-002",
+     "objectif": "Produire, sans le code, une check-list à faire exécuter par Anton sur le Mac avant tout import réel (prérequis de SECURITY.md) et un plan de test de sauvegarde puis restauration manuelle, à dérouler uniquement dans l'espace démo",
+     "origine": "chef-upsa-sales-pilot",
+     "proposee": "2026-11-06T09:09:19+00:00",
+     "rang": 4,
+     "risque": 1,
+     "score": 48.1,
+     "sensible": false,
+     "siege": "upsa-sales-pilot",
+     "sources": [
+      "E-000013 ; dossier/projet/docs/SECURITY.md ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §6.3, §8, §10, §13"
+     ],
+     "statut": "proposee",
+     "titre": "Rédiger la check-list « avant usage de l'espace réel » et le plan de test sauvegarde/restauration",
+     "urgence": 3,
+     "valeur": 4
+    },
+    {
+     "artefacts": [],
+     "auteur": {
+      "role": "chef-upsa-sales-pilot",
+      "run": "R-0003",
+      "verifie": "run"
+     },
+     "classement": {
+      "detail": {
+       "coef_priorite": 0.65,
+       "coef_risque": 1.0,
+       "effort": 2,
+       "notes_manquantes": [],
+       "priorite_siege": "P2 (non fixée)",
+       "risque": 1,
+       "urgence": 2,
+       "valeur": 3
+      },
+      "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+      "par": "maire",
+      "quand": "2026-11-06T09:11:26+00:00"
+     },
+     "criteres": [
+      "Chaque modification proposée cite sa source (fichier et section) ; aucune règle métier nouvelle",
+      "ROADMAP comporte une ligne X20, DATA_MODEL décrit la migration 3 (5 éléments), les chemins de sauvegarde sont harmonisés en data/<espace>/backups/",
+      "Les 9 points de BUSINESS_RULES et les 17 questions du dossier sont réconciliés dans une seule liste",
+      "Le lot est formulé comme demande à exécuter par Claude Code sur le Mac, avec consigne de comparer d'abord aux docs/ du Mac (les copies reçues peuvent différer)"
+     ],
+     "effort": 2,
+     "historique": [
+      {
+       "par": "chef-upsa-sales-pilot",
+       "quand": "2026-11-06T09:09:19+00:00",
+       "statut": "proposee"
+      }
+     ],
+     "id": "M-20261106-001",
+     "objectif": "Rédiger, dans la maison, les modifications à appliquer sur le Mac aux fichiers docs/ (ROADMAP, DATA_MODEL, BUSINESS_RULES, SECURITY, ARCHITECTURE, IMPORT_SPEC) et au CLAUDE.md du projet pour qu'ils décrivent X20 et les espaces réel/démo, uniquement à partir de 00_LIRE_EN_PREMIER_DOSSIER.md et COCKPIT_X20.md",
+     "origine": "chef-upsa-sales-pilot",
+     "proposee": "2026-11-06T09:09:19+00:00",
+     "rang": 7,
+     "risque": 1,
+     "score": 39.0,
+     "sensible": false,
+     "siege": "upsa-sales-pilot",
+     "sources": [
+      "E-000012 ; dossier/projet/docs/ ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md ; dossier/COCKPIT_X20.md"
+     ],
+     "statut": "proposee",
+     "titre": "Préparer le lot de mise à jour de docs/ pour intégrer le connecteur X20",
+     "urgence": 2,
+     "valeur": 3
+    }
+   ],
+   "role": "Pilotage commercial quotidien pour une commerciale UPSA : fiche pharmacie 360°, paracétamol, OTC, conventions, visites, import X20. Local, données fictives.",
+   "tests": []
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#7d2e46",
+   "decisions": [],
+   "depot": null,
+   "derniere_activite": null,
+   "etat": null,
+   "etat_des_lieux": null,
+   "id": "cuvee-campus",
+   "missions_en_cours": [],
+   "nom": "Cave Cuvée Campus",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [],
+   "prochaines_actions": [],
+   "role": "Projet sociétal environnemental de l'équipe 53 : livrables, recherches sourcées, suivi d'équipe.",
+   "tests": []
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#2f8f83",
+   "decisions": [],
+   "depot": null,
+   "derniere_activite": null,
+   "etat": null,
+   "etat_des_lieux": null,
+   "id": "vetotri",
+   "missions_en_cours": [],
+   "nom": "Labo Vétotri",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [],
+   "prochaines_actions": [],
+   "role": "Ton chatbot : code, prompts système versionnés, tests, recherche d'un nouveau nom.",
+   "tests": []
+  },
+  {
+   "agents_actifs": [],
+   "couleur": "#2e5c9e",
+   "decisions": [],
+   "depot": null,
+   "derniere_activite": null,
+   "etat": null,
+   "etat_des_lieux": null,
+   "id": "ecole",
+   "missions_en_cours": [],
+   "nom": "École",
+   "priorite": null,
+   "priorite_motif": null,
+   "problemes": [],
+   "prochaines_actions": [],
+   "role": "Cours emlyon : présentation d'anglais sur Lester Piggott, « Analyser et comprendre le marché », fiches de révision.",
+   "tests": []
+  }
+ ],
+ "tests": [
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "commande": "node tests/*.test.{js,mjs} avec le dépôt servi sur le port 9109",
+   "details": null,
+   "execute_le": "2026-11-06T01:40:00+00:00",
+   "id": "E-000049",
+   "intitule": "Suite de tests de la PR #26 (ffd1f95)",
+   "mission": null,
+   "preuve": "maisons/rev-em/etat-des-lieux.md",
+   "quand": "2026-11-06T09:53:27+00:00",
+   "resultat": "PARTIEL",
+   "resume": "50/55 fichiers OK ; import-center-ui scénario 8 en échec (identique sur main) ; 4 fichiers NOT TESTED (PostgreSQL et pg absents)",
+   "siege": "rev-em"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "commande": "python3 -m unittest discover -s operations/tests",
+   "details": null,
+   "execute_le": "2026-11-06T09:53:27+00:00",
+   "id": "E-000048",
+   "intitule": "Tests unitaires du registre, de l'identité, des signatures et du garde",
+   "mission": null,
+   "preuve": null,
+   "quand": "2026-11-06T09:53:27+00:00",
+   "resultat": "PASS",
+   "resume": "41 tests OK (dont vecteurs RFC 8032 Ed25519)",
+   "siege": "mairie"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "commande": "python3 operations/preuves.py --claude",
+   "details": null,
+   "execute_le": "2026-11-06T09:53:27+00:00",
+   "id": "E-000047",
+   "intitule": "Preuves des étapes 0, 1 et 2 (preuves.py --claude)",
+   "mission": null,
+   "preuve": "architecture/ETAPES-2.md",
+   "quand": "2026-11-06T09:53:27+00:00",
+   "resultat": "PARTIEL",
+   "resume": "22 PASS · 1 PARTIEL (démarrage automatique launchd non testable sans Mac) · 0 FAIL · 0 NOT TESTED ; dont une vraie session Claude Code bloquée par le garde",
+   "siege": "mairie"
+  }
+ ]
+}
