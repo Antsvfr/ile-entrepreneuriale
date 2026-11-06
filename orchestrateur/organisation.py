@@ -54,6 +54,9 @@ FONCTIONS = {
     "agent-operationnel":        {"titre": "Agent opérationnel", "niveau": 6, "famille": "operationnel", "permissions": P_EXECUTION},
 }
 TYPES_ORG = ("org.departement.cree", "org.poste.cree", "org.agent.cree", "org.agent.affecte", "org.agent.suspendu", "org.agent.reactive")
+# Phase 3.3 : travail et communication (toujours des événements du même registre chaîné)
+TYPES_TRAVAIL = ("mission.attribuee", "mission.livrable", "mission.validee", "mission.correction", "mission.remontee",
+                 "message.envoye", "reunion.ouverte", "reunion.close")
 IDENT = re.compile(r"^[a-z0-9][a-z0-9-]{1,47}$")
 
 
@@ -103,9 +106,17 @@ def projeter(evs: list, p: dict = None) -> dict:
         elif t == "org.agent.cree":
             agents[d["id"]]["historique"].append(trace)
         histo.append({**trace, "entreprise": d.get("entreprise") or (postes.get(d.get("poste")) or {}).get("entreprise")})
+    travail = _projeter_travail(evs, p, agents)
     runs_actifs = {r["role"]: r for r in p["runs_actifs"]}
     for a in agents.values():
-        a.update(_statut(a, runs_actifs))
+        a.update(_statut(a, runs_actifs, travail))
+        a["missions"] = [m for m in travail["missions"].values() if m.get("attributaire") == a["id"]]
+        fin = [m for m in a["missions"] if m["statut"] == "terminee"]
+        a["performance"] = {   # faits comptés, jamais estimés
+            "missions_attribuees": len(a["missions"]), "missions_terminees": len(fin),
+            "corrections_demandees": sum(m["corrections"] for m in a["missions"]),
+            "livrees_dans_les_delais": sum(1 for m in fin if m.get("echeance") and m.get("livree") and m["livree"][:10] <= m["echeance"]),
+            "avec_echeance": sum(1 for m in fin if m.get("echeance")), "nature": "comptage d'événements du registre"}
         po = postes.get(a["poste"]) or {}
         a["entreprise"], a["departement"], a["fonction"] = po.get("entreprise"), po.get("departement"), po.get("fonction")
         a["superieur"] = _titulaire(postes, po.get("superieur"))
@@ -125,7 +136,14 @@ def projeter(evs: list, p: dict = None) -> dict:
         e["effectif"] = len(e["agents"])
         e["postes_non_pourvus"] = len([x for x in e["postes"] if not x["titulaire"]])
         e["agents_en_execution"] = len([a for a in e["agents"] if a["statut"] == "en_execution"])
+    for e in ents.values():
+        ms = [m for m in travail["missions"].values() if m["siege"] == e["id"]]
+        e["missions"] = {k: len([m for m in ms if m["statut"] in v]) for k, v in
+                         {"en_cours": ("planifiee", "en_cours", "verification"), "bloquees": ("bloquee",), "terminees": ("terminee",), "proposees": ("proposee", "attente_president", "reportee")}.items()}
+        e["problemes_ouverts"] = len([x for x in p["problemes"].values() if x["siege"] == e["id"] and x["ouvert"]])
+        e["activite_recente"] = [h for h in travail["activite"] if h.get("entreprise") == e["id"]][:15]
     return {"entreprises": ents, "departements": deps, "postes": postes, "agents": agents, "historique": histo[-200:][::-1],
+            "missions": travail["missions"], "messages": travail["messages"][-300:][::-1], "reunions": travail["reunions"], "activite": travail["activite"][:200],
             "fonctions": {k: {**v, "permissions": sorted(v["permissions"])} for k, v in FONCTIONS.items()}}
 
 
@@ -143,13 +161,59 @@ def _titulaire(postes, pid):
     return (postes.get(pid) or {}).get("titulaire") if pid else None
 
 
-def _statut(a: dict, runs_actifs: dict) -> dict:
+def _projeter_travail(evs, p, agents):
+    """Missions (avec attribution, livrables, validations), messages et réunions, d'après le journal."""
+    missions = {k: {**m, "attributaire": None, "attribuee_par": None, "echeance": None, "priorite_travail": None,
+                    "livrables": [], "corrections": 0, "validee": None, "remontees": [], "livree": None} for k, m in p["missions"].items()}
+    messages, reunions, activite = [], {}, []
+    for ev in evs:
+        t, d, q = ev["type"], ev["donnees"], ev["quand"]
+        if t not in TYPES_TRAVAIL and t != "mission.statut":
+            continue
+        m = missions.get(d.get("mission"))
+        trace = {"evenement": ev["id"], "quand": q, "type": t, "auteur": (ev.get("auteur") or {}).get("role"), "verifie": (ev.get("auteur") or {}).get("verifie"),
+                 "entreprise": (m or {}).get("siege") or d.get("entreprise"), "mission": d.get("mission"), "agent": d.get("agent")}
+        if t == "mission.attribuee" and m:
+            m.update(attributaire=d["agent"], attribuee_par=d.get("par"), echeance=d.get("echeance"), priorite_travail=d.get("priorite"))
+        elif t == "mission.livrable" and m:
+            m["livrables"].append({"chemin": d["chemin"], "sha256": d["sha256"], "note": d.get("note"), "evenement": ev["id"], "quand": q, "par": d.get("agent")})
+            m["livree"] = q
+        elif t == "mission.validee" and m:
+            m["validee"] = {"par": d.get("par"), "motif": d.get("motif"), "evenement": ev["id"], "quand": q}
+        elif t == "mission.correction" and m:
+            m["corrections"] += 1
+        elif t == "mission.remontee" and m:
+            m["remontees"].append({"de": d.get("de"), "vers": d.get("vers"), "motif": d.get("motif"), "evenement": ev["id"], "quand": q})
+        elif t == "message.envoye":
+            messages.append({"id": ev["id"], "quand": q, **{k: d.get(k) for k in ("de", "a", "sujet", "texte", "mission", "nature")}, "verifie": trace["verifie"]})
+            trace["entreprise"] = trace["entreprise"] or ((agents.get(d.get("de")) or {}).get("poste") or "").split("-")[0] or None
+        elif t == "reunion.ouverte":
+            reunions[d["id"]] = {"id": d["id"], "entreprise": d.get("entreprise"), "objet": d.get("objet"), "participants": d.get("participants", []),
+                                 "par": d.get("par"), "ouverte": q, "close": None, "compte_rendu": None}
+        elif t == "reunion.close" and d.get("id") in reunions:
+            reunions[d["id"]].update(close=q, compte_rendu=d.get("compte_rendu"))
+        activite.append(trace)
+    return {"missions": missions, "messages": messages, "reunions": reunions, "activite": activite[::-1]}
+
+
+def _statut(a: dict, runs_actifs: dict, travail: dict = None) -> dict:
     """Statut DÉRIVÉ, avec sa preuve. Jamais « actif » sans exécution réelle ouverte par un hook."""
+    travail = travail or {"missions": {}, "reunions": {}}
     if a["suspendu"]:
         return {"statut": "suspendu", "preuve": a["suspendu"]["evenement"], "nature": "administratif"}
     r = runs_actifs.get(a.get("definition") or "")
+    reu = next((x for x in travail["reunions"].values() if x["close"] is None and a["id"] in x["participants"]), None)
+    if r and reu:   # en réunion seulement si la réunion est ouverte ET l'agent a une exécution réelle en cours
+        return {"statut": "en_reunion", "preuve": f"{reu['id']} + {r['run']}", "nature": "présence technique + réunion inscrite au registre", "depuis": reu["ouverte"]}
+    mine = [m for m in travail["missions"].values() if m.get("attributaire") == a["id"]]
     if r:
         return {"statut": "en_execution", "preuve": r["run"], "nature": "présence technique (exécution ouverte par un hook)", "depuis": r["debut"]}
+    att = next((m for m in mine if m["statut"] == "verification"), None)
+    if att:
+        return {"statut": "en_attente_validation", "preuve": att["livrables"][-1]["evenement"] if att["livrables"] else att["id"], "nature": "livrable transmis, validation attendue", "mission": att["id"]}
+    bl = next((m for m in mine if m["statut"] == "bloquee"), None)
+    if bl:
+        return {"statut": "bloque", "preuve": bl["id"], "nature": "mission bloquée inscrite au registre", "mission": bl["id"]}
     if a.get("definition") and (DEFINITIONS / f"{a['definition']}.md").exists():
         return {"statut": "disponible", "preuve": f"agents/definitions/{a['definition']}.md", "nature": "capacité d'exécution, aucune exécution en cours"}
     if a["id"] == "maire":
@@ -352,3 +416,194 @@ def amorcer(auteur) -> list:
             faits.append(creer_agent(item[1], item[2], item[3], auteur, definition=item[4]))
         org = etat()
     return faits
+
+
+# ------------------------------------------------------------------ travail : missions, livrables, validation, communication
+def _agent_de_auteur(org, auteur):
+    """Agent incarné par l'auteur VÉRIFIÉ (exécution ouverte de sa définition), ou None."""
+    if auteur.get("verifie") != "run":
+        return None
+    return next((a for a in org["agents"].values() if a.get("definition") == auteur.get("role") and not a["suspendu"]), None)
+
+
+def _ctl(fn):
+    def controle(evs):
+        org = projeter(evs, ile.projeter(evs))
+        return fn(org) or {}
+    return controle
+
+
+def _sup_de(org, agent_id):
+    po = org["postes"].get((org["agents"].get(agent_id) or {}).get("poste"))
+    return _titulaire(org["postes"], po.get("superieur")) if po else None
+
+
+def attribuer_mission(mission, agent_id, auteur, echeance=None, priorite=None, cle=None):
+    """Un supérieur (poste au-dessus de celui de l'agent, avec la permission) confie une mission planifiée ou en cours."""
+    if echeance and not re.match(r"^\d{4}-\d{2}-\d{2}$", echeance):
+        raise ErreurOrganisation("échéance au format AAAA-MM-JJ")
+    if priorite and priorite not in ("P1", "P2", "P3"):
+        raise ErreurOrganisation("priorité : P1, P2 ou P3")
+    eff = _auteur_effectif(auteur, cle)
+
+    def c(org):
+        m, a = org["missions"].get(mission), org["agents"].get(agent_id)
+        if not m:
+            raise ErreurOrganisation(f"mission inconnue : {mission}")
+        if not a or a["suspendu"]:
+            raise ErreurOrganisation(f"agent inconnu ou suspendu : {agent_id}")
+        if m["statut"] not in ("planifiee", "en_cours", "bloquee"):
+            raise ErreurOrganisation(f"mission {mission} au statut « {m['statut']} » : seule une mission planifiée (retenue) s'attribue")
+        motif = autoriser(org, eff, "attribuer_mission", a["poste"], a["entreprise"])
+        par = (_agent_de_auteur(org, eff) or {}).get("id") or eff.get("role")
+        return {"autorisation": motif, "par": par}
+    return ile.ajouter("mission.attribuee", {"mission": mission, "agent": agent_id, "echeance": echeance, "priorite": priorite}, auteur, completer=_ctl(c), cle=cle)
+
+
+def _attributaire_verifie(org, auteur, mission, statuts):
+    m = org["missions"].get(mission)
+    if not m:
+        raise ErreurOrganisation(f"mission inconnue : {mission}")
+    a = _agent_de_auteur(org, auteur)
+    if not a or m.get("attributaire") != a["id"]:
+        raise ErreurOrganisation("seul l'agent attributaire, pendant son exécution vérifiée (--run), peut agir sur cette mission")
+    if m["statut"] not in statuts:
+        raise ErreurOrganisation(f"mission au statut « {m['statut']} » (attendu : {', '.join(statuts)})")
+    return m, a
+
+
+def _statut_mission(mission, siege, de, vers, auteur, motif=None, cle=None):
+    return ile.ajouter("mission.statut", {"mission": mission, "siege": siege, "de": de, "vers": vers, "motif": motif}, auteur, cle=cle)
+
+
+def demarrer_mission(mission, auteur):
+    """L'attributaire commence (planifiée → en cours) : preuve = son exécution ouverte."""
+    def c(org):
+        m, a = _attributaire_verifie(org, auteur, mission, ("planifiee",))
+        return {"de": "planifiee", "vers": "en_cours", "motif": f"démarrée par {a['id']} ({auteur.get('run')})", "mission": mission, "siege": m["siege"]}
+    m = etat()["missions"].get(mission) or {}
+    return ile.ajouter("mission.statut", {"mission": mission, "siege": m.get("siege")}, auteur, completer=_ctl(c))
+
+
+def livrer(mission, chemin, auteur, note=None):
+    """L'attributaire transmet un livrable (document du dépôt, gelé par son empreinte) ; la mission passe en vérification."""
+    pth = (ile.RACINE / chemin).resolve()
+    if ile.RACINE not in pth.parents or not pth.is_file():
+        raise ErreurOrganisation(f"livrable introuvable dans l'île : {chemin}")
+    rel = str(pth.relative_to(ile.RACINE))
+
+    def c(org):
+        m, a = _attributaire_verifie(org, auteur, mission, ("en_cours",))
+        return {"agent": a["id"], "siege": m["siege"]}
+    ev = ile.ajouter("mission.livrable", {"mission": mission, "chemin": rel, "sha256": ile._sha_fichier(pth), "note": note}, auteur, completer=_ctl(c))
+    _statut_mission(mission, ev["donnees"]["siege"], "en_cours", "verification", auteur, f"livrable {ev['id']}")
+    return ev
+
+
+def _superieur_controle(org, auteur, mission, cle):
+    m = org["missions"].get(mission)
+    if not m or not m.get("attributaire"):
+        raise ErreurOrganisation(f"mission inconnue ou non attribuée : {mission}")
+    if m["statut"] != "verification" or not m["livrables"]:
+        raise ErreurOrganisation("aucun livrable en attente de validation pour cette mission")
+    a = org["agents"][m["attributaire"]]
+    eff = _auteur_effectif(auteur, cle)
+    if (_agent_de_auteur(org, eff) or {}).get("id") == a["id"]:
+        raise ErreurOrganisation("un agent ne valide pas son propre livrable")
+    motif = autoriser(org, eff, "valider_livrable", a["poste"], a["entreprise"])
+    # le document livré ne doit pas avoir changé depuis sa transmission
+    l = m["livrables"][-1]
+    pth = ile.RACINE / l["chemin"]
+    if not pth.is_file() or ile._sha_fichier(pth) != l["sha256"]:
+        raise ErreurOrganisation(f"le livrable {l['chemin']} a changé ou disparu depuis sa transmission")
+    return m, motif, (_agent_de_auteur(org, eff) or {}).get("id") or eff.get("role")
+
+
+def valider(mission, auteur, motif=None, cle=None):
+    """Le supérieur valide : vérification → terminée (archivée)."""
+    def c(org):
+        m, aut, par = _superieur_controle(org, _auteur_effectif(auteur, cle), mission, cle)
+        return {"autorisation": aut, "par": par, "siege": m["siege"]}
+    ev = ile.ajouter("mission.validee", {"mission": mission, "motif": motif}, auteur, completer=_ctl(c), cle=cle)
+    _statut_mission(mission, ev["donnees"]["siege"], "verification", "terminee", auteur, f"validée ({ev['id']})", cle=cle)
+    return ev
+
+
+def demander_correction(mission, motif, auteur, cle=None):
+    """Le supérieur refuse le livrable et demande une correction : vérification → en cours."""
+    if not motif:
+        raise ErreurOrganisation("une demande de correction exige un motif")
+
+    def c(org):
+        m, aut, par = _superieur_controle(org, _auteur_effectif(auteur, cle), mission, cle)
+        return {"autorisation": aut, "par": par, "siege": m["siege"]}
+    ev = ile.ajouter("mission.correction", {"mission": mission, "motif": motif}, auteur, completer=_ctl(c), cle=cle)
+    _statut_mission(mission, ev["donnees"]["siege"], "verification", "en_cours", auteur, f"correction ({ev['id']})", cle=cle)
+    return ev
+
+
+def remonter(mission, motif, auteur, bloquer=False):
+    """Un agent ou un manager fait remonter un problème ou une décision à son supérieur (et peut bloquer la mission)."""
+    def c(org):
+        m = org["missions"].get(mission)
+        a = _agent_de_auteur(org, auteur)
+        if not m or not a:
+            raise ErreurOrganisation("remontée : mission inconnue ou identité non vérifiée (--run)")
+        if m.get("attributaire") != a["id"] and not _sous(org, a["poste"], org["agents"].get(m.get("attributaire") or "", {}).get("poste")):
+            raise ErreurOrganisation("on ne fait remonter que ses propres missions ou celles de son équipe")
+        sup = _sup_de(org, a["id"])
+        if not sup:
+            raise ErreurOrganisation("aucun supérieur au-dessus de ce poste")
+        return {"de": a["id"], "vers": sup, "siege": m["siege"], "statut_avant": m["statut"]}
+    ev = ile.ajouter("mission.remontee", {"mission": mission, "motif": motif}, auteur, completer=_ctl(c))
+    if bloquer and ev["donnees"]["statut_avant"] == "en_cours":
+        _statut_mission(mission, ev["donnees"]["siege"], "en_cours", "bloquee", auteur, f"remontée {ev['id']}")
+    return ev
+
+
+def envoyer_message(destinataire, sujet, texte, auteur, mission=None, nature="message", cle=None):
+    """Communication interne historisée : de l'agent vérifié (ou DG / président) vers un agent, un poste ou un département."""
+    if not texte or len(texte) > 4000:
+        raise ErreurOrganisation("message vide ou trop long (4000 caractères au plus)")
+    eff = _auteur_effectif(auteur, cle)
+
+    def c(org):
+        if not (destinataire in org["agents"] or destinataire in org["postes"] or destinataire in org["departements"]):
+            raise ErreurOrganisation(f"destinataire inconnu : {destinataire}")
+        if eff.get("role") == "president" or eff.get("role") == "maire":
+            de = eff["role"]
+        else:
+            a = _agent_de_auteur(org, eff)
+            if not a:
+                raise ErreurOrganisation("un message part d'une identité vérifiée (--run)")
+            de = a["id"]
+        return {"de": de}
+    return ile.ajouter("message.envoye", {"a": destinataire, "sujet": sujet, "texte": texte, "mission": mission, "nature": nature}, auteur, completer=_ctl(c), cle=cle)
+
+
+def ouvrir_reunion(rid, entreprise, objet, participants, auteur):
+    _id(rid, "réunion")
+
+    def c(org):
+        if rid in org["reunions"]:
+            raise ErreurOrganisation(f"réunion déjà existante : {rid}")
+        inconnus = [x for x in participants if x not in org["agents"]]
+        if inconnus or not participants:
+            raise ErreurOrganisation(f"participants inconnus : {', '.join(inconnus) or '(aucun)'}")
+        a = _agent_de_auteur(org, auteur)
+        if auteur.get("role") != "maire" and not a:
+            raise ErreurOrganisation("une réunion est ouverte par une identité vérifiée (--run) ou par le DG")
+        return {"par": (a or {}).get("id") or auteur.get("role")}
+    return ile.ajouter("reunion.ouverte", {"id": rid, "entreprise": entreprise, "objet": objet, "participants": list(participants)}, auteur, completer=_ctl(c))
+
+
+def clore_reunion(rid, compte_rendu, auteur):
+    def c(org):
+        r = org["reunions"].get(rid)
+        if not r or r["close"]:
+            raise ErreurOrganisation(f"réunion inconnue ou déjà close : {rid}")
+        a = _agent_de_auteur(org, auteur)
+        if auteur.get("role") != "maire" and (not a or a["id"] != r["par"]):
+            raise ErreurOrganisation("seul l'organisateur (ou le DG) clôt la réunion")
+        return {}
+    return ile.ajouter("reunion.close", {"id": rid, "compte_rendu": compte_rendu}, auteur, completer=_ctl(c))

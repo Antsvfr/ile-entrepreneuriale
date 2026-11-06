@@ -1,0 +1,13 @@
+E-000081 2026-11-06T14:31:09 org.agent.affecte    maire                  [declare] architecte → rev-em-dev
+E-000082 2026-11-06T14:31:09 mission.proposee     maire                  [declare] M-20261106-010 Note de synthèse des fiches de révision
+E-000083 2026-11-06T14:31:30 mission.statut       maire                  [declare] M-20261106-010 proposee → planifiee
+E-000084 2026-11-06T14:31:30 mission.attribuee    maire                  [declare] M-20261106-010 → architecte (échéance 2099-12-31)
+E-000085 2026-11-06T14:32:11 run.debut            maire                  [declare] R-0006 architecte → rev-em
+E-000086 2026-11-06T14:32:34 mission.statut       architecte             [run] M-20261106-010 planifiee → en_cours
+E-000087 2026-11-06T14:32:52 mission.livrable     architecte             [run] M-20261106-010 : projets/rev-em/livrables/note-synthese-fiches.md
+E-000088 2026-11-06T14:32:52 mission.statut       architecte             [run] M-20261106-010 en_cours → verification
+E-000089 2026-11-06T14:32:52 message.envoye       architecte             [run] architecte → chef-rev-em : Livrable transmis
+E-000090 2026-11-06T14:33:14 run.fin              maire                  [declare] R-0006 mission livrée
+E-000091 2026-11-06T14:33:14 mission.validee      maire                  [declare] M-20261106-010 validée par maire
+E-000092 2026-11-06T14:33:14 mission.statut       maire                  [declare] M-20261106-010 verification → terminee
+✔ journal intègre — 92 événements, dernière empreinte b169fab21cef94d9…

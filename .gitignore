@@ -47,3 +47,4 @@ node_modules/
 
 # --- Sauvegarde locale non publiée : copie complète de l’ancien dépôt (public, et conservé comme référence historique)
 audit/sauvegardes/**/*.bundle
+tests/.livrable-test.md

@@ -774,6 +774,20 @@ def _resume(ev) -> str:
         "mission.proposee": lambda: f"{d['mission']} {d['titre'][:70]}",
         "mission.statut": lambda: f"{d['mission']} {d['de']} → {d['vers']}",
         "mission.classee": lambda: f"{len(d['classement'])} missions classées",
+        "mission.attribuee": lambda: f"{d['mission']} → {d['agent']}" + (f" (échéance {d['echeance']})" if d.get("echeance") else ""),
+        "mission.livrable": lambda: f"{d['mission']} : {d['chemin']}",
+        "mission.validee": lambda: f"{d['mission']} validée par {d.get('par')}",
+        "mission.correction": lambda: f"{d['mission']} : correction — {d.get('motif', '')[:60]}",
+        "mission.remontee": lambda: f"{d['mission']} : {d.get('de')} → {d.get('vers')}",
+        "message.envoye": lambda: f"{d.get('de')} → {d.get('a')} : {d.get('sujet', '')[:60]}",
+        "reunion.ouverte": lambda: f"{d['id']} : {d.get('objet', '')[:60]}",
+        "reunion.close": lambda: f"{d['id']} close",
+        "org.departement.cree": lambda: f"{d['entreprise']} / {d['id']}",
+        "org.poste.cree": lambda: f"{d['entreprise']} / {d['id']} ({d['fonction']})",
+        "org.agent.cree": lambda: f"{d['id']} → {d.get('poste')}",
+        "org.agent.affecte": lambda: f"{d['agent']} → {d.get('poste')}",
+        "org.agent.suspendu": lambda: f"{d['agent']} suspendu",
+        "org.agent.reactive": lambda: f"{d['agent']} réactivé",
         "decision.demandee": lambda: d["titre"][:90], "decision.tranchee": lambda: f"{d['decision']} → {d['verdict']}",
         "probleme.signale": lambda: f"[{d['gravite']}] {d['titre'][:80]}", "run.debut": lambda: f"{d['run']} {d['role']} → {d.get('siege') or '—'}",
         "run.fin": lambda: f"{d['run']} {d.get('resultat') or ''}"[:90],
@@ -817,8 +831,22 @@ def _cli_org(a, who):
             "nommer": lambda: org.creer_agent(a.id, a.nom, a.poste, who(), definition=a.definition, competences=a.competence, description=a.description),
             "affecter": lambda: org.affecter_agent(a.id, a.poste, who(), a.motif),
             "suspendre": lambda: org.suspendre_agent(a.id, a.motif, who()),
-            "reactiver": lambda: org.reactiver_agent(a.id, a.motif, who())}[a.sous]
-    ev = acte(); print(f"{ev['id']} {ev['type']} — autorisé : {ev['donnees'].get('autorisation')}"); return 0
+            "reactiver": lambda: org.reactiver_agent(a.id, a.motif, who()),
+            "attribuer": lambda: org.attribuer_mission(a.mission, a.agent, who(), a.echeance, a.priorite),
+            "demarrer": lambda: org.demarrer_mission(a.mission, who()),
+            "livrer": lambda: org.livrer(a.mission, a.chemin, who(), a.note),
+            "valider": lambda: org.valider(a.mission, who(), a.motif),
+            "corriger": lambda: org.demander_correction(a.mission, a.motif, who()),
+            "remonter": lambda: org.remonter(a.mission, a.motif, who(), a.bloquer),
+            "message": lambda: org.envoyer_message(a.a, a.sujet, a.texte, who(), a.mission),
+            "reunion": lambda: org.ouvrir_reunion(a.id, a.entreprise, a.objet, a.participant, who()),
+            "clore-reunion": lambda: org.clore_reunion(a.id, a.compte_rendu, who())}[a.sous]
+    try:
+        ev = acte()
+    except org.ErreurOrganisation as e:     # même message propre que les autres refus (module chargé à part)
+        raise ErreurIle(str(e))
+    d = ev["donnees"]
+    print(f"{ev['id']} {ev['type']} — " + (f"autorisé : {d['autorisation']}" if d.get("autorisation") else f"par {ev['auteur'].get('role')} ({ev['auteur'].get('verifie')})")); return 0
 
 
 def main(argv=None):
@@ -881,6 +909,15 @@ def main(argv=None):
     x = osp.add_parser("affecter"); x.add_argument("id"); x.add_argument("--poste", required=True); x.add_argument("--motif")
     x = osp.add_parser("suspendre"); x.add_argument("id"); x.add_argument("--motif", required=True)
     x = osp.add_parser("reactiver"); x.add_argument("id"); x.add_argument("--motif", required=True)
+    x = osp.add_parser("attribuer"); x.add_argument("mission"); x.add_argument("--agent", required=True); x.add_argument("--echeance"); x.add_argument("--priorite")
+    x = osp.add_parser("demarrer"); x.add_argument("mission")
+    x = osp.add_parser("livrer"); x.add_argument("mission"); x.add_argument("--chemin", required=True); x.add_argument("--note")
+    x = osp.add_parser("valider"); x.add_argument("mission"); x.add_argument("--motif")
+    x = osp.add_parser("corriger"); x.add_argument("mission"); x.add_argument("--motif", required=True)
+    x = osp.add_parser("remonter"); x.add_argument("mission"); x.add_argument("--motif", required=True); x.add_argument("--bloquer", action="store_true")
+    x = osp.add_parser("message"); x.add_argument("a"); x.add_argument("--sujet", required=True); x.add_argument("--texte", required=True); x.add_argument("--mission")
+    x = osp.add_parser("reunion"); x.add_argument("id"); x.add_argument("--entreprise", required=True); x.add_argument("--objet", required=True); x.add_argument("--participant", action="append", default=[])
+    x = osp.add_parser("clore-reunion"); x.add_argument("id"); x.add_argument("--compte-rendu", required=True)
     a = ap.parse_args(argv)
     who = lambda: auteur_cli(a.auteur, a.run)
 

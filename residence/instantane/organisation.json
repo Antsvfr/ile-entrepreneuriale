@@ -1,4 +1,5 @@
 {
+ "activite": [],
  "agents": {
   "architecte": {
    "apparence": {
@@ -32,8 +33,17 @@
     }
    ],
    "id": "architecte",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "L'Architecte",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "architecte",
    "preuve": "agents/definitions/architecte.md",
    "statut": "disponible",
@@ -72,8 +82,17 @@
     }
    ],
    "id": "chef-bde-emergency",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur QG EM'ERGENCY",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "bde-emergency-direction",
    "preuve": "agents/definitions/chef-bde-emergency.md",
    "statut": "disponible",
@@ -112,8 +131,17 @@
     }
    ],
    "id": "chef-cuvee-campus",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur Cave Cuvée Campus",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "cuvee-campus-direction",
    "preuve": "agents/definitions/chef-cuvee-campus.md",
    "statut": "disponible",
@@ -152,8 +180,17 @@
     }
    ],
    "id": "chef-ecole",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur École",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "ecole-direction",
    "preuve": "agents/definitions/chef-ecole.md",
    "statut": "disponible",
@@ -192,8 +229,17 @@
     }
    ],
    "id": "chef-lexnote",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur LexNote",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "lexnote-direction",
    "preuve": "agents/definitions/chef-lexnote.md",
    "statut": "disponible",
@@ -232,8 +278,17 @@
     }
    ],
    "id": "chef-rev-em",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur REV-EM",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "rev-em-direction",
    "preuve": "agents/definitions/chef-rev-em.md",
    "statut": "disponible",
@@ -272,8 +327,17 @@
     }
    ],
    "id": "chef-upsa-sales-pilot",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur UPSA Sales Pilot",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "upsa-sales-pilot-direction",
    "preuve": "agents/definitions/chef-upsa-sales-pilot.md",
    "statut": "disponible",
@@ -312,8 +376,17 @@
     }
    ],
    "id": "chef-vetotri",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Directeur Labo Vétotri",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "vetotri-direction",
    "preuve": "agents/definitions/chef-vetotri.md",
    "statut": "disponible",
@@ -352,8 +425,17 @@
     }
    ],
    "id": "critique-clarte",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Critique de la clarté",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "conseil-clarte",
    "preuve": "agents/definitions/critique-clarte.md",
    "statut": "disponible",
@@ -392,8 +474,17 @@
     }
    ],
    "id": "critique-exigence",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Critique de l'exigence",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "conseil-exigence",
    "preuve": "agents/definitions/critique-exigence.md",
    "statut": "disponible",
@@ -432,8 +523,17 @@
     }
    ],
    "id": "critique-strategie",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Critique de la stratégie",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "conseil-strategie",
    "preuve": "agents/definitions/critique-strategie.md",
    "statut": "disponible",
@@ -472,8 +572,17 @@
     }
    ],
    "id": "forgeron",
+   "missions": [],
    "nature": "capacité d'exécution, aucune exécution en cours",
    "nom": "Le Forgeron",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "forge-direction",
    "preuve": "agents/definitions/forgeron.md",
    "statut": "disponible",
@@ -512,8 +621,17 @@
     }
    ],
    "id": "maire",
+   "missions": [],
    "nature": "session principale de Claude Code : aucune exécution tracée par les hooks",
    "nom": "Le Maire",
+   "performance": {
+    "avec_echeance": 0,
+    "corrections_demandees": 0,
+    "livrees_dans_les_delais": 0,
+    "missions_attribuees": 0,
+    "missions_terminees": 0,
+    "nature": "comptage d'événements du registre"
+   },
    "poste": "dg-ile",
    "preuve": null,
    "statut": "hors_ligne",
@@ -524,6 +642,7 @@
  "departements": {},
  "entreprises": {
   "bde-emergency": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -557,8 +676,17 @@
       }
      ],
      "id": "chef-bde-emergency",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur QG EM'ERGENCY",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "bde-emergency-direction",
      "preuve": "agents/definitions/chef-bde-emergency.md",
      "statut": "disponible",
@@ -579,6 +707,12 @@
    "dossier": "projets/bde-emergency",
    "effectif": 1,
    "id": "bde-emergency",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "QG EM'ERGENCY",
    "postes": [
     {
@@ -605,10 +739,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Campagne BDE BBA : programme chiffré, entraînement à l'entretien de candidature, communication de la liste.",
    "type": "projet"
   },
   "conseil": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -642,8 +778,17 @@
       }
      ],
      "id": "critique-clarte",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Critique de la clarté",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "conseil-clarte",
      "preuve": "agents/definitions/critique-clarte.md",
      "statut": "disponible",
@@ -682,8 +827,17 @@
       }
      ],
      "id": "critique-exigence",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Critique de l'exigence",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "conseil-exigence",
      "preuve": "agents/definitions/critique-exigence.md",
      "statut": "disponible",
@@ -722,8 +876,17 @@
       }
      ],
      "id": "critique-strategie",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Critique de la stratégie",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "conseil-strategie",
      "preuve": "agents/definitions/critique-strategie.md",
      "statut": "disponible",
@@ -740,6 +903,12 @@
    "dossier": "audit/conseil",
    "effectif": 3,
    "id": "conseil",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "Conseil des Critiques",
    "postes": [
     {
@@ -810,10 +979,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Trois tours, trois critiques qui relisent chaque prompt en parallèle. Le Maire fusionne leurs avis en un prompt amélioré.",
    "type": "institution"
   },
   "cuvee-campus": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -847,8 +1018,17 @@
       }
      ],
      "id": "chef-cuvee-campus",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur Cave Cuvée Campus",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "cuvee-campus-direction",
      "preuve": "agents/definitions/chef-cuvee-campus.md",
      "statut": "disponible",
@@ -869,6 +1049,12 @@
    "dossier": "projets/cuvee-campus",
    "effectif": 1,
    "id": "cuvee-campus",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "Cave Cuvée Campus",
    "postes": [
     {
@@ -895,10 +1081,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Projet sociétal environnemental de l'équipe 53 : livrables, recherches sourcées, suivi d'équipe.",
    "type": "projet"
   },
   "ecole": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -932,8 +1120,17 @@
       }
      ],
      "id": "chef-ecole",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur École",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "ecole-direction",
      "preuve": "agents/definitions/chef-ecole.md",
      "statut": "disponible",
@@ -954,6 +1151,12 @@
    "dossier": "projets/ecole",
    "effectif": 1,
    "id": "ecole",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "École",
    "postes": [
     {
@@ -980,10 +1183,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Cours emlyon : présentation d'anglais sur Lester Piggott, « Analyser et comprendre le marché », fiches de révision.",
    "type": "projet"
   },
   "forge": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1017,8 +1222,17 @@
       }
      ],
      "id": "forgeron",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Le Forgeron",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "forge-direction",
      "preuve": "agents/definitions/forgeron.md",
      "statut": "disponible",
@@ -1039,6 +1253,12 @@
    "dossier": "audit",
    "effectif": 1,
    "id": "forge",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "La Forge",
    "postes": [
     {
@@ -1065,10 +1285,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 3,
    "role": "Vérifie et répare tout ce qui sort des maisons : structure, fichiers manquants, code qui casse, chiffres sans source. Inspecte aussi l'île automatiquement à la fin de chaque tâche.",
    "type": "institution"
   },
   "lexnote": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1102,8 +1324,17 @@
       }
      ],
      "id": "chef-lexnote",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur LexNote",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "lexnote-direction",
      "preuve": "agents/definitions/chef-lexnote.md",
      "statut": "disponible",
@@ -1124,6 +1355,12 @@
    "dossier": "projets/lexnote",
    "effectif": 1,
    "id": "lexnote",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 3,
+    "terminees": 0
+   },
    "nom": "LexNote",
    "postes": [
     {
@@ -1150,10 +1387,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 4,
    "role": "Prise de notes de cours, transcription, documents et consolidation, pour le droit et toutes filières. Local-first, PWA, Supabase.",
    "type": "projet"
   },
   "mairie": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1187,8 +1426,17 @@
       }
      ],
      "id": "maire",
+     "missions": [],
      "nature": "session principale de Claude Code : aucune exécution tracée par les hooks",
      "nom": "Le Maire",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "dg-ile",
      "preuve": null,
      "statut": "hors_ligne",
@@ -1227,8 +1475,17 @@
       }
      ],
      "id": "architecte",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "L'Architecte",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "architecte",
      "preuve": "agents/definitions/architecte.md",
      "statut": "disponible",
@@ -1249,6 +1506,12 @@
    "dossier": ".",
    "effectif": 2,
    "id": "mairie",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "Mairie",
    "postes": [
     {
@@ -1297,10 +1560,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Le Maire reçoit chaque demande, la fait passer au Conseil, la confie à la bonne maison, puis demande à la Forge de vérifier avant de te répondre.",
    "type": "institution"
   },
   "residence": {
+   "activite_recente": [],
    "agents": [],
    "agents_en_execution": 0,
    "batiment": "residence",
@@ -1311,13 +1576,21 @@
    "dossier": "residence",
    "effectif": 0,
    "id": "residence",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "Résidence présidentielle",
    "postes": [],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Le président supervise toute l'entreprise : projets, priorités, décisions sensibles, instructions au directeur général.",
    "type": "institution"
   },
   "rev-em": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1351,8 +1624,17 @@
       }
      ],
      "id": "chef-rev-em",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur REV-EM",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "rev-em-direction",
      "preuve": "agents/definitions/chef-rev-em.md",
      "statut": "disponible",
@@ -1373,6 +1655,12 @@
    "dossier": "projets/rev-em",
    "effectif": 1,
    "id": "rev-em",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 3,
+    "terminees": 0
+   },
    "nom": "REV-EM",
    "postes": [
     {
@@ -1399,10 +1687,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 4,
    "role": "Plateforme de révision pour étudiants : cours, quiz, flashcards, planning, assistant IA local, maths, liaison avec LexNote.",
    "type": "projet"
   },
   "upsa-sales-pilot": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1436,8 +1726,17 @@
       }
      ],
      "id": "chef-upsa-sales-pilot",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur UPSA Sales Pilot",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "upsa-sales-pilot-direction",
      "preuve": "agents/definitions/chef-upsa-sales-pilot.md",
      "statut": "disponible",
@@ -1458,6 +1757,12 @@
    "dossier": "projets/upsa-sales-pilot",
    "effectif": 1,
    "id": "upsa-sales-pilot",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 3,
+    "terminees": 0
+   },
    "nom": "UPSA Sales Pilot",
    "postes": [
     {
@@ -1484,10 +1789,12 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 3,
    "role": "Pilotage commercial quotidien pour une commerciale UPSA : fiche pharmacie 360°, paracétamol, OTC, conventions, visites, import X20. Local, données fictives.",
    "type": "projet"
   },
   "vetotri": {
+   "activite_recente": [],
    "agents": [
     {
      "apparence": {
@@ -1521,8 +1828,17 @@
       }
      ],
      "id": "chef-vetotri",
+     "missions": [],
      "nature": "capacité d'exécution, aucune exécution en cours",
      "nom": "Directeur Labo Vétotri",
+     "performance": {
+      "avec_echeance": 0,
+      "corrections_demandees": 0,
+      "livrees_dans_les_delais": 0,
+      "missions_attribuees": 0,
+      "missions_terminees": 0,
+      "nature": "comptage d'événements du registre"
+     },
      "poste": "vetotri-direction",
      "preuve": "agents/definitions/chef-vetotri.md",
      "statut": "disponible",
@@ -1543,6 +1859,12 @@
    "dossier": "projets/vetotri",
    "effectif": 1,
    "id": "vetotri",
+   "missions": {
+    "bloquees": 0,
+    "en_cours": 0,
+    "proposees": 0,
+    "terminees": 0
+   },
    "nom": "Labo Vétotri",
    "postes": [
     {
@@ -1569,6 +1891,7 @@
     }
    ],
    "postes_non_pourvus": 0,
+   "problemes_ouverts": 0,
    "role": "Ton chatbot : code, prompts système versionnés, tests, recherche d'un nouveau nom.",
    "type": "projet"
   }
@@ -2053,6 +2376,565 @@
    "type": "org.poste.cree"
   }
  ],
+ "messages": [],
+ "missions": {
+  "M-20261106-001": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 2,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "Chaque modification proposée cite sa source (fichier et section) ; aucune règle métier nouvelle",
+    "ROADMAP comporte une ligne X20, DATA_MODEL décrit la migration 3 (5 éléments), les chemins de sauvegarde sont harmonisés en data/<espace>/backups/",
+    "Les 9 points de BUSINESS_RULES et les 17 questions du dossier sont réconciliés dans une seule liste",
+    "Le lot est formulé comme demande à exécuter par Claude Code sur le Mac, avec consigne de comparer d'abord aux docs/ du Mac (les copies reçues peuvent différer)"
+   ],
+   "echeance": null,
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-001",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Rédiger, dans la maison, les modifications à appliquer sur le Mac aux fichiers docs/ (ROADMAP, DATA_MODEL, BUSINESS_RULES, SECURITY, ARCHITECTURE, IMPORT_SPEC) et au CLAUDE.md du projet pour qu'ils décrivent X20 et les espaces réel/démo, uniquement à partir de 00_LIRE_EN_PREMIER_DOSSIER.md et COCKPIT_X20.md",
+   "origine": "chef-upsa-sales-pilot",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 7,
+   "remontees": [],
+   "risque": 1,
+   "score": 39.0,
+   "sensible": false,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000012 ; dossier/projet/docs/ ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md ; dossier/COCKPIT_X20.md"
+   ],
+   "statut": "proposee",
+   "titre": "Préparer le lot de mise à jour de docs/ pour intégrer le connecteur X20",
+   "urgence": 2,
+   "valeur": 3,
+   "validee": null
+  },
+  "M-20261106-002": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 3,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "Chaque point de la check-list renvoie à une ligne de SECURITY.md ou du dossier (§6.3, §8, §10) et se vérifie par oui/non sans lire aucune valeur commerciale",
+    "Le plan de test n'utilise que npm run start:demo et le jeu fictif ; il ne mentionne jamais db:reset sur l'espace réel",
+    "Il précise ce qui reste à décider par Anton (code d'accès, chiffrement applicatif, autorisation Q1) sans le trancher"
+   ],
+   "echeance": null,
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-002",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Produire, sans le code, une check-list à faire exécuter par Anton sur le Mac avant tout import réel (prérequis de SECURITY.md) et un plan de test de sauvegarde puis restauration manuelle, à dérouler uniquement dans l'espace démo",
+   "origine": "chef-upsa-sales-pilot",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 4,
+   "remontees": [],
+   "risque": 1,
+   "score": 48.1,
+   "sensible": false,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000013 ; dossier/projet/docs/SECURITY.md ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §6.3, §8, §10, §13"
+   ],
+   "statut": "proposee",
+   "titre": "Rédiger la check-list « avant usage de l'espace réel » et le plan de test sauvegarde/restauration",
+   "urgence": 3,
+   "valeur": 4,
+   "validee": null
+  },
+  "M-20261106-003": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-upsa-sales-pilot",
+    "run": "R-0003",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 4,
+     "valeur": 5
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "npm run typecheck, npm test, npm run test:e2e exécutés et résultats reportés tels quels (local, données fictives)",
+    "Versions Node/npm et liste des migrations constatées ; présence de data/reel/ et de ses sauvegardes constatée par comptage de fichiers uniquement",
+    "Archive du code créée hors du dossier de travail, excluant data/ et node_modules/, emplacement non synchronisé validé par Anton ; aucun fichier supprimé ni modifié",
+    "Indépendant de la décision git init (E-000003) : pas de git init dans cette mission"
+   ],
+   "echeance": null,
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-upsa-sales-pilot",
+     "quand": "2026-11-06T09:09:19+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-003",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Avec accord d'Anton, via Claude Code sur le Mac ou Remote Control : revérifier les indicateurs annoncés et mettre le code X20 hors exemplaire unique, sans toucher à data/reel/ ni lire de valeur réelle",
+   "origine": "chef-upsa-sales-pilot",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:19+00:00",
+   "rang": 1,
+   "remontees": [],
+   "risque": 2,
+   "score": 52.6,
+   "sensible": true,
+   "siege": "upsa-sales-pilot",
+   "sources": [
+    "E-000011 ; E-000014 ; dossier/00_LIRE_EN_PREMIER_DOSSIER.md §2, §4 ; etat-des-lieux.md"
+   ],
+   "statut": "proposee",
+   "titre": "Sur le Mac : constat de l'état réel et copie de sécurité du code (conditionné à l'accès au Mac)",
+   "urgence": 4,
+   "valeur": 5,
+   "validee": null
+  },
+  "M-20261106-004": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 4,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "Pour chaque PR : numéro, branche, SHA de tête, base, brouillon oui/non, statut CI, relevés avec la commande utilisée",
+    "Empilement vérifié par git merge-base --is-ancestor pour chaque paire main→#12→#10→#11→#13→#14 ; tout écart consigné sans rien corriger",
+    "Liste des fichiers supabase/migrations sur #12 et #14 comparée à main (5 fichiers) et au relevé du dossier §5 (07→13 en prod, 14→18 absentes)",
+    "branches.md et etat-des-lieux.md mis à jour dans maisons/lexnote, journal.md complété ; aucun fichier du dépôt modifié, aucun fetch dans /home/user/antsvfr sans accord"
+   ],
+   "echeance": null,
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-004",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Remplacer les éléments « repris du dossier » par des faits vérifiés : état des PR #12/#10/#11/#13/#14, CI de caf8b40, empilement réel de la chaîne et noms des migrations 12→18, pour trancher l'écart E-000017. Nécessite d'élargir la lecture (fetch des branches dans une copie de lecture ou API GitHub en lecture), sans aucune écriture sur le dépôt.",
+   "origine": "chef-lexnote",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 2,
+   "remontees": [],
+   "risque": 1,
+   "score": 52.0,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "maisons/lexnote/etat-des-lieux.md (« non revérifié ») ; dossier-projet.md §2 et §5 ; E-000017"
+   ],
+   "statut": "proposee",
+   "titre": "Vérifier en lecture seule la chaîne de PR, la CI et les migrations de #12 à #14",
+   "urgence": 4,
+   "valeur": 4,
+   "validee": null
+  },
+  "M-20261106-005": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 1.0,
+     "effort": 2,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 1,
+     "urgence": 4,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "Chaque commande est reliée à une porte de release/gates.json (nom exact repris du dossier §5) et indique le résultat attendu",
+    "Couvre les 7 PASS « à rejouer sur le dernier SHA » + integration-diagnostic, integration-real-e2e, ai-killswitch-local, browsers-firefox-webkit, pwa-manual et les 6 points du test micro",
+    "Aucune étape ne touche la production, ses données ou ses secrets ; la sauvegarde de production (§7.5) et ai-real-smoke sont explicitement exclus et renvoyés à une décision",
+    "Aucun secret dans la fiche ; aucune porte n'est marquée PASS ; la fiche dit ce qui reste local et non cloud"
+   ],
+   "echeance": null,
+   "effort": 2,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-005",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Regrouper en une seule séquence à lancer sur le Mac tout ce qui rejoue les preuves invalidées par caf8b40 et fait passer les portes NOT_RUN locales (deux stacks Supabase, Firefox/WebKit, test micro, checklist PWA), conformément à la consigne du dossier de regrouper les demandes en une commande unique. Livrable rédigé dans maisons/lexnote uniquement.",
+   "origine": "chef-lexnote",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 3,
+   "remontees": [],
+   "risque": 1,
+   "score": 52.0,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "dossier-projet.md §5, §6, §7 et §9 (mode de travail) ; E-000016"
+   ],
+   "statut": "proposee",
+   "titre": "Préparer pour Anton une fiche unique de rejeu des portes sur caf8b40 (Mac, 0 €, hors production)",
+   "urgence": 4,
+   "valeur": 4,
+   "validee": null
+  },
+  "M-20261106-006": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-lexnote",
+    "run": "R-0002",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 1,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 3,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "Au moins deux options par porte, chacune avec coût (0 € ou non), ce qu'elle prouve et ce qu'elle ne prouve pas",
+    "Aucune option ne transforme une validation locale en PASS cloud ; la règle « jamais de PASS sans exécution réelle » est rappelée",
+    "Document dans maisons/lexnote, puis une demande de décision inscrite au registre ; release/gates.json non modifié"
+   ],
+   "echeance": null,
+   "effort": 1,
+   "historique": [
+    {
+     "par": "chef-lexnote",
+     "quand": "2026-11-06T09:09:34+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-006",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Donner à Anton de quoi trancher les deux portes que le budget 0 € empêche de passer : options, ce que chaque option prouve réellement (local ≠ cloud), impact sur le verdict READY, et ce qui reste à faire dans gates.json une fois l'écriture autorisée.",
+   "origine": "chef-lexnote",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:09:34+00:00",
+   "rang": 6,
+   "remontees": [],
+   "risque": 2,
+   "score": 43.1,
+   "sensible": false,
+   "siege": "lexnote",
+   "sources": [
+    "dossier-projet.md §5 (rollback-rehearsed, ai-real-smoke) et §7 point 6 ; E-000018"
+   ],
+   "statut": "proposee",
+   "titre": "Rédiger le dossier de décision : scission de rollback-rehearsed en local/cloud et sort de ai-real-smoke à 0 €",
+   "urgence": 3,
+   "valeur": 3,
+   "validee": null
+  },
+  "M-20261106-007": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 1,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 3,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "index.html charge mammoth par une URL avec version exacte (esm.run/mammoth@X.Y.Z), plus aucune occurrence de \"esm.run/mammoth\" sans @version (grep)",
+    "supabase-js épinglé à une version exacte dans index.html et dans supabase/functions/_shared/integration/runtime.ts (aligné sur _shared/lib.ts @2.45.0 ou version justifiée)",
+    "tests/import-center-ui.test.mjs passe ses 142 vérifications avec mammoth installé à la MÊME version (scénario 8 compris), sortie consignée",
+    "compat-syntax, import-without-ai et import-picker restent verts ; statuts PASS / NOT TESTED honnêtes dans le compte rendu"
+   ],
+   "echeance": null,
+   "effort": 1,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-007",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Supprimer les dépendances CDN flottantes de l'import DOCX et du SDK Supabase, sur une branche de travail partant de la PR #26, sans toucher main.",
+   "origine": "chef-rev-em",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 5,
+   "remontees": [],
+   "risque": 2,
+   "score": 47.8,
+   "sensible": false,
+   "siege": "rev-em",
+   "sources": [
+    "E-000026, E-000028 ; /home/user/rev-em/index.html:11001,5524"
+   ],
+   "statut": "proposee",
+   "titre": "Épingler mammoth et le SDK Supabase à une version exacte",
+   "urgence": 3,
+   "valeur": 4,
+   "validee": null
+  },
+  "M-20261106-008": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.92,
+     "effort": 3,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 2,
+     "urgence": 2,
+     "valeur": 4
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "un script versionné (ex. scripts/test-deps.sh) installe les versions exactes : pdfjs-dist@4.0.379, mammoth, pg, @supabase/supabase-js, playwright ; aucun bundler ajouté",
+    "un workflow GitHub Actions sur pull_request lance la suite avec un service PostgreSQL : oauth-integration, user-data, security-audit et real-sdk-sync sont exécutés ou portent un NOT TESTED explicite avec la raison",
+    "le passage CI sur la branche de travail est vert ou chaque échec est documenté comme préexistant (comparaison avec main 763ad74)",
+    "aucun secret dans le workflow ; aucun déclenchement de déploiement Pages"
+   ],
+   "echeance": null,
+   "effort": 3,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-008",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Qu'un rejeu des 55 fichiers de test donne le même résultat partout, sans dépendance installée à la main, en respectant le choix sans bundler (installation --no-save documentée au §12).",
+   "origine": "chef-rev-em",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 8,
+   "remontees": [],
+   "risque": 2,
+   "score": 37.1,
+   "sensible": false,
+   "siege": "rev-em",
+   "sources": [
+    "E-000027 ; maisons/rev-em/etat-des-lieux.md ; maisons/rev-em/dossier-projet.md §12"
+   ],
+   "statut": "proposee",
+   "titre": "Rendre la suite de tests reproductible : dépendances déclarées et CI sur les PR",
+   "urgence": 2,
+   "valeur": 4,
+   "validee": null
+  },
+  "M-20261106-009": {
+   "artefacts": [],
+   "attribuee_par": null,
+   "attributaire": null,
+   "auteur": {
+    "role": "chef-rev-em",
+    "run": "R-0001",
+    "verifie": "run"
+   },
+   "classement": {
+    "detail": {
+     "coef_priorite": 0.65,
+     "coef_risque": 0.84,
+     "effort": 3,
+     "notes_manquantes": [],
+     "priorite_siege": "P2 (non fixée)",
+     "risque": 3,
+     "urgence": 2,
+     "valeur": 3
+    },
+    "motif": "0,40×valeur + 0,30×urgence + 0,30×(6−effort), × priorité du siège P2 (non fixée), × (1 − 0,08×(risque−1))",
+    "par": "maire",
+    "quand": "2026-11-06T09:11:26+00:00"
+   },
+   "corrections": 0,
+   "criteres": [
+    "saveCourseFileBlob / getCourseFileBlob / deleteCourseFileBlob (index.html ~10919-10945) préfixent la clé par currentStorageNamespace() ; un invité garde le comportement actuel",
+    "un PDF enregistré sous l'ancienne clé reste lisible (repli puis migration vers la nouvelle clé), testé",
+    "test Playwright : compte A importe un PDF, compte B sur le même navigateur ne peut ni le lire ni le supprimer ; retour sur A, le PDF est intact",
+    "aucune régression des suites course-import, import-center-ui et course-hub-ui"
+   ],
+   "echeance": null,
+   "effort": 3,
+   "historique": [
+    {
+     "par": "chef-rev-em",
+     "quand": "2026-11-06T09:10:26+00:00",
+     "statut": "proposee"
+    }
+   ],
+   "id": "M-20261106-009",
+   "livrables": [],
+   "livree": null,
+   "objectif": "Aligner le stockage des PDF importés (base rev-em-files, clé = identifiant de chapitre seul) sur le cloisonnement par compte de lsGet/lsSet, avec compatibilité ascendante pour les fichiers déjà enregistrés.",
+   "origine": "chef-rev-em",
+   "priorite_travail": null,
+   "proposee": "2026-11-06T09:10:26+00:00",
+   "rang": 9,
+   "remontees": [],
+   "risque": 3,
+   "score": 29.5,
+   "sensible": true,
+   "siege": "rev-em",
+   "sources": [
+    "/home/user/rev-em/index.html:10904-10945 et 7157 ; dossier-projet.md §5 et §14.5"
+   ],
+   "statut": "proposee",
+   "titre": "Cloisonner par compte les PDF de cours stockés en IndexedDB",
+   "urgence": 2,
+   "valeur": 3,
+   "validee": null
+  }
+ },
  "postes": {
   "architecte": {
    "competences": [],
@@ -2340,5 +3222,6 @@
    "titre": "Directeur général — Labo Vétotri",
    "titulaire": "chef-vetotri"
   }
- }
+ },
+ "reunions": {}
 }

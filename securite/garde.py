@@ -451,7 +451,7 @@ def analyser(payload: dict) -> Verdict:
         cmd = ti.get("command") or ""
         # Organisation (phase 3) : un agent (sous-agent) n'agit que sous SA identité vérifiée par son exécution (--run),
         # jamais comme le Maire (DG de l'île, identité seulement déclarée, valeur par défaut de --auteur).
-        if agent.get("agent_type") and re.search(r"\bile\.py\b.*\borg\s+(departement|poste|nommer|affecter|suspendre|reactiver|amorcer)\b", cmd):
+        if agent.get("agent_type") and re.search(r"\bile\.py\b.*\borg\s+(departement|poste|nommer|affecter|suspendre|reactiver|amorcer|attribuer|demarrer|livrer|valider|corriger|remonter|message|reunion|clore-reunion)\b", cmd):
             if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
                 return Verdict("bloquer", "organisation", "usurpation-dg", "un agent agit sur l'organisation sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
         return analyser_bash(cmd, cwd)
