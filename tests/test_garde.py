@@ -45,8 +45,25 @@ SENSIBLES = [
 
 
 class Regles(unittest.TestCase):
+    """Règles du garde. La branche git du dépôt où tournent les tests ne doit pas changer le résultat : les cas
+    « autorisés » supposent une branche de travail (simulée) ; la branche protégée a ses propres tests ci-dessous."""
+
+    def setUp(self):
+        self._branche = garde._branche
+        garde._branche = lambda cwd: "claude/travail"
+
+    def tearDown(self):
+        garde._branche = self._branche
+
     def verdict(self, cmd):
         return garde.analyser({"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": str(ILE)}).issue
+
+    def test_branche_protegee(self):
+        """Sur main : commit, fusion et push sans destination exigent l'accord du président."""
+        garde._branche = lambda cwd: "main"
+        for c in ("git commit -m 'travail'", "git add orchestrateur/registre/journal.jsonl && git commit -m 'journal'", "git push", "git merge claude/x"):
+            with self.subTest(c=c):
+                self.assertEqual(self.verdict(c), "approbation")
 
     def test_autorises(self):
         for c in AUTORISES:
