@@ -10,7 +10,10 @@ const res = [];
 const note = (nom, ok, detail) => { res.push(ok); console.log(`${ok ? "PASS" : "FAIL"}  ${nom}${detail ? " — " + detail : ""}`); };
 
 (async () => {
-  const b = await chromium.launch({args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]});
+  // Adresse distante derrière un proxy HTTPS (environnement de test) : le navigateur passe par lui, vérification TLS active.
+  const distant = !/^https?:\/\/(127\.0\.0\.1|localhost)[:/]/.test(base);
+  const b = await chromium.launch({args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"],
+                                   ...(distant && process.env.HTTPS_PROXY ? {proxy: {server: process.env.HTTPS_PROXY}} : {})});
   const page = async (vp) => {
     const p = await b.newPage({viewport: vp || {width: 1360, height: 900}});
     p.erreurs = [];
@@ -19,12 +22,17 @@ const note = (nom, ok, detail) => { res.push(ok); console.log(`${ok ? "PASS" : "
     p.on("response", r => { if (r.status() >= 400 && !/favicon/.test(r.url()) && !(r.status() === 404 && attendu(r.url()))) p.erreurs.push(`HTTP ${r.status()} ${r.url()}`); });
     return p;
   };
-  const registre = await (await fetch(base + "registre.json")).json();
-  const meta = await (await fetch(base + "residence/instantane/meta.json")).json();
+  const amorce = await b.newPage();                              // données de référence lues par le navigateur lui-même
+  await amorce.goto(base + "registre.json");
+  const registre = await amorce.evaluate(() => fetch("registre.json", {cache: "no-store"}).then(r => r.json()));
+  const meta = await amorce.evaluate(() => fetch("residence/instantane/meta.json", {cache: "no-store"}).then(r => r.json()));
+  await amorce.close();
   // 404 attendus, et seulement ceux-là : la recherche d'un serveur local (/api/sante, sauf sur *.github.io) et les anciens
   // emplacements des documents gelés, contrôlés exprès (une copie leurre y serait détectée).
-  const anciens = meta.anciens_chemins.map(([a]) => "/" + a);
-  const attendu = u => { const c = new URL(u).pathname; return c === "/api/sante" || anciens.some(a => c.includes(a)); };
+  const journal = await (await b.newPage().then(async q => { await q.goto(base + "registre.json"); return q; })).evaluate(() => fetch("orchestrateur/registre/journal.jsonl").then(r => r.text()));
+  const anciens = journal.split("\n").filter(l => l.includes('"type": "artefact.depose"')).map(l => (/"chemin": "([^"]+)"/.exec(l) || [])[1]).filter(Boolean)
+    .filter(c => meta.anciens_chemins.some(([a]) => c.startsWith(a)));          // chemins d'origine EXACTS des documents gelés migrés
+  const attendu = u => { const c = new URL(u).pathname; return c === "/api/sante" || anciens.some(a => c.endsWith("/" + a)); };
 
   // 1. Accueil
   let p = await page();
@@ -72,7 +80,38 @@ const note = (nom, ok, detail) => { res.push(ok); console.log(`${ok ? "PASS" : "
   await p.screenshot({path: require("os").tmpdir() + "/version-publiee-metropole.png"});
   note("Métropole : aucune erreur", !p.erreurs.length, p.erreurs.join(" | "));
 
-  // 5. Mobile
+  // 5. Nom officiel, rechargement, nouvel appareil, diagnostic
+  p = await page();
+  await p.goto(base, {waitUntil: "networkidle"});
+  const h1 = await p.textContent("h1"), titre = await p.title();
+  note("Nom officiel « Île Entrepreneuriale »", /Île\s+Entrepreneuriale/.test(h1) && /Île Entrepreneuriale/.test(titre), `${titre} · ${h1.replace(/\s+/g, " ").trim()}`);
+  p = await page();
+  await p.goto(base + "residence/village/residence.html", {waitUntil: "networkidle"});
+  await p.waitForSelector("#publie:not([hidden])", {timeout: 30000});
+  await p.reload({waitUntil: "networkidle"});
+  await p.waitForFunction(() => !document.querySelector("#publie").hidden && document.querySelectorAll("#journal-t tbody tr").length > 1, null, {timeout: 30000});
+  note("Rechargement de la Résidence : données toujours présentes", !p.erreurs.length, p.erreurs.join(" | "));
+  const { devices } = require("playwright");
+  for (const nom of ["iPhone 13", "Pixel 7"]) {
+    const ctx = await b.newContext({...devices[nom]});                 // nouvel appareil : aucun cache, aucun stockage
+    const q = await ctx.newPage(); const err = [];
+    q.on("pageerror", e => err.push(e.message));
+    await q.goto(base, {waitUntil: "networkidle"});
+    await q.waitForFunction(() => /événements/.test(document.querySelector("#etat").textContent), null, {timeout: 30000}).catch(() => {});
+    const ok = /intègre/.test(await q.textContent("#etat")) && (await q.$$eval("#institutions a", l => l.length)) === registre.batiments.length;
+    const stockage = await q.evaluate(() => { try { return localStorage.length + sessionStorage.length; } catch (e) { return 0; } });
+    note(`Nouvel appareil (${nom}) : accueil complet sans stockage local`, ok && !err.length && stockage === 0, err.join(" | "));
+    await ctx.close();
+  }
+  p = await page({width: 1280, height: 800});
+  await p.goto(base + "residence/village/index.html?qualite=bas&diagnostic=1");
+  await p.waitForFunction(() => window.__metropole && window.__metropole.ready && window.__metropole.diagnostic, null, {timeout: 300000});
+  await p.waitForFunction(() => window.__metropole.diagnostic.ips !== null, null, {timeout: 15000}).catch(() => {});
+  const dg = await p.evaluate(() => ({...window.__metropole.diagnostic, qualite: undefined}));
+  note("Diagnostic de performance mesuré sur l'appareil", typeof dg.pret_ms === "number" && dg.rendu !== "inconnu",
+       `prête en ${(dg.pret_ms / 1000).toFixed(1)} s · ${dg.ips} images/s · rendu « ${dg.rendu} »${dg.logiciel ? " (LOGICIEL : non représentatif d'un ordinateur réel)" : ""}`);
+
+  // 6. Mobile
   for (const chemin of ["", "residence/village/residence.html", "residence/village/verification.html"]) {
     p = await page({width: 390, height: 844});
     await p.goto(base + chemin, {waitUntil: "networkidle"});

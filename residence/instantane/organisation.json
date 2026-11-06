@@ -1,0 +1,2344 @@
+{
+ "agents": {
+  "architecte": {
+   "apparence": {
+    "avatar": null,
+    "graine": "47664cd5888be94f"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000057",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "architecte",
+   "departement": null,
+   "description": null,
+   "entreprise": "mairie",
+   "fonction": "architecte-logiciel",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000057",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "architecte",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "L'Architecte",
+   "poste": "architecte",
+   "preuve": "agents/definitions/architecte.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-bde-emergency": {
+   "apparence": {
+    "avatar": null,
+    "graine": "8a44d32185600290"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000069",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-bde-emergency",
+   "departement": null,
+   "description": null,
+   "entreprise": "bde-emergency",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000069",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-bde-emergency",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur QG EM'ERGENCY",
+   "poste": "bde-emergency-direction",
+   "preuve": "agents/definitions/chef-bde-emergency.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-cuvee-campus": {
+   "apparence": {
+    "avatar": null,
+    "graine": "19a618ce02d7274c"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000067",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-cuvee-campus",
+   "departement": null,
+   "description": null,
+   "entreprise": "cuvee-campus",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000067",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-cuvee-campus",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur Cave Cuvée Campus",
+   "poste": "cuvee-campus-direction",
+   "preuve": "agents/definitions/chef-cuvee-campus.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-ecole": {
+   "apparence": {
+    "avatar": null,
+    "graine": "0da517229696019b"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000073",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-ecole",
+   "departement": null,
+   "description": null,
+   "entreprise": "ecole",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000073",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-ecole",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur École",
+   "poste": "ecole-direction",
+   "preuve": "agents/definitions/chef-ecole.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-lexnote": {
+   "apparence": {
+    "avatar": null,
+    "graine": "4aad6351e7ab53d0"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000075",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-lexnote",
+   "departement": null,
+   "description": null,
+   "entreprise": "lexnote",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000075",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-lexnote",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur LexNote",
+   "poste": "lexnote-direction",
+   "preuve": "agents/definitions/chef-lexnote.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-rev-em": {
+   "apparence": {
+    "avatar": null,
+    "graine": "ad2ea5ccedffe092"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000077",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-rev-em",
+   "departement": null,
+   "description": null,
+   "entreprise": "rev-em",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000077",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-rev-em",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur REV-EM",
+   "poste": "rev-em-direction",
+   "preuve": "agents/definitions/chef-rev-em.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-upsa-sales-pilot": {
+   "apparence": {
+    "avatar": null,
+    "graine": "0c2afdfb31c9b750"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000079",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-upsa-sales-pilot",
+   "departement": null,
+   "description": null,
+   "entreprise": "upsa-sales-pilot",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000079",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-upsa-sales-pilot",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur UPSA Sales Pilot",
+   "poste": "upsa-sales-pilot-direction",
+   "preuve": "agents/definitions/chef-upsa-sales-pilot.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "chef-vetotri": {
+   "apparence": {
+    "avatar": null,
+    "graine": "88dfe1c841be678f"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000071",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "chef-vetotri",
+   "departement": null,
+   "description": null,
+   "entreprise": "vetotri",
+   "fonction": "directeur-general",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000071",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "chef-vetotri",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Directeur Labo Vétotri",
+   "poste": "vetotri-direction",
+   "preuve": "agents/definitions/chef-vetotri.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "critique-clarte": {
+   "apparence": {
+    "avatar": null,
+    "graine": "55efcbdc2ca537ed"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000061",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "critique-clarte",
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "fonction": "auditeur",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000061",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "critique-clarte",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Critique de la clarté",
+   "poste": "conseil-clarte",
+   "preuve": "agents/definitions/critique-clarte.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "critique-exigence": {
+   "apparence": {
+    "avatar": null,
+    "graine": "f7b0aba3af9acaac"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000063",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "critique-exigence",
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "fonction": "auditeur",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000063",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "critique-exigence",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Critique de l'exigence",
+   "poste": "conseil-exigence",
+   "preuve": "agents/definitions/critique-exigence.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "critique-strategie": {
+   "apparence": {
+    "avatar": null,
+    "graine": "826dba3ec0a8ad99"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000065",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "critique-strategie",
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "fonction": "auditeur",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000065",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "critique-strategie",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Critique de la stratégie",
+   "poste": "conseil-strategie",
+   "preuve": "agents/definitions/critique-strategie.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "forgeron": {
+   "apparence": {
+    "avatar": null,
+    "graine": "c892629d45b10da0"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000059",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": "forgeron",
+   "departement": null,
+   "description": null,
+   "entreprise": "forge",
+   "fonction": "responsable-qualite",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000059",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "forgeron",
+   "nature": "capacité d'exécution, aucune exécution en cours",
+   "nom": "Le Forgeron",
+   "poste": "forge-direction",
+   "preuve": "agents/definitions/forgeron.md",
+   "statut": "disponible",
+   "superieur": "maire",
+   "suspendu": null
+  },
+  "maire": {
+   "apparence": {
+    "avatar": null,
+    "graine": "d8ecd94b96b12603"
+   },
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000055",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.agent.cree"
+   },
+   "definition": null,
+   "departement": null,
+   "description": null,
+   "entreprise": "mairie",
+   "fonction": "dg-ile",
+   "historique": [
+    {
+     "auteur": {
+      "role": "maire",
+      "verifie": "declare"
+     },
+     "evenement": "E-000055",
+     "quand": "2026-11-06T14:05:46+00:00",
+     "type": "org.agent.cree"
+    }
+   ],
+   "id": "maire",
+   "nature": "session principale de Claude Code : aucune exécution tracée par les hooks",
+   "nom": "Le Maire",
+   "poste": "dg-ile",
+   "preuve": null,
+   "statut": "hors_ligne",
+   "superieur": null,
+   "suspendu": null
+  }
+ },
+ "departements": {},
+ "entreprises": {
+  "bde-emergency": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "8a44d32185600290"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000069",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-bde-emergency",
+     "departement": null,
+     "description": null,
+     "entreprise": "bde-emergency",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000069",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-bde-emergency",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur QG EM'ERGENCY",
+     "poste": "bde-emergency-direction",
+     "preuve": "agents/definitions/chef-bde-emergency.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "bde-emergency",
+   "couleur": "#d6402b",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-bde-emergency",
+    "poste": "bde-emergency-direction",
+    "titre": "Directeur général — QG EM'ERGENCY"
+   },
+   "direction": "unique",
+   "dossier": "projets/bde-emergency",
+   "effectif": 1,
+   "id": "bde-emergency",
+   "nom": "QG EM'ERGENCY",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000068",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "bde-emergency",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "bde-emergency-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — QG EM'ERGENCY",
+     "titulaire": "chef-bde-emergency"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Campagne BDE BBA : programme chiffré, entraînement à l'entretien de candidature, communication de la liste.",
+   "type": "projet"
+  },
+  "conseil": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "55efcbdc2ca537ed"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000061",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "critique-clarte",
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "fonction": "auditeur",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000061",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "critique-clarte",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Critique de la clarté",
+     "poste": "conseil-clarte",
+     "preuve": "agents/definitions/critique-clarte.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    },
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "f7b0aba3af9acaac"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000063",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "critique-exigence",
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "fonction": "auditeur",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000063",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "critique-exigence",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Critique de l'exigence",
+     "poste": "conseil-exigence",
+     "preuve": "agents/definitions/critique-exigence.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    },
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "826dba3ec0a8ad99"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000065",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "critique-strategie",
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "fonction": "auditeur",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000065",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "critique-strategie",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Critique de la stratégie",
+     "poste": "conseil-strategie",
+     "preuve": "agents/definitions/critique-strategie.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "conseil",
+   "couleur": "#6b4fa0",
+   "departements": [],
+   "directeur": null,
+   "direction": "collégiale",
+   "dossier": "audit/conseil",
+   "effectif": 3,
+   "id": "conseil",
+   "nom": "Conseil des Critiques",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000060",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "famille": "expertise",
+     "fonction": "auditeur",
+     "id": "conseil-clarte",
+     "niveau": 5,
+     "superieur": "dg-ile",
+     "titre": "Critique de la clarté",
+     "titulaire": "critique-clarte"
+    },
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000062",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "famille": "expertise",
+     "fonction": "auditeur",
+     "id": "conseil-exigence",
+     "niveau": 5,
+     "superieur": "dg-ile",
+     "titre": "Critique de l'exigence",
+     "titulaire": "critique-exigence"
+    },
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000064",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "conseil",
+     "famille": "expertise",
+     "fonction": "auditeur",
+     "id": "conseil-strategie",
+     "niveau": 5,
+     "superieur": "dg-ile",
+     "titre": "Critique de la stratégie",
+     "titulaire": "critique-strategie"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Trois tours, trois critiques qui relisent chaque prompt en parallèle. Le Maire fusionne leurs avis en un prompt amélioré.",
+   "type": "institution"
+  },
+  "cuvee-campus": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "19a618ce02d7274c"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000067",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-cuvee-campus",
+     "departement": null,
+     "description": null,
+     "entreprise": "cuvee-campus",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000067",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-cuvee-campus",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur Cave Cuvée Campus",
+     "poste": "cuvee-campus-direction",
+     "preuve": "agents/definitions/chef-cuvee-campus.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "cuvee-campus",
+   "couleur": "#7d2e46",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-cuvee-campus",
+    "poste": "cuvee-campus-direction",
+    "titre": "Directeur général — Cave Cuvée Campus"
+   },
+   "direction": "unique",
+   "dossier": "projets/cuvee-campus",
+   "effectif": 1,
+   "id": "cuvee-campus",
+   "nom": "Cave Cuvée Campus",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000066",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "cuvee-campus",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "cuvee-campus-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — Cave Cuvée Campus",
+     "titulaire": "chef-cuvee-campus"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Projet sociétal environnemental de l'équipe 53 : livrables, recherches sourcées, suivi d'équipe.",
+   "type": "projet"
+  },
+  "ecole": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "0da517229696019b"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000073",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-ecole",
+     "departement": null,
+     "description": null,
+     "entreprise": "ecole",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000073",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-ecole",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur École",
+     "poste": "ecole-direction",
+     "preuve": "agents/definitions/chef-ecole.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "ecole",
+   "couleur": "#2e5c9e",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-ecole",
+    "poste": "ecole-direction",
+    "titre": "Directeur général — École"
+   },
+   "direction": "unique",
+   "dossier": "projets/ecole",
+   "effectif": 1,
+   "id": "ecole",
+   "nom": "École",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000072",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "ecole",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "ecole-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — École",
+     "titulaire": "chef-ecole"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Cours emlyon : présentation d'anglais sur Lester Piggott, « Analyser et comprendre le marché », fiches de révision.",
+   "type": "projet"
+  },
+  "forge": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "c892629d45b10da0"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000059",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "forgeron",
+     "departement": null,
+     "description": null,
+     "entreprise": "forge",
+     "fonction": "responsable-qualite",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000059",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "forgeron",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Le Forgeron",
+     "poste": "forge-direction",
+     "preuve": "agents/definitions/forgeron.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "forge",
+   "couleur": "#3d3a36",
+   "departements": [],
+   "directeur": {
+    "agent": "forgeron",
+    "poste": "forge-direction",
+    "titre": "Forgeron — responsable qualité"
+   },
+   "direction": "unique",
+   "dossier": "audit",
+   "effectif": 1,
+   "id": "forge",
+   "nom": "La Forge",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000058",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "forge",
+     "famille": "management",
+     "fonction": "responsable-qualite",
+     "id": "forge-direction",
+     "niveau": 4,
+     "superieur": "dg-ile",
+     "titre": "Forgeron — responsable qualité",
+     "titulaire": "forgeron"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Vérifie et répare tout ce qui sort des maisons : structure, fichiers manquants, code qui casse, chiffres sans source. Inspecte aussi l'île automatiquement à la fin de chaque tâche.",
+   "type": "institution"
+  },
+  "lexnote": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "4aad6351e7ab53d0"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000075",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-lexnote",
+     "departement": null,
+     "description": null,
+     "entreprise": "lexnote",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000075",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-lexnote",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur LexNote",
+     "poste": "lexnote-direction",
+     "preuve": "agents/definitions/chef-lexnote.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "lexnote",
+   "couleur": "#1f6f6a",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-lexnote",
+    "poste": "lexnote-direction",
+    "titre": "Directeur général — LexNote"
+   },
+   "direction": "unique",
+   "dossier": "projets/lexnote",
+   "effectif": 1,
+   "id": "lexnote",
+   "nom": "LexNote",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000074",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "lexnote",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "lexnote-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — LexNote",
+     "titulaire": "chef-lexnote"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Prise de notes de cours, transcription, documents et consolidation, pour le droit et toutes filières. Local-first, PWA, Supabase.",
+   "type": "projet"
+  },
+  "mairie": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "d8ecd94b96b12603"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000055",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": null,
+     "departement": null,
+     "description": null,
+     "entreprise": "mairie",
+     "fonction": "dg-ile",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000055",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "maire",
+     "nature": "session principale de Claude Code : aucune exécution tracée par les hooks",
+     "nom": "Le Maire",
+     "poste": "dg-ile",
+     "preuve": null,
+     "statut": "hors_ligne",
+     "superieur": null,
+     "suspendu": null
+    },
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "47664cd5888be94f"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000057",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "architecte",
+     "departement": null,
+     "description": null,
+     "entreprise": "mairie",
+     "fonction": "architecte-logiciel",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000057",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "architecte",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "L'Architecte",
+     "poste": "architecte",
+     "preuve": "agents/definitions/architecte.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "mairie",
+   "couleur": "#c4553a",
+   "departements": [],
+   "directeur": {
+    "agent": "maire",
+    "poste": "dg-ile",
+    "titre": "Maire — directeur général de l'île"
+   },
+   "direction": "unique",
+   "dossier": ".",
+   "effectif": 2,
+   "id": "mairie",
+   "nom": "Mairie",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000054",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "mairie",
+     "famille": "direction",
+     "fonction": "dg-ile",
+     "id": "dg-ile",
+     "niveau": 0,
+     "superieur": null,
+     "titre": "Maire — directeur général de l'île",
+     "titulaire": "maire"
+    },
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000056",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "mairie",
+     "famille": "expertise",
+     "fonction": "architecte-logiciel",
+     "id": "architecte",
+     "niveau": 5,
+     "superieur": "dg-ile",
+     "titre": "Architecte de l'île",
+     "titulaire": "architecte"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Le Maire reçoit chaque demande, la fait passer au Conseil, la confie à la bonne maison, puis demande à la Forge de vérifier avant de te répondre.",
+   "type": "institution"
+  },
+  "residence": {
+   "agents": [],
+   "agents_en_execution": 0,
+   "batiment": "residence",
+   "couleur": "#c9a227",
+   "departements": [],
+   "directeur": null,
+   "direction": "aucune",
+   "dossier": "residence",
+   "effectif": 0,
+   "id": "residence",
+   "nom": "Résidence présidentielle",
+   "postes": [],
+   "postes_non_pourvus": 0,
+   "role": "Le président supervise toute l'entreprise : projets, priorités, décisions sensibles, instructions au directeur général.",
+   "type": "institution"
+  },
+  "rev-em": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "ad2ea5ccedffe092"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000077",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-rev-em",
+     "departement": null,
+     "description": null,
+     "entreprise": "rev-em",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000077",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-rev-em",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur REV-EM",
+     "poste": "rev-em-direction",
+     "preuve": "agents/definitions/chef-rev-em.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "rev-em",
+   "couleur": "#b8572b",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-rev-em",
+    "poste": "rev-em-direction",
+    "titre": "Directeur général — REV-EM"
+   },
+   "direction": "unique",
+   "dossier": "projets/rev-em",
+   "effectif": 1,
+   "id": "rev-em",
+   "nom": "REV-EM",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000076",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "rev-em",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "rev-em-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — REV-EM",
+     "titulaire": "chef-rev-em"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Plateforme de révision pour étudiants : cours, quiz, flashcards, planning, assistant IA local, maths, liaison avec LexNote.",
+   "type": "projet"
+  },
+  "upsa-sales-pilot": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "0c2afdfb31c9b750"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000079",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-upsa-sales-pilot",
+     "departement": null,
+     "description": null,
+     "entreprise": "upsa-sales-pilot",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000079",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-upsa-sales-pilot",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur UPSA Sales Pilot",
+     "poste": "upsa-sales-pilot-direction",
+     "preuve": "agents/definitions/chef-upsa-sales-pilot.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "upsa-sales-pilot",
+   "couleur": "#7a3f8f",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-upsa-sales-pilot",
+    "poste": "upsa-sales-pilot-direction",
+    "titre": "Directeur général — UPSA Sales Pilot"
+   },
+   "direction": "unique",
+   "dossier": "projets/upsa-sales-pilot",
+   "effectif": 1,
+   "id": "upsa-sales-pilot",
+   "nom": "UPSA Sales Pilot",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000078",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "upsa-sales-pilot",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "upsa-sales-pilot-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — UPSA Sales Pilot",
+     "titulaire": "chef-upsa-sales-pilot"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Pilotage commercial quotidien pour une commerciale UPSA : fiche pharmacie 360°, paracétamol, OTC, conventions, visites, import X20. Local, données fictives.",
+   "type": "projet"
+  },
+  "vetotri": {
+   "agents": [
+    {
+     "apparence": {
+      "avatar": null,
+      "graine": "88dfe1c841be678f"
+     },
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000071",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.agent.cree"
+     },
+     "definition": "chef-vetotri",
+     "departement": null,
+     "description": null,
+     "entreprise": "vetotri",
+     "fonction": "directeur-general",
+     "historique": [
+      {
+       "auteur": {
+        "role": "maire",
+        "verifie": "declare"
+       },
+       "evenement": "E-000071",
+       "quand": "2026-11-06T14:05:46+00:00",
+       "type": "org.agent.cree"
+      }
+     ],
+     "id": "chef-vetotri",
+     "nature": "capacité d'exécution, aucune exécution en cours",
+     "nom": "Directeur Labo Vétotri",
+     "poste": "vetotri-direction",
+     "preuve": "agents/definitions/chef-vetotri.md",
+     "statut": "disponible",
+     "superieur": "maire",
+     "suspendu": null
+    }
+   ],
+   "agents_en_execution": 0,
+   "batiment": "vetotri",
+   "couleur": "#2f8f83",
+   "departements": [],
+   "directeur": {
+    "agent": "chef-vetotri",
+    "poste": "vetotri-direction",
+    "titre": "Directeur général — Labo Vétotri"
+   },
+   "direction": "unique",
+   "dossier": "projets/vetotri",
+   "effectif": 1,
+   "id": "vetotri",
+   "nom": "Labo Vétotri",
+   "postes": [
+    {
+     "competences": [],
+     "cree": {
+      "auteur": {
+       "role": "maire",
+       "verifie": "declare"
+      },
+      "evenement": "E-000070",
+      "quand": "2026-11-06T14:05:46+00:00",
+      "type": "org.poste.cree"
+     },
+     "departement": null,
+     "description": null,
+     "entreprise": "vetotri",
+     "famille": "direction",
+     "fonction": "directeur-general",
+     "id": "vetotri-direction",
+     "niveau": 1,
+     "superieur": "dg-ile",
+     "titre": "Directeur général — Labo Vétotri",
+     "titulaire": "chef-vetotri"
+    }
+   ],
+   "postes_non_pourvus": 0,
+   "role": "Ton chatbot : code, prompts système versionnés, tests, recherche d'un nouveau nom.",
+   "type": "projet"
+  }
+ },
+ "fonctions": {
+  "agent-operationnel": {
+   "famille": "operationnel",
+   "niveau": 6,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Agent opérationnel"
+  },
+  "analyste-donnees": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Analyste de données"
+  },
+  "analyste-financier": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Analyste financier"
+  },
+  "architecte-logiciel": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Architecte logiciel"
+  },
+  "auditeur": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "auditer",
+    "executer_mission"
+   ],
+   "titre": "Auditeur"
+  },
+  "charge-communication": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Chargé de communication"
+  },
+  "chef-de-projet": {
+   "famille": "management",
+   "niveau": 3,
+   "permissions": [
+    "attribuer_mission",
+    "creer_poste",
+    "nommer_agent",
+    "valider_livrable"
+   ],
+   "titre": "Chef de projet"
+  },
+  "chercheur": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Chercheur"
+  },
+  "commercial": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Commercial"
+  },
+  "developpeur-backend": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Développeur backend"
+  },
+  "developpeur-frontend": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Développeur frontend"
+  },
+  "dg-ile": {
+   "famille": "direction",
+   "niveau": 0,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur général de l'île"
+  },
+  "directeur-financier": {
+   "famille": "direction",
+   "niveau": 2,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur financier"
+  },
+  "directeur-general": {
+   "famille": "direction",
+   "niveau": 1,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur général"
+  },
+  "directeur-operations": {
+   "famille": "direction",
+   "niveau": 2,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur des opérations"
+  },
+  "directeur-rh": {
+   "famille": "direction",
+   "niveau": 2,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur des ressources humaines"
+  },
+  "directeur-technique": {
+   "famille": "direction",
+   "niveau": 2,
+   "permissions": [
+    "attribuer_mission",
+    "creer_departement",
+    "creer_poste",
+    "nommer_agent",
+    "suspendre_agent",
+    "valider_livrable"
+   ],
+   "titre": "Directeur technique"
+  },
+  "juriste": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Juriste"
+  },
+  "manager": {
+   "famille": "management",
+   "niveau": 3,
+   "permissions": [
+    "attribuer_mission",
+    "creer_poste",
+    "nommer_agent",
+    "valider_livrable"
+   ],
+   "titre": "Manager de département"
+  },
+  "responsable-equipe": {
+   "famille": "management",
+   "niveau": 4,
+   "permissions": [
+    "attribuer_mission",
+    "valider_livrable"
+   ],
+   "titre": "Responsable d'équipe"
+  },
+  "responsable-marketing": {
+   "famille": "expertise",
+   "niveau": 5,
+   "permissions": [
+    "executer_mission"
+   ],
+   "titre": "Responsable marketing"
+  },
+  "responsable-qualite": {
+   "famille": "management",
+   "niveau": 4,
+   "permissions": [
+    "attribuer_mission",
+    "auditer",
+    "valider_livrable"
+   ],
+   "titre": "Responsable qualité"
+  }
+ },
+ "historique": [
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "upsa-sales-pilot",
+   "evenement": "E-000079",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "upsa-sales-pilot",
+   "evenement": "E-000078",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "rev-em",
+   "evenement": "E-000077",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "rev-em",
+   "evenement": "E-000076",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "lexnote",
+   "evenement": "E-000075",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "lexnote",
+   "evenement": "E-000074",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "ecole",
+   "evenement": "E-000073",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "ecole",
+   "evenement": "E-000072",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "vetotri",
+   "evenement": "E-000071",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "vetotri",
+   "evenement": "E-000070",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "bde-emergency",
+   "evenement": "E-000069",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "bde-emergency",
+   "evenement": "E-000068",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "cuvee-campus",
+   "evenement": "E-000067",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "cuvee-campus",
+   "evenement": "E-000066",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000065",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000064",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000063",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000062",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000061",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "conseil",
+   "evenement": "E-000060",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "forge",
+   "evenement": "E-000059",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "forge",
+   "evenement": "E-000058",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "mairie",
+   "evenement": "E-000057",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "mairie",
+   "evenement": "E-000056",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "mairie",
+   "evenement": "E-000055",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "entreprise": "mairie",
+   "evenement": "E-000054",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  }
+ ],
+ "postes": {
+  "architecte": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000056",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "mairie",
+   "famille": "expertise",
+   "fonction": "architecte-logiciel",
+   "id": "architecte",
+   "niveau": 5,
+   "superieur": "dg-ile",
+   "titre": "Architecte de l'île",
+   "titulaire": "architecte"
+  },
+  "bde-emergency-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000068",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "bde-emergency",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "bde-emergency-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — QG EM'ERGENCY",
+   "titulaire": "chef-bde-emergency"
+  },
+  "conseil-clarte": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000060",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "famille": "expertise",
+   "fonction": "auditeur",
+   "id": "conseil-clarte",
+   "niveau": 5,
+   "superieur": "dg-ile",
+   "titre": "Critique de la clarté",
+   "titulaire": "critique-clarte"
+  },
+  "conseil-exigence": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000062",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "famille": "expertise",
+   "fonction": "auditeur",
+   "id": "conseil-exigence",
+   "niveau": 5,
+   "superieur": "dg-ile",
+   "titre": "Critique de l'exigence",
+   "titulaire": "critique-exigence"
+  },
+  "conseil-strategie": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000064",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "conseil",
+   "famille": "expertise",
+   "fonction": "auditeur",
+   "id": "conseil-strategie",
+   "niveau": 5,
+   "superieur": "dg-ile",
+   "titre": "Critique de la stratégie",
+   "titulaire": "critique-strategie"
+  },
+  "cuvee-campus-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000066",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "cuvee-campus",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "cuvee-campus-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — Cave Cuvée Campus",
+   "titulaire": "chef-cuvee-campus"
+  },
+  "dg-ile": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000054",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "mairie",
+   "famille": "direction",
+   "fonction": "dg-ile",
+   "id": "dg-ile",
+   "niveau": 0,
+   "superieur": null,
+   "titre": "Maire — directeur général de l'île",
+   "titulaire": "maire"
+  },
+  "ecole-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000072",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "ecole",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "ecole-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — École",
+   "titulaire": "chef-ecole"
+  },
+  "forge-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000058",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "forge",
+   "famille": "management",
+   "fonction": "responsable-qualite",
+   "id": "forge-direction",
+   "niveau": 4,
+   "superieur": "dg-ile",
+   "titre": "Forgeron — responsable qualité",
+   "titulaire": "forgeron"
+  },
+  "lexnote-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000074",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "lexnote",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "lexnote-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — LexNote",
+   "titulaire": "chef-lexnote"
+  },
+  "rev-em-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000076",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "rev-em",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "rev-em-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — REV-EM",
+   "titulaire": "chef-rev-em"
+  },
+  "upsa-sales-pilot-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000078",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "upsa-sales-pilot",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "upsa-sales-pilot-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — UPSA Sales Pilot",
+   "titulaire": "chef-upsa-sales-pilot"
+  },
+  "vetotri-direction": {
+   "competences": [],
+   "cree": {
+    "auteur": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "evenement": "E-000070",
+    "quand": "2026-11-06T14:05:46+00:00",
+    "type": "org.poste.cree"
+   },
+   "departement": null,
+   "description": null,
+   "entreprise": "vetotri",
+   "famille": "direction",
+   "fonction": "directeur-general",
+   "id": "vetotri-direction",
+   "niveau": 1,
+   "superieur": "dg-ile",
+   "titre": "Directeur général — Labo Vétotri",
+   "titulaire": "chef-vetotri"
+  }
+ }
+}

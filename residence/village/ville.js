@@ -1,4 +1,4 @@
-/* Île des Agents — métropole insulaire 3D.
+/* Île Entrepreneuriale — métropole insulaire 3D.
    three.js r147 (CDN), aucun build, aucune texture externe : façades, enseignes et ciel sont générés ici.
    Le registre (registre.json) reste la source de vérité des bâtiments ; etat-de-l-ile.json pilote l'activité réelle. */
 "use strict";
@@ -739,9 +739,10 @@ function majBandeau(){
 /* ---------- étiquettes, carnet, journal ---------- */
 const KINDS = {residence:"Résidence · le président", mairie:"Centre stratégique · le Maire", conseil:"Centre de contrôle · 3 critiques", forge:"Centre de contrôle · vérification", maison:"Siège · projet", chantier:"Chantier · futur bâtiment"};
 const labelsEl = document.getElementById("labels");
+const escLbl = x => String(x).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));   // noms du registre
 const labels = B.map(b => {
   const el = document.createElement("button"); el.className = "lbl" + (b.type === "chantier" ? " chantier" : ""); el.type = "button";
-  el.innerHTML = (b.type === "chantier" ? "" : `<i style="background:${b.couleur}"></i>`) + b.nom; el.addEventListener("click", () => ouvrir(b.id)); labelsEl.appendChild(el);
+  el.innerHTML = (b.type === "chantier" ? "" : `<i style="background:${/^#[0-9a-f]{3,8}$/i.test(b.couleur || "") ? b.couleur : "#f5d27a"}"></i>`) + escLbl(b.nom); el.addEventListener("click", () => ouvrir(b.id)); labelsEl.appendChild(el);
   return {el, b, v:new T.Vector3(b.pos[0], GROUND + (groups[b.id]?.userData.top || 30) + 4, b.pos[1]), chantier:b.type === "chantier"};
 });
 const DISTRICTS = [
@@ -784,10 +785,11 @@ function accesBatiment(b){
   const res = window.IleSource ? IleSource.lien("residence") : "/residence", l = [];
   for(const [titre, ancre] of (SECTIONS[b.type] || [])) l.push(`<a href="${esc(res + ancre)}">${esc(titre)} ↗</a>`);
   if(b.type === "residence" || b.type === "forge") l.push(`<a href="verification.html">Vérification publique du journal ↗</a>`);
-  if(b.dossier) l.push(`<a href="${esc(DEPOT_WEB + (b.dossier === "." ? "" : b.dossier))}" target="_blank" rel="noopener">Dossier dans le dépôt ↗</a>`);
+  if(b.dossier) l.push(`<a href="${esc(b.dossier === "." ? "https://github.com/Antsvfr/ile-entrepreneuriale" : DEPOT_WEB + b.dossier)}" target="_blank" rel="noopener">Dossier dans le dépôt ↗</a>`);
   return l.length ? `<div class="f"><span>Accéder</span><div class="acces">${l.join("")}</div></div>` : "";
 }
 function ouvrir(id, focus=true){
+  if(!B.some(b => b.id === id)) id = "mairie";                      // bâtiment inconnu (?ouvrir=…) : la Mairie, sans erreur
   current = B.findIndex(b => b.id === id); const b = B[current];
   document.getElementById("pKind").textContent = KINDS[b.type] || b.type; document.getElementById("pName").textContent = b.nom; document.getElementById("pSw").style.background = b.couleur;
   document.getElementById("pBody").innerHTML = `
@@ -881,6 +883,7 @@ async function construire(){
   progress("Prête."); setQuality(qualName); applyTod();
   loader.classList.add("done"); setTimeout(() => loader.remove(), 900);
   window.__metropole.ready = true;
+  diagnostic(renderer, () => qualName, () => qualAuto);
 }
 
 /* ---------- boucle principale ---------- */
@@ -963,3 +966,24 @@ frame();
 await construire();
 if(Q.get("ouvrir")) ouvrir(Q.get("ouvrir")); else ouvrir("mairie", false), panel.classList.add("closed"), openBtn.hidden = false;
 });
+
+/* ---------- diagnostic de performance (?diagnostic=1) : mesuré sur l'appareil qui affiche la page, jamais extrapolé ---------- */
+function infoRendu(renderer){
+  try{ const gl = renderer.getContext(), ext = gl.getExtension("WEBGL_debug_renderer_info");
+       const r = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+       return {rendu: String(r), logiciel: /swiftshader|llvmpipe|software|basic render/i.test(String(r))}; }
+  catch(_){ return {rendu: "inconnu", logiciel: null}; }
+}
+function diagnostic(renderer, qualite, auto){
+  const pret = Math.round(performance.now()), info = infoRendu(renderer);
+  window.__metropole.diagnostic = {pret_ms: pret, ...info, qualite, ips: null};
+  if(!new URLSearchParams(location.search).has("diagnostic")) return;
+  const el = document.createElement("div");
+  el.style.cssText = "position:fixed;right:12px;bottom:12px;z-index:50;background:rgba(13,22,33,.92);color:#fbf6ec;font:12px/1.5 ui-monospace,Menlo,monospace;padding:10px 12px;border-radius:10px;max-width:340px;border:1px solid rgba(245,210,122,.5)";
+  document.body.appendChild(el);
+  let n = 0, t0 = performance.now();
+  const boucle = t => { n++; if(t - t0 >= 2000){ const ips = Math.round(n * 1000 / (t - t0)); window.__metropole.diagnostic.ips = ips; n = 0; t0 = t;
+      el.innerHTML = `<b>Diagnostic de la métropole</b><br>Prête en ${(pret/1000).toFixed(1)} s · ${ips} images/s<br>Qualité : ${qualite()}${auto() ? " (auto)" : ""}<br>Rendu : ${info.rendu.replace(/[<>&]/g, "")}<br>${info.logiciel ? "⚠ rendu LOGICIEL (sans carte graphique) : non représentatif d'un ordinateur réel" : info.logiciel === false ? "Rendu matériel (carte graphique)" : ""}`; }
+    requestAnimationFrame(boucle); };
+  requestAnimationFrame(boucle);
+}

@@ -23,7 +23,7 @@ def _sha512_modq(b: bytes) -> int:
 def _recover_x(y: int, sign: int):
     if y >= _p:
         return None
-    x2 = (y * y - 1) * pow(_d * y * y + 1, _p - 2, _p)
+    x2 = (y * y - 1) * pow(_d * y * y + 1, _p - 2, _p) % _p
     if x2 == 0:
         return None if sign else 0
     x = pow(x2, (_p + 3) // 8, _p)
@@ -111,6 +111,8 @@ def verifier(publique: bytes, message: bytes, signature: bytes) -> bool:
         A = _decompress(publique)
         R = _decompress(signature[:32])
         if A is None or R is None:
+            return False
+        if _equal(_mul(8, A), (0, 1, 1, 0)):   # clé d'ordre faible (ex. ordre 2) : n'importe qui pourrait « signer »
             return False
         s = int.from_bytes(signature[32:], "little")
         if s >= _L:

@@ -307,7 +307,7 @@ class Confinement(Base):
                                 break
                             time.sleep(0.1)
                     self.assertIsNotNone(sante, p.stdout.read() if p.poll() is not None else "pas de réponse")
-                    self.assertEqual(sante.get("ile"), "Île des Agents")
+                    self.assertEqual(sante.get("ile"), "Île Entrepreneuriale")
                     with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/etat", timeout=5) as r:
                         self.assertIn("approbations_en_attente", json.load(r))   # a lu le journal (ile confiné)
                     self.assertPropre()

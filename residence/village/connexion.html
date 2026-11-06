@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data: blob:; base-uri 'none'; form-action 'self'; object-src 'none'">
 <title>Connexion présidentielle</title>
 <style>
 :root{--paper:#fbf6ec;--ink:#231c13;--night:#14202e;--gold:#f5d27a;--bad:#b3261e;color-scheme:dark}
@@ -20,7 +21,7 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-o
 </head>
 <body>
 <form id="f">
-  <h1>Île des Agents</h1>
+  <h1>Île Entrepreneuriale</h1>
   <p>Accès réservé au président. Saisis ta phrase présidentielle : elle reconstitue ta clé pour cette session, puis n'est conservée nulle part.</p>
   <input type="password" id="phrase" autocomplete="current-password" aria-label="Phrase présidentielle" placeholder="Phrase présidentielle" required autofocus>
   <div class="err" id="err" role="alert"></div>
@@ -28,6 +29,9 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-o
 </form>
 <script>
 "use strict";
+if (/\.github\.io$/i.test(location.hostname)) {   // version publiée : aucune connexion n'existe, la phrase ne se saisit jamais ici
+  document.getElementById("f").innerHTML = '<h1>Île Entrepreneuriale</h1><p>La version publiée est en lecture seule : il n\'y a pas de connexion en ligne. La phrase présidentielle ne se saisit <b>que</b> dans la Résidence locale de l\'île (./ile), sur ton ordinateur.</p><p><a href="index.html" style="color:#f5d27a">Ouvrir la métropole</a></p>';
+}
 const suite = (() => { const s = new URLSearchParams(location.search).get("suite") || "/residence"; return /^\/(?!\/)/.test(s) ? s : "/residence"; })();
 document.getElementById("f").addEventListener("submit", async ev => {
   ev.preventDefault(); const go = document.getElementById("go"), err = document.getElementById("err"); go.disabled = true; err.textContent = "Vérification…";

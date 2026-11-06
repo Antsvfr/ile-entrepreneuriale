@@ -784,6 +784,43 @@ def _resume(ev) -> str:
     }.get(t, lambda: (d.get("titre") or d.get("siege") or "")[:90])()
 
 
+def _cli_org(a, who):
+    conf = sys.modules.get("confinement")
+    if conf is not None:
+        org = conf.charger("organisation")
+    else:
+        import organisation as org
+    if a.sous == "fonctions":
+        for k, f in org.FONCTIONS.items():
+            print(f"{k:24} niveau {f['niveau']}  {f['titre']:36} {', '.join(sorted(f['permissions']))}")
+        return 0
+    if a.sous in ("etat", "agent"):
+        o = org.etat()
+        if a.sous == "agent":
+            ag = o["agents"].get(a.id)
+            if not ag:
+                raise ErreurIle(f"agent inconnu : {a.id}")
+            print(json.dumps(ag, ensure_ascii=False, indent=2)); return 0
+        for e in o["entreprises"].values():
+            if a.entreprise and e["id"] != a.entreprise:
+                continue
+            d = e["directeur"]
+            print(f"{e['nom']} ({e['id']}) — direction {e['direction']}{' : ' + d['agent'] if d and d.get('agent') else ''} · {e['effectif']} agent(s) · {len(e['departements'])} département(s) · {e['postes_non_pourvus']} poste(s) non pourvu(s)")
+            for po in sorted(e["postes"], key=lambda x: (9 if x["niveau"] is None else x["niveau"], x["id"])):
+                ag = o["agents"].get(po["titulaire"]) if po["titulaire"] else None
+                print(f"   {'  ' * min(4, max(0, (po['niveau'] or 0) - 1))}{po['titre']} [{po['id']}] : {ag['nom'] + ' — ' + ag['statut'] if ag else 'non pourvu'}")
+        return 0
+    if a.sous == "amorcer":
+        faits = org.amorcer(who()); print(f"{len(faits)} événement(s) inscrit(s)" + (" : " + ", ".join(e['id'] for e in faits) if faits else " (déjà à jour)")); return 0
+    acte = {"departement": lambda: org.creer_departement(a.entreprise, a.id, a.nom, a.mission, who()),
+            "poste": lambda: org.creer_poste(a.entreprise, a.id, a.fonction, a.superieur, who(), departement=a.departement, titre=a.titre, competences=a.competence, description=a.description),
+            "nommer": lambda: org.creer_agent(a.id, a.nom, a.poste, who(), definition=a.definition, competences=a.competence, description=a.description),
+            "affecter": lambda: org.affecter_agent(a.id, a.poste, who(), a.motif),
+            "suspendre": lambda: org.suspendre_agent(a.id, a.motif, who()),
+            "reactiver": lambda: org.reactiver_agent(a.id, a.motif, who())}[a.sous]
+    ev = acte(); print(f"{ev['id']} {ev['type']} — autorisé : {ev['donnees'].get('autorisation')}"); return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="ile.py", description="Registre des opérations de l'Entreprise des Agents")
     ap.add_argument("--auteur", default="maire", help="rôle de l'auteur (maire, president, chef-rev-em, critique-clarte…)")
@@ -832,6 +869,18 @@ def main(argv=None):
     x = prs.add_parser("approuver"); x.add_argument("id"); x.add_argument("--motif"); x.add_argument("--heures", type=float, default=DUREE_APPROBATION_H)
     x = prs.add_parser("refuser"); x.add_argument("id"); x.add_argument("--motif")
     x = prs.add_parser("mission"); x.add_argument("id"); x.add_argument("vers", choices=("planifiee", "rejetee", "reportee", "proposee", "attente_president")); x.add_argument("--motif")
+    og = sp.add_parser("org", help="organisation : entreprises, départements, postes, agents, hiérarchie"); osp = og.add_subparsers(dest="sous", required=True)
+    osp.add_parser("fonctions"); osp.add_parser("amorcer")
+    x = osp.add_parser("etat"); x.add_argument("--entreprise")
+    x = osp.add_parser("agent"); x.add_argument("id")
+    x = osp.add_parser("departement"); x.add_argument("entreprise"); x.add_argument("id"); x.add_argument("--nom", required=True); x.add_argument("--mission", default="")
+    x = osp.add_parser("poste"); x.add_argument("entreprise"); x.add_argument("id"); x.add_argument("--fonction", required=True); x.add_argument("--superieur")
+    x.add_argument("--departement"); x.add_argument("--titre"); x.add_argument("--competence", action="append", default=[]); x.add_argument("--description")
+    x = osp.add_parser("nommer", help="crée l'agent sur un poste"); x.add_argument("id"); x.add_argument("--nom", required=True); x.add_argument("--poste", required=True)
+    x.add_argument("--definition", help="agents/definitions/<nom>.md : capacité d'exécution"); x.add_argument("--competence", action="append", default=[]); x.add_argument("--description")
+    x = osp.add_parser("affecter"); x.add_argument("id"); x.add_argument("--poste", required=True); x.add_argument("--motif")
+    x = osp.add_parser("suspendre"); x.add_argument("id"); x.add_argument("--motif", required=True)
+    x = osp.add_parser("reactiver"); x.add_argument("id"); x.add_argument("--motif", required=True)
     a = ap.parse_args(argv)
     who = lambda: auteur_cli(a.auteur, a.run)
 
@@ -865,6 +914,8 @@ def main(argv=None):
                 with open(OPS / "capteurs-erreurs.log", "a", encoding="utf-8") as f:
                     f.write(f"{maintenant()} {a.evenement} {type(e).__name__}: {e}\n")
             return 0
+        if a.cmd == "org":
+            return _cli_org(a, who)
         if a.cmd == "etat":
             p = etat(); v = verifier()
             print(f"Journal : {p['evenements']} événements — {'intègre' if v['ok'] else 'ALTÉRÉ'}")

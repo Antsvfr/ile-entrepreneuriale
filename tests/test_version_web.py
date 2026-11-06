@@ -49,7 +49,7 @@ class Instantane(Base):
     def test_fichiers_et_contenu(self):
         m = _serveur().instantane(self.sortie)
         noms = sorted(p.name for p in self.sortie.iterdir())
-        self.assertEqual(noms, ["etat.json", "journal.json", "meta.json", "president.json", "residence.json", "verifier.json"])
+        self.assertEqual(noms, ["etat.json", "journal.json", "meta.json", "organisation.json", "president.json", "residence.json", "verifier.json"])
         self.assertTrue(m["integre"]); self.assertEqual(m["evenements"], len(ile.lire()))
         self.assertEqual(set(m["types_presidentiels"]), ile.TYPES_PRESIDENTIELS)
         res = json.loads((self.sortie / "residence.json").read_text(encoding="utf-8"))
@@ -69,7 +69,7 @@ class Instantane(Base):
         v = ile.verifier()
         self.assertEqual((r["ok"], r["n"], r["dernier"]), (v["ok"], v["n"], v["dernier"]))
         self.assertEqual((r["actes_presidentiels"], r["actes_valides"]), (3, 3))   # identité + deux instructions signées
-        # falsification d'un acte signé, signature remplacée, ligne retirée : détectées comme par Python
+        # falsification d'un acte signé et ligne retirée : détectées comme par Python
         lignes = ile.JOURNAL.read_text(encoding="utf-8").splitlines()
         for nom, alteration in (("acte modifié", lignes[:-1] + [lignes[-1].replace("Seconde instruction signée", "Instruction falsifiée")]),
                                 ("ligne du milieu retirée", lignes[:1] + lignes[2:])):   # une fin tronquée se détecte par l'empreinte finale
@@ -77,6 +77,38 @@ class Instantane(Base):
                 f = self.sortie / "altere.jsonl"
                 f.write_text("\n".join(alteration) + "\n", encoding="utf-8")
                 self.assertFalse(_verifier_js(f, m)["ok"])
+
+    @unittest.skipUnless(NODE, "node absent")
+    def test_signature_remplacee_empreinte_recalculee(self):
+        """Faux acte présidentiel dont l'empreinte est recalculée : seule la SIGNATURE peut le trahir (Python et navigateur)."""
+        m = _serveur().instantane(self.sortie)
+        evs = ile.lire()
+        ev = dict(evs[-1]); ev["donnees"] = {**ev["donnees"], "texte": "Instruction forgée"}
+        ev["hash"] = ile.empreinte(ev)                                            # chaîne de la ligne cohérente
+        lignes = ile.JOURNAL.read_text(encoding="utf-8").splitlines()[:-1] + [json.dumps(ev, ensure_ascii=False, sort_keys=True)]
+        f = self.sortie / "forge.jsonl"; f.write_text("\n".join(lignes) + "\n", encoding="utf-8")
+        r = _verifier_js(f, m)
+        self.assertFalse(r["ok"]); self.assertTrue(any("signature présidentielle" in e for e in r["erreurs"]), r["erreurs"])
+        self.assertFalse(any("contenu modifié" in e for e in r["erreurs"]))       # détecté par la signature, pas par l'empreinte
+        self.assertFalse(ile.verifier([json.loads(l) for l in lignes])["ok"])
+
+    @unittest.skipUnless(NODE, "node absent")
+    def test_cle_d_ordre_faible_refusee(self):
+        """Une clé publique d'ordre 2 permettrait de « signer » sans secret : refusée par Python ET par le navigateur."""
+        import signature
+        p_ = 2 ** 255 - 19
+        faible = (p_ - 1).to_bytes(32, "little")                               # point (0, -1), d'ordre 2
+        R = (1).to_bytes(32, "little")                                          # point neutre
+        for k in range(64):                                                     # h pair ⇒ s·B = R + h·A est vrai avec s = 0
+            msg = b"acte forge %d" % k
+            h = int.from_bytes(__import__("hashlib").sha512(R + faible + msg).digest(), "little") % signature._L
+            if h % 2 == 0:
+                break
+        sig = R + (0).to_bytes(32, "little")
+        self.assertFalse(signature.verifier(faible, msg, sig))
+        prog = ("const V = require(process.argv[1]); V.ed25519Verifier(process.argv[2], new TextEncoder().encode(process.argv[3]), process.argv[4]).then(r => console.log(r));")
+        out = subprocess.run([NODE, "-e", prog, str(RACINE / "residence" / "village" / "verification.js"), faible.hex(), msg.decode(), sig.hex()], capture_output=True, text=True, timeout=60)
+        self.assertEqual(out.stdout.strip(), "false")
 
     @unittest.skipUnless(NODE, "node absent")
     def test_vrai_journal(self):

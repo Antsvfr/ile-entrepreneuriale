@@ -25,9 +25,9 @@
    "tests/"
   ]
  ],
- "dernier_hash": "1c31913324d5a0739ba57405433820c42068921c3aa0a07e95dbe18774a6e968",
- "evenements": 53,
- "genere": "2026-11-06T13:30:27+00:00",
+ "dernier_hash": "a48cc8b194ea29999b6de06a00977b3ad51228fb1877d88f05fe55e58d195466",
+ "evenements": 79,
+ "genere": "2026-11-06T14:05:46+00:00",
  "integre": true,
  "journal": "orchestrateur/registre/journal.jsonl",
  "reserve_president": [

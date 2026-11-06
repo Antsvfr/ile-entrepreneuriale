@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Île entrepreneuriale</title>
-<meta name="description" content="L'Île entrepreneuriale : métropole 3D, institutions, registre des opérations et vérification publique.">
+<title>Île Entrepreneuriale</title>
+<meta name="description" content="L'Île Entrepreneuriale : métropole 3D, institutions, registre des opérations et vérification publique.">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -51,7 +51,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <body>
 <main class="wrap">
   <div class="kicker">Entreprise d'agents · gouvernance signée</div>
-  <h1>Île <span>entrepreneuriale</span></h1>
+  <h1>Île <span>Entrepreneuriale</span></h1>
   <p class="lead">Une métropole d'agents gouvernée par un Maire, un Conseil des critiques et une Forge, sous l'autorité d'un président dont chaque acte est signé de sa clé. Tout ce que fait l'île est inscrit dans un registre chaîné, vérifiable par tous.</p>
   <div class="etat" id="etat" aria-live="polite"><span class="puce">Chargement de l'état de l'île…</span></div>
 
@@ -75,7 +75,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
       <li id="li-identite">Identité présidentielle : —</li>
     </ul>
   </section>
-  <footer id="pied">Île entrepreneuriale · <a href="https://github.com/Antsvfr/ile-entrepreneuriale/blob/main/audit/rapports/rapport-deploiement-application-web.md" rel="noopener">rapport de déploiement</a></footer>
+  <footer id="pied">Île Entrepreneuriale · <a href="https://github.com/Antsvfr/ile-entrepreneuriale/blob/main/audit/rapports/rapport-deploiement-application-web.md" rel="noopener">rapport de déploiement</a></footer>
 </main>
 <script>
 "use strict";
@@ -87,7 +87,7 @@ const json = async u => { const r = await fetch(u, {cache:"no-store"}); if(!r.ok
     const [m, res, reg] = await Promise.all([json("residence/instantane/meta.json"), json("residence/instantane/residence.json"), json("registre.json")]);
     const att = res.decisions.length + res.approbations.length, actifs = res.agents_actifs.length;
     $("#etat").innerHTML = [
-      `<span class="puce">Registre <b class="${m.integre ? "ok" : "ko"}">${m.integre ? "intègre" : "ALTÉRÉ"}</b> · ${m.evenements} événements</span>`,
+      `<span class="puce">Registre <b class="${m.integre ? "ok" : "ko"}">${m.integre ? "intègre" : "ALTÉRÉ"}</b> · ${esc(m.evenements)} événements</span>`,
       `<span class="puce">${res.sieges.length} projets · ${res.missions.length} missions</span>`,
       `<span class="puce">${att} décision(s) en attente</span>`,
       `<span class="puce">${actifs ? actifs + " agent(s) au travail" : "aucun agent au travail"}</span>`,

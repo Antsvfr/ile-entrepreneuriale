@@ -448,7 +448,13 @@ def analyser(payload: dict) -> Verdict:
     if (STOP_REEL.exists() or STOP.exists()) and outil not in LECTURE:
         return Verdict("bloquer", "arret", "stop", "ARRÊT D'URGENCE actif (securite/STOP) : aucune action n'est permise tant que le président ne l'a pas levé", outil, str(ti)[:300])
     if outil == "Bash":
-        return analyser_bash(ti.get("command") or "", cwd)
+        cmd = ti.get("command") or ""
+        # Organisation (phase 3) : un agent (sous-agent) n'agit que sous SA identité vérifiée par son exécution (--run),
+        # jamais comme le Maire (DG de l'île, identité seulement déclarée, valeur par défaut de --auteur).
+        if agent.get("agent_type") and re.search(r"\bile\.py\b.*\borg\s+(departement|poste|nommer|affecter|suspendre|reactiver|amorcer)\b", cmd):
+            if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
+                return Verdict("bloquer", "organisation", "usurpation-dg", "un agent agit sur l'organisation sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
+        return analyser_bash(cmd, cwd)
     if outil in ECRITURE:
         return analyser_fichier(outil, ti.get("file_path") or ti.get("notebook_path") or "", cwd, agent)
     if outil in ("Read", "Grep") and SECRETS.search(" " + (ti.get("file_path") or ti.get("path") or "") + " "):

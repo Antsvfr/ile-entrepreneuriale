@@ -6,7 +6,7 @@
 |---|---|
 | Ouvrir l'île (démarre si besoin, ouvre le navigateur) | `./ile` ou double-clic sur **Ouvrir l'île.command** |
 | Aller droit à la Résidence | `./ile residence` · http://localhost:7777/residence |
-| Démarrage automatique à chaque ouverture de session (Mac) | `./ile installer` (une fois) : l'île reste joignable sur http://localhost:7777/ et un raccourci « Île des Agents » est posé sur le Bureau |
+| Démarrage automatique à chaque ouverture de session (Mac) | `./ile installer` (une fois) : l'île reste joignable sur http://localhost:7777/ et un raccourci « Île Entrepreneuriale » est posé sur le Bureau |
 | Créer l'identité présidentielle (une fois) | `./ile president` (dans Terminal) |
 | Accès privé depuis un autre appareil | `./ile distant activer` (Tailscale) |
 | Arrêt d'urgence de tous les agents | `./ile arret-urgence on` / `off` |

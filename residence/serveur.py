@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serveur de l'Île des Agents : métropole 3D, Résidence présidentielle, API du registre.
+"""Serveur de l'Île Entrepreneuriale : métropole 3D, Résidence présidentielle, API du registre.
 
     ./ile                         (recommandé : démarre si besoin et ouvre le navigateur)
     python3 serveur.py            port 7777 (ou ILE_PORT), écoute sur 127.0.0.1 uniquement
@@ -59,9 +59,10 @@ def _confinement():
 
 
 ile = _confinement().charger("ile")
+ORG = _confinement().charger("organisation")   # module (la fonction organisation() ci-dessous décrit les directions)
 
 PORT_DEFAUT = int(os.environ.get("ILE_PORT", "7777"))
-SIGNATURE_SERVEUR = "Île des Agents"
+SIGNATURE_SERVEUR = "Île Entrepreneuriale"   # reconnue par le lanceur et source.js (l'ancienne « Île des Agents » est signalée)
 JETON = secrets.token_urlsafe(24)                     # anti-CSRF, change à chaque démarrage
 # Jamais servis bruts : le registre (sauf l'instantané etat.json), la sécurité, la présidence, le code Python, les fichiers cachés.
 INTERDITS = re.compile(r"^/(orchestrateur/registre/(?!etat\.json$)|securite/|presidence/|orchestrateur/(?!registre/etat\.json$|etat-de-l-ile\.json$)|audit/(?!rapports/|conseil/)|tests/|\.|.*/\.|.*\.py$|.*\.log$|.*\.pid$|ile$)")
@@ -277,6 +278,12 @@ class Gestionnaire(http.server.SimpleHTTPRequestHandler):
                 return self._json(200, {"identite": {"empreinte": i["empreinte"], "quand": i["quand"]} if i else None, "deverrouille": bool(session)})
             if chemin == "/api/verifier":
                 return self._json(200, ile.verifier())
+            if chemin == "/api/organisation":                    # projection du journal : entreprises, postes, agents, statuts dérivés
+                return self._json(200, ORG.etat())
+            m_ag = re.match(r"^/api/agent/([a-z0-9][a-z0-9-]{1,47})$", chemin)
+            if m_ag:
+                a_ = ORG.etat()["agents"].get(m_ag.group(1))
+                return self._json(200, a_) if a_ else self._json(404, {"erreur": "agent inconnu"})
             if chemin == "/api/session":
                 if self.headers.get("Sec-Fetch-Site") not in (None, "same-origin", "none"):
                     return self._json(403, {"erreur": "origine refusée"})
@@ -396,6 +403,7 @@ def instantane(dossier: Path) -> dict:
         "residence.json": res,
         "etat.json": ile.etat_3d(ile.etat()),
         "journal.json": {"evenements": evs[::-1], "total": len(evs)},
+        "organisation.json": ORG.projeter(evs),
         "verifier.json": v,
         "president.json": {"identite": {"empreinte": i["empreinte"], "quand": i["quand"]} if i else None, "deverrouille": False},
         "meta.json": {
@@ -441,7 +449,7 @@ def main():
             ile._ecrire_etat(ile.etat())
         except Exception as e:
             print(f"Avertissement : projection non recalculée ({e})", file=sys.stderr)
-    print(f"Île des Agents ouverte : {base}/   ·   Résidence : {base}/residence   (Ctrl+C pour arrêter)", flush=True)
+    print(f"Île Entrepreneuriale ouverte : {base}/   ·   Résidence : {base}/residence   (Ctrl+C pour arrêter)", flush=True)
     if "--sans-navigateur" not in args:
         threading.Timer(0.6, lambda: webbrowser.open(base + "/")).start()
     try:

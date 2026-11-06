@@ -10,7 +10,7 @@ const cli = (...a) => execFileSync("python3", [path.join(ILE, "orchestrateur", "
   const b = await chromium.launch({args: ["--use-gl=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"]});
   const p = await b.newPage({viewport: {width: 1400, height: 860}});
   const local = process.env.THREE_DIR || "/tmp/claude-0/x/package";
-  if (fs.existsSync(local)) await p.route("https://cdn.jsdelivr.net/npm/three@0.147.0/**", r => r.fulfill({body: fs.readFileSync(path.join(local, r.request().url().split("three@0.147.0/")[1])), contentType: "application/javascript"}));
+  if (fs.existsSync(local)) await p.route("https://cdn.jsdelivr.net/npm/three@0.147.0/**", r => r.fulfill({body: fs.readFileSync(path.join(local, r.request().url().split("three@0.147.0/")[1])), contentType: "application/javascript", headers: {"Access-Control-Allow-Origin": "*"}}));
   await p.route("https://fonts.googleapis.com/**", r => r.fulfill({body: "", contentType: "text/css"}));
   const errs = []; p.on("pageerror", e => errs.push(e.message)); p.on("console", m => { if (m.type() === "error" && !/favicon/.test(m.text())) errs.push(m.text()); });
   await p.goto(`http://localhost:${port}/village/?qualite=bas&heure=nuit&vue=entreprises`);

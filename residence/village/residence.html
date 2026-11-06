@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data: blob:; base-uri 'none'; form-action 'self'; object-src 'none'">
 <title>Résidence présidentielle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -100,7 +101,7 @@ dialog h3{font:400 24px var(--display)}
 </header>
 
 <div class="wrap">
-  <div class="kicker">Île des Agents · centre de contrôle du président</div>
+  <div class="kicker">Île Entrepreneuriale · centre de contrôle du président</div>
   <h1>Résidence présidentielle</h1>
   <div id="publie" class="banner" hidden></div>
   <div id="hors-ligne" class="banner" hidden>Le serveur de l'île ne répond pas. Ouvre-la avec <code>./ile</code> (ou double-clic sur « Ouvrir l'île.command »), puis recharge cette page.</div>
@@ -394,15 +395,16 @@ async function versionPubliee(){
   $("#lien-metropole").href = IleSource.lien("metropole"); document.body.classList.add("publie");
   const m = await IleSource.infos();
   let fraicheur = "";
-  try{ const t = await (await fetch(IleSource.lien("fichier", m.journal), {cache:"no-store"})).text(); const n = t.split("\n").filter(l => l.trim()).length;
-       fraicheur = n === m.evenements ? " · à jour avec le journal publié" : ` · ⚠ le journal publié contient ${n} événements : instantané à régénérer (<code>./ile publier</code>)`; }catch(e){}
+  try{ const f = await IleSource.fraicheur();
+       fraicheur = f.a_jour ? " · même dernière empreinte que le journal publié"
+         : ` · ⚠ le journal publié (${f.evenements} événements, empreinte ${esc(String(f.dernier).slice(0,12))}…) diffère de l'instantané : vérifier la page « Vérification » et régénérer (<code>./ile publier</code>)`; }catch(e){ fraicheur = " · fraîcheur non vérifiable"; }
   const b = $("#publie"); b.hidden = false;
-  b.innerHTML = `<b>Version publiée — lecture seule.</b> Instantané du ${esc(quand(m.genere))} : ${m.evenements} événements, journal ${m.integre ? "intègre" : "<b>ALTÉRÉ</b>"}${fraicheur}.
+  b.innerHTML = `<b>Version publiée — lecture seule.</b> Instantané du ${esc(quand(m.genere))} : ${esc(m.evenements)} événements, journal ${m.integre ? "intègre à cette date" : "<b>ALTÉRÉ</b>"}${fraicheur}.
     Décisions, priorités, instructions et accords se signent dans la <b>Résidence locale</b> (<code>./ile</code>) : ta phrase ne quitte jamais ton ordinateur.
     <a href="verification.html">Vérifier soi-même le journal et les signatures →</a>`;
 }
 function desactiverActions(){
-  document.querySelectorAll("[data-appr],[data-dec],[data-mis],[data-prio],[data-ecrire],#f-ins button,#f-ins textarea,#f-ins select,#f-ins input")
+  document.querySelectorAll("[data-appr],[data-dec],[data-mis],[data-prio],[data-ecrire],[data-motif],[data-heures],#f-ins button,#f-ins textarea,#f-ins select,#f-ins input")
     .forEach(e => { e.disabled = true; e.title = "Disponible dans la Résidence locale (./ile)"; });
 }
 async function charger(){
@@ -424,6 +426,7 @@ document.addEventListener("click", ev => {
   else if(b.dataset.dec) acte("/api/decision", {id:b.dataset.dec, verdict:b.dataset.v, motif:motif(b.dataset.dec)}, "Décision prise");
   else if(b.dataset.mis) acte("/api/mission", {id:b.dataset.mis, vers:b.dataset.v}, "Mission mise à jour");
   else if(b.dataset.ecrire){ $("#ins-siege").value = b.dataset.ecrire; $("#ins-texte").focus(); $("#instructions").scrollIntoView({behavior:"smooth", block:"start"}); }
+  else if(b.id === "verif" && PUBLIE()) location.href = "verification.html";   // en ligne : vraie vérification dans le navigateur
   else if(b.id === "verif") get("/api/verifier").then(v => toast(v.ok ? `Journal intègre : ${v.n} événements, empreinte ${v.dernier.slice(0,12)}…` : `ALTÉRATION : ${v.erreurs[0]}`));
 });
 document.addEventListener("change", ev => {

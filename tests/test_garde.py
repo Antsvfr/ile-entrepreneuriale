@@ -58,6 +58,16 @@ class Regles(unittest.TestCase):
     def verdict(self, cmd):
         return garde.analyser({"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": str(ILE)}).issue
 
+    def test_organisation_sous_identite_verifiee(self):
+        """Un sous-agent ne modifie l'organisation que sous son identité vérifiée (--run), jamais comme le Maire."""
+        A = lambda cmd, agent="chef-rev-em": garde.analyser({"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": str(ILE), "agent_type": agent}).issue
+        self.assertEqual(A("python3 orchestrateur/ile.py org poste rev-em m1 --fonction manager --superieur rev-em-direction"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur maire --run R-0001 org departement rev-em d --nom D"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur chef-rev-em org departement rev-em d --nom D"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur chef-rev-em --run R-0007 org departement rev-em d --nom D"), "autoriser")
+        self.assertEqual(A("python3 orchestrateur/ile.py org etat"), "autoriser")                    # consultation libre
+        self.assertEqual(garde.analyser({"tool_name": "Bash", "tool_input": {"command": "python3 orchestrateur/ile.py org amorcer"}, "cwd": str(ILE)}).issue, "autoriser")   # session principale
+
     def test_branche_protegee(self):
         """Sur main : commit, fusion et push sans destination exigent l'accord du président."""
         garde._branche = lambda cwd: "main"

@@ -6,6 +6,630 @@
     "verifie": "declare"
    },
    "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "0c2afdfb31c9b750"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-upsa-sales-pilot",
+    "description": null,
+    "id": "chef-upsa-sales-pilot",
+    "nom": "Directeur UPSA Sales Pilot",
+    "poste": "upsa-sales-pilot-direction"
+   },
+   "hash": "a48cc8b194ea29999b6de06a00977b3ad51228fb1877d88f05fe55e58d195466",
+   "id": "E-000079",
+   "n": 79,
+   "prec": "d7dfc611c5e5f60ba7ecdfa9a8b06e8d68a19b190d9b9f4c4a3cf12d590276fb",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "upsa-sales-pilot",
+    "fonction": "directeur-general",
+    "id": "upsa-sales-pilot-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — UPSA Sales Pilot"
+   },
+   "hash": "d7dfc611c5e5f60ba7ecdfa9a8b06e8d68a19b190d9b9f4c4a3cf12d590276fb",
+   "id": "E-000078",
+   "n": 78,
+   "prec": "c0c246e9a372c4d651b6e22e5bd7380d2d1463a5aa601b9426bdcd8c8b251529",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "ad2ea5ccedffe092"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-rev-em",
+    "description": null,
+    "id": "chef-rev-em",
+    "nom": "Directeur REV-EM",
+    "poste": "rev-em-direction"
+   },
+   "hash": "c0c246e9a372c4d651b6e22e5bd7380d2d1463a5aa601b9426bdcd8c8b251529",
+   "id": "E-000077",
+   "n": 77,
+   "prec": "1b962f0895eafe18e964b635058da832a1e7ed241092ca629713cfb131d952e1",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "rev-em",
+    "fonction": "directeur-general",
+    "id": "rev-em-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — REV-EM"
+   },
+   "hash": "1b962f0895eafe18e964b635058da832a1e7ed241092ca629713cfb131d952e1",
+   "id": "E-000076",
+   "n": 76,
+   "prec": "423123f637318c9241720e431bf00d789e2c3c55a05d7a5ab3ff6f83b5a2d15f",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "4aad6351e7ab53d0"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-lexnote",
+    "description": null,
+    "id": "chef-lexnote",
+    "nom": "Directeur LexNote",
+    "poste": "lexnote-direction"
+   },
+   "hash": "423123f637318c9241720e431bf00d789e2c3c55a05d7a5ab3ff6f83b5a2d15f",
+   "id": "E-000075",
+   "n": 75,
+   "prec": "295b2702237a51cc21f403a6d8b168328b7f25ce85caa69bc95df6fdeac6cc23",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "lexnote",
+    "fonction": "directeur-general",
+    "id": "lexnote-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — LexNote"
+   },
+   "hash": "295b2702237a51cc21f403a6d8b168328b7f25ce85caa69bc95df6fdeac6cc23",
+   "id": "E-000074",
+   "n": 74,
+   "prec": "9e091866cd004fc2fb5d32970f97f57bd7d232312451d66dbaed0c82a27ce85f",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "0da517229696019b"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-ecole",
+    "description": null,
+    "id": "chef-ecole",
+    "nom": "Directeur École",
+    "poste": "ecole-direction"
+   },
+   "hash": "9e091866cd004fc2fb5d32970f97f57bd7d232312451d66dbaed0c82a27ce85f",
+   "id": "E-000073",
+   "n": 73,
+   "prec": "8370071bfa209ae2d0996768899ee6f662ff489f7c83eb53d843f1fd2895fe05",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "ecole",
+    "fonction": "directeur-general",
+    "id": "ecole-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — École"
+   },
+   "hash": "8370071bfa209ae2d0996768899ee6f662ff489f7c83eb53d843f1fd2895fe05",
+   "id": "E-000072",
+   "n": 72,
+   "prec": "a51c6c8979511b660608d006e4ea404efd11aa700e0654227b6b7083f642a839",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "88dfe1c841be678f"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-vetotri",
+    "description": null,
+    "id": "chef-vetotri",
+    "nom": "Directeur Labo Vétotri",
+    "poste": "vetotri-direction"
+   },
+   "hash": "a51c6c8979511b660608d006e4ea404efd11aa700e0654227b6b7083f642a839",
+   "id": "E-000071",
+   "n": 71,
+   "prec": "cded460525a61cf01b37918e4f01d4908733ce298c1499ae3a00301d01d630f5",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "vetotri",
+    "fonction": "directeur-general",
+    "id": "vetotri-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — Labo Vétotri"
+   },
+   "hash": "cded460525a61cf01b37918e4f01d4908733ce298c1499ae3a00301d01d630f5",
+   "id": "E-000070",
+   "n": 70,
+   "prec": "964d0a9c3c58777b454fa0a97b9b59d70c1876506a7956c04628a13ca2f9a825",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "8a44d32185600290"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-bde-emergency",
+    "description": null,
+    "id": "chef-bde-emergency",
+    "nom": "Directeur QG EM'ERGENCY",
+    "poste": "bde-emergency-direction"
+   },
+   "hash": "964d0a9c3c58777b454fa0a97b9b59d70c1876506a7956c04628a13ca2f9a825",
+   "id": "E-000069",
+   "n": 69,
+   "prec": "1434f0483c4f1f26866e395178e7bd1c63160a836160f1f6c74d4c05252c9d03",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "bde-emergency",
+    "fonction": "directeur-general",
+    "id": "bde-emergency-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — QG EM'ERGENCY"
+   },
+   "hash": "1434f0483c4f1f26866e395178e7bd1c63160a836160f1f6c74d4c05252c9d03",
+   "id": "E-000068",
+   "n": 68,
+   "prec": "e5a8a8deb420d41b1caf2b85483c8c6df19d661c7436e0fe3350331891212106",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "19a618ce02d7274c"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "chef-cuvee-campus",
+    "description": null,
+    "id": "chef-cuvee-campus",
+    "nom": "Directeur Cave Cuvée Campus",
+    "poste": "cuvee-campus-direction"
+   },
+   "hash": "e5a8a8deb420d41b1caf2b85483c8c6df19d661c7436e0fe3350331891212106",
+   "id": "E-000067",
+   "n": 67,
+   "prec": "c9e0a24ff095af3d6be8c12f392a9e0edc0d2c8e86f0711af071eec19453a623",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "cuvee-campus",
+    "fonction": "directeur-general",
+    "id": "cuvee-campus-direction",
+    "superieur": "dg-ile",
+    "titre": "Directeur général — Cave Cuvée Campus"
+   },
+   "hash": "c9e0a24ff095af3d6be8c12f392a9e0edc0d2c8e86f0711af071eec19453a623",
+   "id": "E-000066",
+   "n": 66,
+   "prec": "6aaef954f001588c4e2e57f8b4e19f18468dc71efdca65ee458945c79612e170",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "826dba3ec0a8ad99"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "critique-strategie",
+    "description": null,
+    "id": "critique-strategie",
+    "nom": "Critique de la stratégie",
+    "poste": "conseil-strategie"
+   },
+   "hash": "6aaef954f001588c4e2e57f8b4e19f18468dc71efdca65ee458945c79612e170",
+   "id": "E-000065",
+   "n": 65,
+   "prec": "ba22d3a670b9138a30f20b19852b25ad668866fd72349a151ae30bf32afbdfe1",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "conseil",
+    "fonction": "auditeur",
+    "id": "conseil-strategie",
+    "superieur": "dg-ile",
+    "titre": "Critique de la stratégie"
+   },
+   "hash": "ba22d3a670b9138a30f20b19852b25ad668866fd72349a151ae30bf32afbdfe1",
+   "id": "E-000064",
+   "n": 64,
+   "prec": "a87ef263fded8a7ccc77f710dae89778bd68da8a57c5840f4d7acc05b8e1d85f",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "f7b0aba3af9acaac"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "critique-exigence",
+    "description": null,
+    "id": "critique-exigence",
+    "nom": "Critique de l'exigence",
+    "poste": "conseil-exigence"
+   },
+   "hash": "a87ef263fded8a7ccc77f710dae89778bd68da8a57c5840f4d7acc05b8e1d85f",
+   "id": "E-000063",
+   "n": 63,
+   "prec": "aeb65d6c468b88252315077d27a49de4c833329329b1c812378200e8861bd606",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "conseil",
+    "fonction": "auditeur",
+    "id": "conseil-exigence",
+    "superieur": "dg-ile",
+    "titre": "Critique de l'exigence"
+   },
+   "hash": "aeb65d6c468b88252315077d27a49de4c833329329b1c812378200e8861bd606",
+   "id": "E-000062",
+   "n": 62,
+   "prec": "ee01c6f17b0c44e4aad3a084e2eb9c4da687f75f721370c03b9346fe65eeb579",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "55efcbdc2ca537ed"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "critique-clarte",
+    "description": null,
+    "id": "critique-clarte",
+    "nom": "Critique de la clarté",
+    "poste": "conseil-clarte"
+   },
+   "hash": "ee01c6f17b0c44e4aad3a084e2eb9c4da687f75f721370c03b9346fe65eeb579",
+   "id": "E-000061",
+   "n": 61,
+   "prec": "aee0a3e0908fcd43dc10d2f12bed581994c478fadd36633ab85c52a1551a614a",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "conseil",
+    "fonction": "auditeur",
+    "id": "conseil-clarte",
+    "superieur": "dg-ile",
+    "titre": "Critique de la clarté"
+   },
+   "hash": "aee0a3e0908fcd43dc10d2f12bed581994c478fadd36633ab85c52a1551a614a",
+   "id": "E-000060",
+   "n": 60,
+   "prec": "297f4e18c92215a160e527cf4113575a72a6c14ff793bc0c5e0dfbbb623ad632",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "c892629d45b10da0"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "forgeron",
+    "description": null,
+    "id": "forgeron",
+    "nom": "Le Forgeron",
+    "poste": "forge-direction"
+   },
+   "hash": "297f4e18c92215a160e527cf4113575a72a6c14ff793bc0c5e0dfbbb623ad632",
+   "id": "E-000059",
+   "n": 59,
+   "prec": "0f587a86b2163df38d20172cc894765584b068984b25b2844bab80bb7eaa71ff",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "forge",
+    "fonction": "responsable-qualite",
+    "id": "forge-direction",
+    "superieur": "dg-ile",
+    "titre": "Forgeron — responsable qualité"
+   },
+   "hash": "0f587a86b2163df38d20172cc894765584b068984b25b2844bab80bb7eaa71ff",
+   "id": "E-000058",
+   "n": 58,
+   "prec": "8a84707b18cc4229c5ce2954cb1e635ebfdbcaed7c022e427a149dafd5ebdcaf",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "47664cd5888be94f"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": "architecte",
+    "description": null,
+    "id": "architecte",
+    "nom": "L'Architecte",
+    "poste": "architecte"
+   },
+   "hash": "8a84707b18cc4229c5ce2954cb1e635ebfdbcaed7c022e427a149dafd5ebdcaf",
+   "id": "E-000057",
+   "n": 57,
+   "prec": "ea0f4fc0d7adbeccc0388dc8e142f07eca5a093804605ab31a0fb219f401bb89",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "mairie",
+    "fonction": "architecte-logiciel",
+    "id": "architecte",
+    "superieur": "dg-ile",
+    "titre": "Architecte de l'île"
+   },
+   "hash": "ea0f4fc0d7adbeccc0388dc8e142f07eca5a093804605ab31a0fb219f401bb89",
+   "id": "E-000056",
+   "n": 56,
+   "prec": "11774cab2b7451ea89a31370873c328c1c191cadc2e031a194979585c9e57cd1",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "apparence": {
+     "avatar": null,
+     "graine": "d8ecd94b96b12603"
+    },
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "definition": null,
+    "description": null,
+    "id": "maire",
+    "nom": "Le Maire",
+    "poste": "dg-ile"
+   },
+   "hash": "11774cab2b7451ea89a31370873c328c1c191cadc2e031a194979585c9e57cd1",
+   "id": "E-000055",
+   "n": 55,
+   "prec": "68db8936807118095d2fecd39809a00e05f05aa8d058b6d149bf1453deff3626",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.agent.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
+    "autorisation": "directeur général de l'île (identité déclarée)",
+    "competences": [],
+    "departement": null,
+    "description": null,
+    "entreprise": "mairie",
+    "fonction": "dg-ile",
+    "id": "dg-ile",
+    "superieur": null,
+    "titre": "Maire — directeur général de l'île"
+   },
+   "hash": "68db8936807118095d2fecd39809a00e05f05aa8d058b6d149bf1453deff3626",
+   "id": "E-000054",
+   "n": 54,
+   "prec": "1c31913324d5a0739ba57405433820c42068921c3aa0a07e95dbe18774a6e968",
+   "quand": "2026-11-06T14:05:46+00:00",
+   "type": "org.poste.cree"
+  },
+  {
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "donnees": {
     "agent_id": null,
     "mission": null,
     "role": "forgeron",
@@ -1388,5 +2012,5 @@
    "type": "probleme.signale"
   }
  ],
- "total": 53
+ "total": 79
 }

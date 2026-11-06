@@ -104,7 +104,7 @@
   const lireEntier = b => { let r = 0n; for (let k = b.length - 1; k >= 0; k--) r = (r << 8n) + BigInt(b[k]); return r; };
   function retrouverX(y, signe) {
     if (y >= p) return null;
-    const x2 = mod((y * y - 1n) * puiss(d * y * y + 1n, p - 2n));
+    const x2 = mod((y * y - 1n) * puiss(d * y * y + 1n, p - 2n));   // réduit modulo p (encodage canonique)
     if (x2 === 0n) return signe ? null : 0n;
     let x = puiss(x2, (p + 3n) / 8n);
     if (mod(x * x - x2) !== 0n) x = x * I % p;
@@ -131,6 +131,7 @@
     if (!A_ || !sig || A_.length !== 32 || sig.length !== 64) return false;
     const A = decompresser(A_), R = decompresser(sig.slice(0, 32));
     if (!A || !R) return false;
+    if (egaux(multiplier(8n, A), [0n, 1n, 1n, 0n])) return false;      // clé d'ordre faible : refusée (comme signature.py)
     const s = lireEntier(sig.slice(32));
     if (s >= L) return false;
     const h = lireEntier(await sha512(concat(sig.slice(0, 32), A_, message))) % L;

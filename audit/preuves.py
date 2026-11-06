@@ -352,7 +352,7 @@ def main():
             sante = Client(p).req("/api/sante")[1]
             red = Client(p).req("/", suivre=False)[2].get("Location", "")
             ar = run("arreter"); st2 = run("statut")
-            ok = sante.get("ile") == "Île des Agents" and "/village/" in red and "ouverte" in st.stdout and "fermée" in st2.stdout
+            ok = sante.get("ile") == "Île Entrepreneuriale" and "/village/" in red and "ouverte" in st.stdout and "fermée" in st2.stdout
             return ok, f"./ile demarrer → http://localhost:{p}/ (redirige vers {red.split(str(p))[-1]}) · 2e démarrage sans doublon · ./ile arreter → fermée"
         check("C3.1", "Lanceur ./ile : démarrage, adresse stable, une seule instance, arrêt", c31)
 

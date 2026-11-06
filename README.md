@@ -1,4 +1,4 @@
-# Île entrepreneuriale
+# Île Entrepreneuriale
 
 L'entreprise d'agents d'Anton : une île gouvernée par un Maire (Claude Code), un Conseil des critiques, une Forge, des
 directeurs de projet, sous l'autorité d'un président dont les actes sont signés (Ed25519).
