@@ -1,0 +1,12 @@
+(node:4373) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS  2. Les propositions soumises apparaissent dans la boîte présidentielle — 4/4
+PASS  Fil d'Ariane Mon bureau → Décisions → Propositions à examiner
+PASS  Filtres : toutes, en attente, analyse, modifications, approuvées, refusées, archivées — Toutes (4) | En attente de décision (4) | En cours d'analyse (0) | Modifications demandées (0) | Approuvées (0) | Refusées (0) | Archivées (0)
+PASS  Publié : chaque proposition s'ouvre avec son dossier — E-000002
+PASS  Publié : aucune décision possible (boutons inactifs, raison affichée) — 0 bouton(s) actif(s)
+PASS  Publié : aucun déverrouillage ni activation proposés
+PASS  Publié : explication de l'absence d'identité présidentielle
+PASS  Publié : aucune requête d'écriture
+PASS  Publié : mobile sans débordement ni erreur
+Bilan : 9/9 PASS
