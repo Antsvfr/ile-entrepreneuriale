@@ -454,6 +454,10 @@ def analyser(payload: dict) -> Verdict:
         if agent.get("agent_type") and re.search(r"\bile\.py\b.*\borg\s+(departement|poste|nommer|affecter|suspendre|reactiver|amorcer|attribuer|demarrer|livrer|valider|corriger|remonter|message|reunion|clore-reunion)\b", cmd):
             if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
                 return Verdict("bloquer", "organisation", "usurpation-dg", "un agent agit sur l'organisation sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
+        # Propositions au président : même règle (un agent propose, rend un avis ou rend compte sous SA identité vérifiée).
+        if agent.get("agent_type") and re.search(r"\bile\.py\b.*\bproposition\s+(creer|soumettre|modifier|transmettre|avis-demander|avis-rendre|mettre-en-oeuvre|executer|recevoir|archiver)\b", cmd):
+            if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
+                return Verdict("bloquer", "propositions", "usurpation-dg", "un agent agit sur une proposition sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
         return analyser_bash(cmd, cwd)
     if outil in ECRITURE:
         return analyser_fichier(outil, ti.get("file_path") or ti.get("notebook_path") or "", cwd, agent)

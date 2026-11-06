@@ -91,7 +91,7 @@ dialog h3{font:400 24px var(--display)}
   <div class="in">
     <span class="brand">Résidence</span>
     <nav aria-label="Navigation">
-      <a href="/village/" id="lien-metropole">Métropole 3D</a><a href="entreprise.html">Entreprises</a><a href="verification.html">Vérification</a>
+      <a href="/village/" id="lien-metropole">Métropole 3D</a><a href="decisions.html"><b>Décisions</b></a><a href="entreprise.html">Entreprises</a><a href="verification.html">Vérification</a>
       <a href="#trancher">À trancher</a><a href="#projets">Projets</a><a href="#rapports">Rapports</a><a href="#missions">Missions</a><a href="#instructions">Instructions</a><a href="#tests">Tests</a><a href="#securite">Sécurité</a><a href="#journal">Journal</a>
       <select id="aller" aria-label="Aller à un bâtiment"><option value="">Bâtiments…</option></select>
     </nav>
@@ -112,6 +112,7 @@ dialog h3{font:400 24px var(--display)}
     <h2 id="t-tr">À trancher</h2>
     <p class="lead">Opérations sensibles bloquées par le garde en attendant votre accord, puis décisions demandées par vos équipes. Chaque verdict est <b>signé de votre clé</b> et inscrit au journal ; un accord ne vaut que pour l'opération exacte affichée.</p>
     <div class="grid" id="approbations"></div>
+    <p style="margin:10px 0"><a class="btn dark" href="decisions.html">Mon bureau → Décisions → Propositions à examiner</a></p>
     <div class="grid" id="decisions" style="margin-top:14px"></div>
   </section>
 
@@ -292,8 +293,7 @@ function trancher(d){
       <div class="row"><span class="tag">${esc(x.siege)}</span><span class="src">${esc(x.id)} · ${quand(x.quand)} · par ${auteur(x.auteur)}</span></div>
       <h3>${esc(x.titre)}</h3><div>${esc(x.question)}</div>
       ${x.contexte ? `<div class="nr" style="font-style:normal">${esc(x.contexte)}</div>` : ""}${src(x.source)}
-      <label class="f"><span class="lbl">Votre motif (facultatif)</span><textarea data-motif="${esc(x.id)}" maxlength="2000"></textarea></label>
-      <div class="row"><button class="btn ok" data-dec="${esc(x.id)}" data-v="approuvee" type="button">Approuver</button><button class="btn bad" data-dec="${esc(x.id)}" data-v="refusee" type="button">Refuser</button><button class="btn" data-dec="${esc(x.id)}" data-v="reportee" type="button">Reporter</button></div>
+      <div class="row"><a class="btn dark" href="decisions.html#${encodeURIComponent(x.id)}">Examiner et décider →</a><span class="src">dossier complet, confirmation, motif de refus obligatoire, avis, suivi</span></div>
     </article>`).join("");
   if(!d.approbations.length && !d.decisions.length) $("#approbations").innerHTML = `<p class="nr">Rien n'attend votre accord.</p>`;
 }

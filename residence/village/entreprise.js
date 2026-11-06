@@ -10,7 +10,7 @@ const quand = q => q ? new Date(q).toLocaleString("fr-FR", {dateStyle:"medium", 
 const couleur = c => /^#[0-9a-f]{3,8}$/i.test(c || "") ? c : "#b8891c";
 const STATUT = {en_execution:"En cours d'exécution", en_reunion:"En réunion", en_attente_validation:"En attente de validation", bloque:"Bloqué", suspendu:"Suspendu", disponible:"Disponible", hors_ligne:"Hors ligne"};
 const MST = {proposee:"proposée", attente_president:"attend le président", planifiee:"planifiée", reportee:"reportée", en_cours:"en cours", bloquee:"bloquée", verification:"en vérification", terminee:"terminée", rejetee:"rejetée", abandonnee:"abandonnée"};
-let O = null, MODE = null;
+let O = null, MODE = null, PROPS = null;
 
 // ------------------------------------------------------------------ données dérivées (calculées, jamais saisies)
 const propre = (o, k) => o && Object.prototype.hasOwnProperty.call(o, k) ? o[k] : undefined;   // jamais une clé héritée (constructor, __proto__…)
@@ -121,8 +121,17 @@ function vueEntreprise(eid){
       <a class="salle" href="#/e/${esc(eid)}/reunions"><b>Salle de réunion</b><span>réunions réellement inscrites</span></a>
       <a class="salle" href="#/e/${esc(eid)}/annuaire"><b>Annuaire</b><span>tous les collaborateurs</span></a>
     </nav>
+    <h2>Décisions présidentielles reçues</h2>${decisionsRecues(eid)}
     ${inc.length ? `<h2>Points à vérifier dans l'organisation</h2>${inc.map(x => `<div class="alerte">${esc(x)}</div>`).join("")}` : ""}
     <h2>Dernières activités enregistrées</h2>${tableActivite(activiteEntreprise(eid))}`;
+}
+// décisions présidentielles adressées à cette entreprise (dérivées des actes signés : /api/propositions)
+function decisionsRecues(eid){
+  if(!PROPS) return `<p class="vide">Boîte des décisions indisponible.</p>`;
+  const ds = propre(PROPS.boites, eid) || [];
+  return ds.length ? `<div class="table"><table><thead><tr><th>Quand</th><th>Proposition</th><th>Décision</th><th>Réception</th></tr></thead><tbody>${ds.slice().sort((a, b) => b.quand.localeCompare(a.quand)).map(d =>
+    `<tr><td>${quand(d.quand)}</td><td><a href="decisions.html#${encodeURIComponent(d.proposition)}">${esc(d.proposition)}</a> — ${esc(d.titre)}</td><td><b>${d.sens === "approuvee" ? "approuvée" : "refusée"}</b> <span class="src">${esc(d.evenement)}</span></td><td>${d.recue ? "accusé de réception inscrit" : "transmise, pas encore d'accusé"}</td></tr>`).join("")}</tbody></table></div>`
+    : `<p class="vide">Aucune décision présidentielle adressée à cette entreprise au registre.</p>`;
 }
 function vueDirection(eid){
   const e = en(eid); if(!e) return vueIntrouvable("Entreprise inconnue.");
@@ -349,6 +358,7 @@ $("#cherche").addEventListener("change", ev => { const v = ev.target.value; cons
     $("#n-met").href = IleSource.lien("metropole"); $("#n-res").href = IleSource.lien("residence"); $("#n-acc").href = IleSource.lien("accueil");
     const r = await IleSource.get("/api/organisation"); if(!r.ok) throw new Error("organisation indisponible (" + r.status + ")");
     O = await r.json();
+    PROPS = await IleSource.get("/api/propositions").then(x => x.ok ? x.json() : null).catch(() => null);
     $("#annuaire").innerHTML = Object.values(O.agents).map(a => `<option value="${esc(a.nom)}">${esc((po(a.poste) || {}).titre || "")}</option>`).join("");
     addEventListener("hashchange", afficher); afficher();
   }catch(e){ $("#vue").innerHTML = `<h1>Organisation indisponible</h1><p class="vide">${esc(e.message)}</p>`; }

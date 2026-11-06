@@ -60,6 +60,7 @@ def _confinement():
 
 ile = _confinement().charger("ile")
 ORG = _confinement().charger("organisation")   # module (la fonction organisation() ci-dessous décrit les directions)
+PROP = _confinement().charger("propositions")  # propositions soumises au président (circuit institutionnel)
 
 PORT_DEFAUT = int(os.environ.get("ILE_PORT", "7777"))
 SIGNATURE_SERVEUR = "Île Entrepreneuriale"   # reconnue par le lanceur et source.js (l'ancienne « Île des Agents » est signalée)
@@ -112,6 +113,23 @@ def protections():
         except OSError:
             settings[str(f.relative_to(RACINE))] = False
     return {"garde_branche": settings, "arret_urgence": (RACINE / "securite" / "STOP").exists() or (Path(os.environ.get("ILE_OPS") or (RACINE / "securite")) / "STOP").exists(), "acces_distant": acces()["hotes_distants"]}
+
+
+def propositions(session=None, publie=False):
+    """Boîte de réception présidentielle : propositions + ce qui empêche (ou permet) une décision officielle."""
+    e = PROP.etat()
+    blocages = []
+    if publie:
+        blocages.append("Version publiée (GitHub Pages) : aucun serveur, aucune session, aucune signature possible. Les décisions se prennent dans la Résidence locale (./ile).")
+    if not e["identite"]:
+        blocages.append("Aucune identité présidentielle n'est inscrite au registre : le président doit la créer lui-même dans un vrai terminal (./ile president). Personne ne peut le faire à sa place.")
+    elif not publie and not session:
+        blocages.append("Résidence verrouillée : déverrouillez-la avec votre phrase présidentielle (la clé n'existe qu'en mémoire du serveur local, le temps de la session).")
+    if not e["activation"]:
+        blocages.append("Décisions officielles non activées : une fois l'identité créée et la Résidence déverrouillée, le président les active par un acte signé, en connaissance de l'état de l'étape 2 de sécurité (NON VALIDÉE).")
+    return {**e, "acces": {"mode": "publie" if publie else "local", "identite": e["identite"], "deverrouille": bool(session) and not publie,
+                           "activee": bool(e["activation"]), "decision_possible": not blocages, "blocages": blocages,
+                           "declaration": PROP.DECLARATION}}
 
 
 def residence(session=None):
@@ -278,6 +296,8 @@ class Gestionnaire(http.server.SimpleHTTPRequestHandler):
                 return self._json(200, {"identite": {"empreinte": i["empreinte"], "quand": i["quand"]} if i else None, "deverrouille": bool(session)})
             if chemin == "/api/verifier":
                 return self._json(200, ile.verifier())
+            if chemin == "/api/propositions":                   # boîte de réception présidentielle
+                return self._json(200, propositions(session))
             if chemin == "/api/organisation":                    # projection du journal : entreprises, postes, agents, statuts dérivés
                 return self._json(200, ORG.etat())
             m_ag = re.match(r"^/api/agent/([a-z0-9][a-z0-9-]{1,47})$", chemin)
@@ -346,6 +366,8 @@ class Gestionnaire(http.server.SimpleHTTPRequestHandler):
                 if d.get("vers") not in ("planifiee", "rejetee", "attente_president", "reportee", "proposee"):
                     return self._json(400, {"erreur": "le président peut retenir, rejeter, reporter ou remettre en proposition une mission"})
                 ev = ile.changer_statut(d.get("id"), d.get("vers"), {"canal": canal}, txt("motif", 1000), cle=cle)
+            elif u.path == "/api/proposition":
+                return self._proposition(d, cle, canal)
             elif u.path == "/api/approbation":
                 if d.get("verdict") == "accordee":
                     ev = ile.accorder(d.get("id"), cle, txt("motif", 1000), d.get("heures") or ile.DUREE_APPROBATION_H, canal=canal)
@@ -358,6 +380,38 @@ class Gestionnaire(http.server.SimpleHTTPRequestHandler):
         except (ile.ErreurIle, ValueError, TypeError) as e:
             return self._json(400, {"erreur": str(e)})
         return self._json(200, {"ok": True, "evenement": ev["id"], "hash": ev["hash"]})
+
+    def _proposition(self, d, cle, canal):
+        """Acte présidentiel sur une proposition. Le serveur exige : session déverrouillée (clé en mémoire), jeton, origine,
+        confirmation explicite (identifiant recopié) et version du dossier examinée ; le module vérifie le reste sous verrou.
+        La réponse n'annonce un enregistrement qu'après relecture du registre."""
+        txt = lambda k, n: ((d.get(k) or "")[:n] or None)
+        action, pid = d.get("action"), d.get("id")
+        if action == "activer":
+            if d.get("confirmation") != "ACTIVER":
+                return self._json(400, {"erreur": "confirmation explicite requise (saisir ACTIVER)"})
+            ev = PROP.activer_decisions(cle, canal=canal)
+        else:
+            if not pid or d.get("confirmation") != pid:
+                return self._json(400, {"erreur": "confirmation explicite requise : recopiez l'identifiant de la proposition"})
+            if action == "approuver":
+                ev = PROP.approuver(pid, cle, d.get("version"), txt("motif", 2000), txt("conditions", 2000), canal=canal)
+            elif action == "refuser":
+                ev = PROP.refuser(pid, cle, d.get("version"), txt("motif", 2000), canal=canal)
+            elif action == "modifier":
+                ev = PROP.demander_modifications(pid, cle, txt("observations", 4000), txt("attendus", 4000), txt("echeance", 10), canal=canal)
+            elif action == "avis":
+                ev = PROP.demander_avis(pid, d.get("destinataire"), txt("question", 2000), cle=cle, echeance=txt("echeance", 10), canal=canal)
+            elif action == "rectifier":
+                ev = PROP.rectifier(pid, cle, d.get("vers"), txt("motif", 2000), canal=canal)
+            else:
+                return self._json(400, {"erreur": "action : approuver, refuser, modifier, avis, rectifier ou activer"})
+        relu = next((x for x in reversed(ile.lire()) if x["id"] == ev["id"]), None)
+        if not relu or relu["hash"] != ev["hash"] or not ile.signature_valide(relu, (ile.identite_courante() or {}).get("cle_publique")):
+            return self._json(500, {"erreur": "l'acte n'a pas pu être relu et vérifié dans le registre : aucune décision n'est enregistrée"})
+        p = PROP.etat()["propositions"].get(pid) if pid else None
+        return self._json(200, {"ok": True, "evenement": ev["id"], "hash": ev["hash"], "type": ev["type"], "signature_verifiee": True,
+                                "statut": p and p["statut"], "libelle": p and p["libelle"]})
 
     def _deverrouiller(self, d, hote):
         now = time.time()
@@ -404,6 +458,7 @@ def instantane(dossier: Path) -> dict:
         "etat.json": ile.etat_3d(ile.etat()),
         "journal.json": {"evenements": evs[::-1], "total": len(evs)},
         "organisation.json": ORG.projeter(evs),
+        "propositions.json": propositions(None, publie=True),
         "verifier.json": v,
         "president.json": {"identite": {"empreinte": i["empreinte"], "quand": i["quand"]} if i else None, "deverrouille": False},
         "meta.json": {

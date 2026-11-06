@@ -49,7 +49,10 @@ class Instantane(Base):
     def test_fichiers_et_contenu(self):
         m = _serveur().instantane(self.sortie)
         noms = sorted(p.name for p in self.sortie.iterdir())
-        self.assertEqual(noms, ["etat.json", "journal.json", "meta.json", "organisation.json", "president.json", "residence.json", "verifier.json"])
+        self.assertEqual(noms, ["etat.json", "journal.json", "meta.json", "organisation.json", "president.json", "propositions.json", "residence.json", "verifier.json"])
+        pr = json.loads((self.sortie / "propositions.json").read_text(encoding="utf-8"))
+        self.assertEqual((pr["acces"]["mode"], pr["acces"]["deverrouille"], pr["acces"]["decision_possible"]), ("publie", False, False))   # jamais de décision en ligne
+        self.assertTrue(any("GitHub Pages" in b for b in pr["acces"]["blocages"]))
         self.assertTrue(m["integre"]); self.assertEqual(m["evenements"], len(ile.lire()))
         self.assertEqual(set(m["types_presidentiels"]), ile.TYPES_PRESIDENTIELS)
         res = json.loads((self.sortie / "residence.json").read_text(encoding="utf-8"))

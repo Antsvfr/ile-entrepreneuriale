@@ -43,7 +43,7 @@
       return r;
     }
     const u = new URL(chemin, location.origin), route = u.pathname;
-    const fichiers = {"/api/residence": "residence.json", "/api/etat": "etat.json", "/api/verifier": "verifier.json", "/api/president": "president.json", "/api/organisation": "organisation.json"};
+    const fichiers = {"/api/residence": "residence.json", "/api/etat": "etat.json", "/api/verifier": "verifier.json", "/api/president": "president.json", "/api/organisation": "organisation.json", "/api/propositions": "propositions.json"};
     let corps;
     if (route === "/api/journal") {
       if (!journalComplet) journalComplet = await lireInstantane("journal.json");

@@ -1,0 +1,27 @@
+PASS  2. Les propositions soumises apparaissent dans la boîte présidentielle — 7/7
+PASS  Fil d'Ariane Mon bureau → Décisions → Propositions à examiner
+PASS  Filtres : toutes, en attente, analyse, modifications, approuvées, refusées, archivées — Toutes (7) | En attente de décision (5) | En cours d'analyse (2) | Modifications demandées (0) | Approuvées (0) | Refusées (0) | Archivées (0)
+PASS  3. Une proposition se consulte intégralement — 11 éléments
+PASS  Verrouillée : boutons inactifs et raison affichée — 0 actif(s)
+PASS  Avant authentification : aucune requête d'écriture
+PASS  9-10. Sans session présidentielle (ou sans jeton), le serveur refuse toute décision — 401, 403
+PASS  Identité invalide refusée, identité valide déverrouille — phrase incorrecte
+PASS  Déverrouillée mais non activée : décisions toujours bloquées
+PASS  Activation : confirmation explicite, acte signé relu au registre — Décisions officielles activées : acte E-000089 (presidence.decisions_activees), signé de votre clé et vérifié par le ser
+PASS  Avant confirmation : contenu intégral, conséquences, institutions concernées
+PASS  Sans confirmation recopiée, rien n'est envoyé
+PASS  4. Le président authentifié approuve (acte signé, relu au registre) — Décision enregistrée au registre : acte E-000090 (proposition.approuvee), signé de votre clé et vérifié par le serveur, empreinte f0b39a6050b1d40a… — relu au re
+PASS  11. Pas de seconde décision silencieuse (refusée par le serveur, message explicite) — 400 — P-20261106-001 est déjà approuvee (E-000090) : une décision ne se modifie pas ; seule une rectification motivée est possible
+PASS  12. Une décision prise ne se modifie pas depuis l'interface
+PASS  6. Le motif de refus est obligatoire (interface et serveur) — 400 — motif du refus obligatoire
+PASS  5. Le président authentifié refuse (motif inscrit, archivée)
+PASS  7. Une proposition peut être retournée pour modification
+PASS  8. Une demande d'avis est enregistrée et suivie
+PASS  13. L'historique complet est consultable — 3 étape(s)
+PASS  14. La décision persiste (rechargement, navigateur neuf sans session)
+PASS  15. Les institutions concernées reçoivent la décision
+PASS  16. Une décision approuvée se suit jusqu'à l'exécution et ses résultats
+PASS  Mobile sans débordement
+PASS  Aucune erreur dans le navigateur
+PASS  Registre (temporaire) intègre après toutes les décisions
+Bilan : 26/26 PASS

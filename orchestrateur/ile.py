@@ -98,7 +98,10 @@ RESERVE_PRESIDENT = {("attente_president", "planifiee"), ("attente_president", "
                      ("proposee", "reportee"), ("reportee", "proposee"), ("reportee", "rejetee")}
 # Actes que SEUL le président peut accomplir : ils ne comptent que s'ils portent une signature valide de sa clé.
 TYPES_PRESIDENTIELS = {"president.identite", "decision.tranchee", "siege.priorite", "instruction.donnee",
-                       "approbation.accordee", "approbation.refusee"}
+                       "approbation.accordee", "approbation.refusee",
+                       # propositions (orchestrateur/propositions.py) : activation des décisions officielles et décisions
+                       "presidence.decisions_activees", "proposition.approuvee", "proposition.refusee",
+                       "proposition.modifications_demandees", "proposition.rectifiee"}
 RESULTATS_TEST = ("PASS", "FAIL", "NOT TESTED", "PARTIEL")
 DUREE_APPROBATION_H = 24
 GRAVITES = ("bloquant", "majeur", "mineur")
@@ -336,6 +339,11 @@ def projeter(evs: list[dict]) -> dict:
                                    "mission": d.get("mission"), "quand": q, "auteur": ev["auteur"], "verdict": None}
         elif t == "decision.tranchee" and d["decision"] in decisions and decisions[d["decision"]]["verdict"] is None:
             decisions[d["decision"]].update(verdict=d["verdict"], motif=d.get("motif"), tranchee=q, par=ev["auteur"], evenement=ev["id"])
+        elif t in ("proposition.approuvee", "proposition.refusee") and d.get("proposition") in decisions and decisions[d["proposition"]]["verdict"] is None:
+            # demande de décision (ancien format) tranchée par le circuit des propositions : même verdict, même acte signé
+            decisions[d["proposition"]].update(verdict="approuvee" if t.endswith("approuvee") else "refusee", motif=d.get("motif"), tranchee=q, par=ev["auteur"], evenement=ev["id"])
+        elif t == "proposition.rectifiee" and d.get("proposition") in decisions and d.get("vers") in ("approuvee", "refusee"):
+            decisions[d["proposition"]].update(verdict=d["vers"], motif=d.get("motif"), tranchee=q, par=ev["auteur"], evenement=ev["id"], rectifie=True)
         elif t == "approbation.demandee":
             approbations[d["approbation"]] = {"id": d["approbation"], "evenement": ev["id"], "quand": q, "auteur": ev["auteur"], "statut": "en_attente",
                                              **{k: d.get(k) for k in ("categorie", "regle", "raison", "outil", "commande", "empreinte", "cwd", "agent", "siege", "mode")},
@@ -849,6 +857,69 @@ def _cli_org(a, who):
     print(f"{ev['id']} {ev['type']} — " + (f"autorisé : {d['autorisation']}" if d.get("autorisation") else f"par {ev['auteur'].get('role')} ({ev['auteur'].get('verifie')})")); return 0
 
 
+def _propositions():
+    conf = sys.modules.get("confinement")
+    if conf is not None:
+        return conf.charger("propositions")
+    import propositions
+    return propositions
+
+
+def _cli_proposition(a, who):
+    P = _propositions()
+    if a.sous in ("liste", "voir"):
+        e = P.etat()
+        if a.sous == "voir":
+            x = e["propositions"].get(a.id)
+            if not x:
+                raise ErreurIle(f"proposition inconnue : {a.id}")
+            print(json.dumps(x, ensure_ascii=False, indent=2)); return 0
+        for x in sorted(e["propositions"].values(), key=lambda x: x["cree"]):
+            print(f"{x['id']:<16} [{x['libelle']:<24}] {x['origine'] or '—':<16} {(x['titre'] or '')[:70]}")
+        print(f"Décisions officielles : {'activées le ' + e['activation']['quand'][:16] if e['activation'] else 'NON activées'} · identité présidentielle : {'inscrite' if e['identite'] else 'absente'}")
+        return 0
+    acte = {"creer": lambda: P.creer(a.origine, a.titre, a.description, a.categorie, a.objectif, a.consequences, who(), a.cout, a.risque, a.piece, a.institution, a.soumettre),
+            "soumettre": lambda: P.soumettre_(a.id, who()),
+            "modifier": lambda: P.modifier(a.id, {**{k: getattr(a, k) for k in ("titre", "description", "categorie", "objectif", "consequences", "cout")},
+                                                  "risques": a.risque, "pieces": a.piece, "institutions": a.institution}, a.note, who()),
+            "transmettre": lambda: P.transmettre(a.id, a.vers, who(), a.destinataire),
+            "avis-demander": lambda: P.demander_avis(a.id, a.destinataire, a.question, who(), echeance=a.echeance),
+            "avis-rendre": lambda: P.rendre_avis(a.id, a.demande, a.sens, a.texte, who()),
+            "mettre-en-oeuvre": lambda: P.mettre_en_oeuvre(a.id, a.responsable, a.modalites, who(), echeance=a.echeance, mission=a.mission),
+            "executer": lambda: P.executer(a.id, a.etape, who(), a.resultat),
+            "recevoir": lambda: P.accuser_reception(a.id, a.institution_, who()),
+            "archiver": lambda: P.archiver(a.id, a.motif, who())}[a.sous]
+    try:
+        ev = acte()
+    except P.ErreurProposition as e:
+        raise ErreurIle(str(e))
+    print(f"{ev['id']} {ev['type']} — {ev['donnees'].get('proposition', '')} (par {ev['auteur'].get('role')}, {ev['auteur'].get('verifie')})")
+    return 0
+
+
+def _cli_president_proposition(a, cle):
+    """Décisions du président sur les propositions, dans un vrai terminal (phrase saisie sur /dev/tty)."""
+    P = _propositions()
+    try:
+        if a.sous == "activer-decisions":
+            print(P.DECLARATION)
+            return P.activer_decisions(cle, canal="terminal")
+        x = P.etat()["propositions"].get(a.id)
+        if not x:
+            raise ErreurIle(f"proposition inconnue : {a.id}")
+        if a.action == "approuver":
+            return P.approuver(a.id, cle, x["version"], a.motif, a.conditions, canal="terminal")
+        if a.action == "refuser":
+            return P.refuser(a.id, cle, x["version"], a.motif, canal="terminal")
+        if a.action == "modifier":
+            return P.demander_modifications(a.id, cle, a.observations, a.attendus, a.echeance, canal="terminal")
+        if a.action == "avis":
+            return P.demander_avis(a.id, a.destinataire, a.question, cle=cle, echeance=a.echeance, canal="terminal")
+        return P.rectifier(a.id, cle, a.vers, a.motif, canal="terminal")
+    except P.ErreurProposition as e:
+        raise ErreurIle(str(e))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="ile.py", description="Registre des opérations de l'Entreprise des Agents")
     ap.add_argument("--auteur", default="maire", help="rôle de l'auteur (maire, president, chef-rev-em, critique-clarte…)")
@@ -897,6 +968,30 @@ def main(argv=None):
     x = prs.add_parser("approuver"); x.add_argument("id"); x.add_argument("--motif"); x.add_argument("--heures", type=float, default=DUREE_APPROBATION_H)
     x = prs.add_parser("refuser"); x.add_argument("id"); x.add_argument("--motif")
     x = prs.add_parser("mission"); x.add_argument("id"); x.add_argument("vers", choices=("planifiee", "rejetee", "reportee", "proposee", "attente_president")); x.add_argument("--motif")
+    prs.add_parser("activer-decisions", help="active les décisions officielles sur les propositions (acte signé, une fois)")
+    x = prs.add_parser("proposition", help="décider d'une proposition (acte signé)"); x.add_argument("id")
+    x.add_argument("action", choices=("approuver", "refuser", "modifier", "avis", "rectifier")); x.add_argument("--motif"); x.add_argument("--conditions")
+    x.add_argument("--observations"); x.add_argument("--attendus"); x.add_argument("--echeance"); x.add_argument("--destinataire"); x.add_argument("--question")
+    x.add_argument("--vers", choices=("approuvee", "refusee"))
+    po = sp.add_parser("proposition", help="propositions soumises au président : créer, soumettre, avis, exécution"); psp2 = po.add_subparsers(dest="sous", required=True)
+    psp2.add_parser("liste"); x = psp2.add_parser("voir"); x.add_argument("id")
+    for nom in ("creer", "modifier"):
+        x = psp2.add_parser(nom)
+        if nom == "creer":
+            x.add_argument("--origine", required=True); x.add_argument("--soumettre", action="store_true")
+        else:
+            x.add_argument("id"); x.add_argument("--note", required=True)
+        for c in ("--titre", "--description", "--categorie", "--objectif", "--consequences"):
+            x.add_argument(c, required=(nom == "creer"))
+        x.add_argument("--cout"); x.add_argument("--risque", action="append", default=[]); x.add_argument("--piece", action="append", default=[]); x.add_argument("--institution", action="append", default=[])
+    x = psp2.add_parser("soumettre"); x.add_argument("id")
+    x = psp2.add_parser("transmettre"); x.add_argument("id"); x.add_argument("--vers", required=True, choices=("analyse", "president")); x.add_argument("--destinataire", action="append", default=[])
+    x = psp2.add_parser("avis-demander"); x.add_argument("id"); x.add_argument("--destinataire", required=True); x.add_argument("--question", required=True); x.add_argument("--echeance")
+    x = psp2.add_parser("avis-rendre"); x.add_argument("id"); x.add_argument("--demande", required=True); x.add_argument("--sens", required=True, choices=("favorable", "defavorable", "reserve")); x.add_argument("--texte", required=True)
+    x = psp2.add_parser("mettre-en-oeuvre"); x.add_argument("id"); x.add_argument("--responsable", required=True); x.add_argument("--modalites", required=True); x.add_argument("--echeance"); x.add_argument("--mission")
+    x = psp2.add_parser("executer"); x.add_argument("id"); x.add_argument("etape", choices=("debut", "fin")); x.add_argument("--resultat")
+    x = psp2.add_parser("recevoir"); x.add_argument("id"); x.add_argument("--institution", dest="institution_", required=True)
+    x = psp2.add_parser("archiver"); x.add_argument("id"); x.add_argument("--motif", required=True)
     og = sp.add_parser("org", help="organisation : entreprises, départements, postes, agents, hiérarchie"); osp = og.add_subparsers(dest="sous", required=True)
     osp.add_parser("fonctions"); osp.add_parser("amorcer")
     x = osp.add_parser("etat"); x.add_argument("--entreprise")
@@ -953,6 +1048,8 @@ def main(argv=None):
             return 0
         if a.cmd == "org":
             return _cli_org(a, who)
+        if a.cmd == "proposition":
+            return _cli_proposition(a, who)
         if a.cmd == "etat":
             p = etat(); v = verifier()
             print(f"Journal : {p['evenements']} événements — {'intègre' if v['ok'] else 'ALTÉRÉ'}")
@@ -1045,6 +1142,9 @@ def main(argv=None):
                 except president.ErreurPresident as e:
                     raise ErreurIle(str(e))
                 print(f"✔ Nouvelle identité {n.empreinte}, signée par l'ancienne."); return 0
+            if a.sous in ("activer-decisions", "proposition"):
+                ev = _cli_president_proposition(a, cle)
+                print(f"{ev['id']} {ev['type']} — acte signé (clé {ev['auteur'].get('cle')})"); return 0
             if a.sous == "approuver":
                 ev = accorder(a.id, cle, a.motif, a.heures, canal="terminal")
             elif a.sous == "refuser":

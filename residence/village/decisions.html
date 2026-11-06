@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
+<title>Propositions à examiner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f4ecdc; --paper:#fbf6ec; --ink:#231c13; --muted:#76664f; --rule:#e2d4ba; --chip:#efe3cb;
+  --gold:#b8891c; --accent:#c4553a; --ok:#2f7d4f; --warn:#b06a10; --bad:#b3261e; --night:#14202e;
+  --display:"Caprasimo","Cooper Black",Georgia,serif; --body:"Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:var(--night);color:var(--paper)}
+.topbar .in{max-width:1280px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.brand{font:400 22px var(--display);white-space:nowrap}
+.topbar nav{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.topbar nav a{color:var(--paper);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:7px;padding:5px 10px;font:600 12.5px var(--body);text-decoration:none}
+.chip{font-size:13px;display:flex;gap:8px;align-items:center}
+.chip button{border:1.5px solid #f5d27a;background:transparent;color:#f5d27a;border-radius:7px;padding:5px 11px;font:600 12.5px var(--body);cursor:pointer}
+.wrap{max-width:1280px;margin:0 auto;padding:16px 16px 70px}
+.ariane{font:500 13px var(--mono);color:var(--muted);margin:2px 0 8px}
+.ariane a{text-decoration:none;border-bottom:1px dotted var(--muted)}
+h1{font:400 clamp(28px,5vw,42px)/1.05 var(--display);margin:4px 0 8px}
+h2{font:400 22px var(--display);margin:22px 0 8px}
+h3{font:600 13px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:16px 0 4px}
+.lead{max-width:860px;color:#3f3424}
+.acces{border-radius:12px;padding:12px 16px;margin:12px 0;border:1.5px solid var(--warn);background:#fbefdb}
+.acces.ok{border-color:var(--ok);background:#e6f3ea}
+.acces ol{margin:6px 0 0;padding-left:20px}.acces li{margin:3px 0}
+.acces .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.public{background:var(--chip);border:1px solid var(--rule);border-radius:10px;padding:8px 12px;font-size:13.5px;margin:8px 0}
+.filtres{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.filtres button{font:600 13px var(--body);border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:6px 12px;cursor:pointer}
+.filtres button[aria-pressed="true"]{background:var(--night);color:var(--paper);border-color:var(--night)}
+.mise{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:16px;align-items:start}
+.liste{display:flex;flex-direction:column;gap:8px}
+.item{display:block;text-align:left;width:100%;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;color:inherit}
+.item[aria-current="true"]{border-color:var(--night);box-shadow:0 0 0 2px var(--night) inset}
+.item .t{font-weight:600}.item .m{font:12px var(--mono);color:var(--muted)}
+.fiche{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:16px 18px;min-height:200px}
+.fiche .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px 16px;margin:10px 0}
+.fiche .meta div{font-size:14px}.fiche .meta b{display:block;font:600 11.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.texte{white-space:pre-wrap}
+.statut{display:inline-block;border-radius:999px;padding:3px 10px;font:600 12.5px var(--body);background:var(--chip)}
+.statut.approuvee,.statut.executee,.statut.en_execution{background:#d9eedf;color:var(--ok)}
+.statut.refusee{background:#f6dcd9;color:var(--bad)}
+.statut.modifications_demandees,.statut.en_analyse{background:#fbe8cc;color:var(--warn)}
+.barre{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--rule)}
+.btn{font:600 14px var(--body);border:1.5px solid var(--night);background:var(--paper);color:var(--night);border-radius:9px;padding:8px 14px;cursor:pointer}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}.btn.dark{background:var(--night);color:var(--paper)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.item:focus-visible,.filtres button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.raison{font-size:13px;color:var(--warn);margin:4px 0 0}
+.avis{border-left:4px solid var(--rule);padding:4px 10px;margin:6px 0}
+.avis.favorable{border-color:var(--ok)}.avis.defavorable{border-color:var(--bad)}.avis.reserve{border-color:var(--warn)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:600 11.5px var(--mono);text-transform:uppercase;color:var(--muted);background:var(--chip)}
+.table{overflow-x:auto}
+code,.mono{font:12.5px var(--mono);overflow-wrap:anywhere}
+.vide{color:var(--muted);font-style:italic}
+dialog{border:0;border-radius:14px;padding:0;max-width:min(720px,calc(100vw - 24px));width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(20,32,46,.55)}
+dialog form{padding:18px 20px;display:flex;flex-direction:column;gap:10px;max-height:85vh;overflow:auto}
+dialog h3{font:400 24px var(--display);color:var(--ink);text-transform:none;letter-spacing:0;margin:0}
+dialog label{font-weight:600;font-size:14px;display:flex;flex-direction:column;gap:4px}
+dialog input,dialog textarea,dialog select{font:15px var(--body);padding:8px 10px;border:1px solid var(--rule);border-radius:8px;background:#fff}
+.recap{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px}
+.consequence{border:1.5px solid var(--warn);background:#fbefdb;border-radius:10px;padding:10px 12px;font-size:14px}
+.resultat{border-radius:10px;padding:10px 12px;margin:10px 0;font-size:14px}
+.resultat.ok{background:#e6f3ea;border:1.5px solid var(--ok)}.resultat.ko{background:#f6dcd9;border:1.5px solid var(--bad)}
+@media (max-width:860px){ .mise{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="in">
+  <span class="brand">Présidence</span>
+  <nav aria-label="Navigation"><a id="n-res" href="residence.html">Mon bureau</a><a href="decisions.html">Décisions</a><a href="entreprise.html">Entreprises</a><a id="n-met" href="index.html">Métropole 3D</a><a href="verification.html">Vérification</a></nav>
+  <div class="chip" id="chip" aria-live="polite"></div>
+</div></header>
+<main class="wrap">
+  <nav class="ariane" aria-label="Fil d'Ariane"><a href="residence.html" id="a-res">Mon bureau</a> → Décisions → <span id="a-p">Propositions à examiner</span></nav>
+  <h1>Propositions à examiner</h1>
+  <p class="lead">Chaque proposition soumise à l'autorité présidentielle, avec son dossier complet. Approuver, refuser ou demander des modifications est un <b>acte signé de votre clé</b>, vérifié par le serveur de l'île et inscrit au registre chaîné. Un avis du Conseil n'est jamais une décision.</p>
+  <div id="acces" class="acces" role="status" aria-live="polite">Chargement…</div>
+  <div id="public" class="public" hidden></div>
+  <div id="resultat" aria-live="assertive"></div>
+  <div class="filtres" role="group" aria-label="Filtrer les propositions" id="filtres"></div>
+  <div class="mise">
+    <div class="liste" id="liste" aria-label="Propositions"></div>
+    <article class="fiche" id="fiche" aria-live="polite"><p class="vide">Choisissez une proposition.</p></article>
+  </div>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlg-t"><form id="dlg-f" method="dialog"></form></dialog>
+<dialog id="dlg-lock" aria-labelledby="lock-t"><form id="lock-f" method="dialog">
+  <h3 id="lock-t">Déverrouiller la Présidence</h3>
+  <p>Votre phrase est transmise au seul serveur local de l'île, qui recrée la clé en mémoire le temps de la session. Elle n'est écrite nulle part.</p>
+  <label>Phrase présidentielle <input type="password" id="phrase" autocomplete="current-password" required></label>
+  <div class="barre"><button class="btn dark" type="submit">Déverrouiller</button><button class="btn" type="button" id="lock-annuler">Annuler</button></div>
+  <p class="raison" id="lock-err"></p>
+</form></dialog>
+<script src="source.js"></script>
+<script src="decisions.js"></script>
+</body>
+</html>

@@ -68,6 +68,15 @@ class Regles(unittest.TestCase):
         self.assertEqual(A("python3 orchestrateur/ile.py org etat"), "autoriser")                    # consultation libre
         self.assertEqual(garde.analyser({"tool_name": "Bash", "tool_input": {"command": "python3 orchestrateur/ile.py org amorcer"}, "cwd": str(ILE)}).issue, "autoriser")   # session principale
 
+    def test_propositions_sous_identite_verifiee(self):
+        """Un sous-agent propose, rend un avis ou rend compte sous son identité vérifiée, jamais comme le Maire."""
+        A = lambda cmd, agent="chef-rev-em": garde.analyser({"tool_name": "Bash", "tool_input": {"command": cmd}, "cwd": str(ILE), "agent_type": agent}).issue
+        self.assertEqual(A("python3 orchestrateur/ile.py proposition transmettre P-20990101-001 --vers president"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur maire --run R-0001 proposition creer --origine rev-em --titre t"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur critique-clarte proposition avis-rendre P-1 --demande E-1 --sens favorable --texte t", "critique-clarte"), "bloquer")
+        self.assertEqual(A("python3 orchestrateur/ile.py --auteur chef-rev-em --run R-0007 proposition soumettre P-20990101-001"), "autoriser")
+        self.assertEqual(A("python3 orchestrateur/ile.py proposition liste"), "autoriser")             # consultation libre
+
     def test_branche_protegee(self):
         """Sur main : commit, fusion et push sans destination exigent l'accord du président."""
         garde._branche = lambda cwd: "main"

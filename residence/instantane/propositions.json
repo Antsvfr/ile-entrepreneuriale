@@ -1,0 +1,275 @@
+{
+ "acces": {
+  "activee": false,
+  "blocages": [
+   "Version publiée (GitHub Pages) : aucun serveur, aucune session, aucune signature possible. Les décisions se prennent dans la Résidence locale (./ile).",
+   "Aucune identité présidentielle n'est inscrite au registre : le président doit la créer lui-même dans un vrai terminal (./ile president). Personne ne peut le faire à sa place.",
+   "Décisions officielles non activées : une fois l'identité créée et la Résidence déverrouillée, le président les active par un acte signé, en connaissance de l'état de l'étape 2 de sécurité (NON VALIDÉE)."
+  ],
+  "decision_possible": false,
+  "declaration": "J'active les décisions officielles de la Présidence. Je sais que l'étape 2 de sécurité est déclarée NON VALIDÉE (garde contournable par des commandes lisibles, agents et président sous le même utilisateur système) ; chaque décision reste un acte signé de ma clé, vérifiable par tous.",
+  "deverrouille": false,
+  "identite": false,
+  "mode": "publie"
+ },
+ "activation": null,
+ "anomalies": [],
+ "boites": {},
+ "categories": [
+  "strategie",
+  "organisation",
+  "budget",
+  "projet",
+  "securite",
+  "partenariat",
+  "reglement",
+  "decision",
+  "autre"
+ ],
+ "identite": false,
+ "propositions": {
+  "E-000002": {
+   "ancienne": true,
+   "archivee": null,
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "avis": [],
+   "avis_en_attente": [],
+   "categorie": "decision",
+   "consequences": "Votre compte GitHub peut écrire, mais le rattachement en écriture a été refusé par le contrôle d'autorisation de la session : il faut l'autoriser dans les réglages de session, ou travailler sur le Mac.",
+   "cout": null,
+   "cree": "2026-11-06T09:07:09+00:00",
+   "decision": null,
+   "decisions": [],
+   "demandes_avis": [],
+   "demandes_modification": [],
+   "description": "Accepter que les agents poussent des branches de travail ile/* et ouvrent des PR en brouillon sur Antsvfr/LexNote (jamais sur main, jamais de fusion sans vous) ?",
+   "evenement": "E-000002",
+   "execution": {
+    "debut": null,
+    "fin": null,
+    "resultat": null
+   },
+   "historique": [
+    {
+     "action": "demande de décision inscrite (ancien format : soumise directement au président)",
+     "evenement": "E-000002",
+     "par": "maire",
+     "quand": "2026-11-06T09:07:09+00:00",
+     "type": "decision.demandee",
+     "verifie": "declare"
+    }
+   ],
+   "id": "E-000002",
+   "institutions": [
+    "lexnote"
+   ],
+   "libelle": "En attente de décision",
+   "mise_en_oeuvre": null,
+   "mission": null,
+   "objectif": "Accepter que les agents poussent des branches de travail ile/* et ouvrent des PR en brouillon sur Antsvfr/LexNote (jamais sur main, jamais de fusion sans vous) ?",
+   "origine": "lexnote",
+   "pieces": [
+    {
+     "chemin": "architecture/ENTREPRISE-IA.md §1.3 ; maisons/lexnote/etat-des-lieux.md (Limite de cette session)",
+     "sha256": null
+    }
+   ],
+   "receptions": [],
+   "rectifications": [],
+   "risques": [],
+   "soumise": "2026-11-06T09:07:09+00:00",
+   "statut": "en_attente_decision",
+   "titre": "Autoriser l'entreprise à écrire sur le dépôt LexNote",
+   "transmissions": [],
+   "version": "3aeaca241c9d7b0743cb0d0b78a5c6d0241b78ac42530d67030dcca42e3e0485"
+  },
+  "E-000003": {
+   "ancienne": true,
+   "archivee": null,
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "avis": [],
+   "avis_en_attente": [],
+   "categorie": "decision",
+   "consequences": "Le code n'existe que sur votre Mac, sans historique ni copie : risque de perte. Les règles du projet interdisent tout push et tout cloud.",
+   "cout": null,
+   "cree": "2026-11-06T09:07:09+00:00",
+   "decision": null,
+   "decisions": [],
+   "demandes_avis": [],
+   "demandes_modification": [],
+   "description": "Lancer git init dans le dossier du projet sur votre Mac, sans aucun dépôt distant, avec un .gitignore qui exclut data/ ?",
+   "evenement": "E-000003",
+   "execution": {
+    "debut": null,
+    "fin": null,
+    "resultat": null
+   },
+   "historique": [
+    {
+     "action": "demande de décision inscrite (ancien format : soumise directement au président)",
+     "evenement": "E-000003",
+     "par": "maire",
+     "quand": "2026-11-06T09:07:09+00:00",
+     "type": "decision.demandee",
+     "verifie": "declare"
+    }
+   ],
+   "id": "E-000003",
+   "institutions": [
+    "upsa-sales-pilot"
+   ],
+   "libelle": "En attente de décision",
+   "mise_en_oeuvre": null,
+   "mission": null,
+   "objectif": "Lancer git init dans le dossier du projet sur votre Mac, sans aucun dépôt distant, avec un .gitignore qui exclut data/ ?",
+   "origine": "upsa-sales-pilot",
+   "pieces": [
+    {
+     "chemin": "maisons/upsa-sales-pilot/branches.md (Proposition) ; maisons/upsa-sales-pilot/CLAUDE.md (règles 2 et 4)",
+     "sha256": null
+    }
+   ],
+   "receptions": [],
+   "rectifications": [],
+   "risques": [],
+   "soumise": "2026-11-06T09:07:09+00:00",
+   "statut": "en_attente_decision",
+   "titre": "Initialiser git en local sur le Mac pour UPSA Sales Pilot",
+   "transmissions": [],
+   "version": "176f6897d7a1388638ed907a1081bef3dcc649168689f1f04c06a04858e567b4"
+  },
+  "E-000004": {
+   "ancienne": true,
+   "archivee": null,
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "avis": [],
+   "avis_en_attente": [],
+   "categorie": "decision",
+   "consequences": "Tests rejoués le 06/11 sur ffd1f95 : 50/55 fichiers OK ; le seul échec réel (import-center-ui, scénario 8) est identique sur main ; 4 fichiers non exécutés faute de PostgreSQL. Le zip local correspond exactement à cette branche.",
+   "cout": null,
+   "cree": "2026-11-06T09:07:09+00:00",
+   "decision": null,
+   "decisions": [],
+   "demandes_avis": [],
+   "demandes_modification": [],
+   "description": "Fusionner la PR #26 dans main (ce qui la met en ligne sur GitHub Pages), la garder en attente, ou demander d'abord une mission de vérification ?",
+   "evenement": "E-000004",
+   "execution": {
+    "debut": null,
+    "fin": null,
+    "resultat": null
+   },
+   "historique": [
+    {
+     "action": "demande de décision inscrite (ancien format : soumise directement au président)",
+     "evenement": "E-000004",
+     "par": "maire",
+     "quand": "2026-11-06T09:07:09+00:00",
+     "type": "decision.demandee",
+     "verifie": "declare"
+    }
+   ],
+   "id": "E-000004",
+   "institutions": [
+    "rev-em"
+   ],
+   "libelle": "En attente de décision",
+   "mise_en_oeuvre": null,
+   "mission": null,
+   "objectif": "Fusionner la PR #26 dans main (ce qui la met en ligne sur GitHub Pages), la garder en attente, ou demander d'abord une mission de vérification ?",
+   "origine": "rev-em",
+   "pieces": [
+    {
+     "chemin": "maisons/rev-em/etat-des-lieux.md (Tests exécutés le 2026-11-06)",
+     "sha256": null
+    }
+   ],
+   "receptions": [],
+   "rectifications": [],
+   "risques": [],
+   "soumise": "2026-11-06T09:07:09+00:00",
+   "statut": "en_attente_decision",
+   "titre": "Sort de la PR #26 de REV-EM (import fiable sans IA)",
+   "transmissions": [],
+   "version": "a8662b88bffdbcb3ca2c1e78c867f1e3bd1f7b544039c14ed681990bbe3a2469"
+  },
+  "E-000005": {
+   "ancienne": true,
+   "archivee": null,
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "avis": [],
+   "avis_en_attente": [],
+   "categorie": "decision",
+   "consequences": "Aucun dépôt ni dossier trouvé : la maison n'a que sa documentation.",
+   "cout": null,
+   "cree": "2026-11-06T09:07:09+00:00",
+   "decision": null,
+   "decisions": [],
+   "demandes_avis": [],
+   "demandes_modification": [],
+   "description": "Indiquer le dépôt GitHub ou le dossier du Mac qui contient les outils d'EM'ERGENCY, ou confirmer qu'il n'y a pas encore de code.",
+   "evenement": "E-000005",
+   "execution": {
+    "debut": null,
+    "fin": null,
+    "resultat": null
+   },
+   "historique": [
+    {
+     "action": "demande de décision inscrite (ancien format : soumise directement au président)",
+     "evenement": "E-000005",
+     "par": "maire",
+     "quand": "2026-11-06T09:07:09+00:00",
+     "type": "decision.demandee",
+     "verifie": "declare"
+    }
+   ],
+   "id": "E-000005",
+   "institutions": [
+    "bde-emergency"
+   ],
+   "libelle": "En attente de décision",
+   "mise_en_oeuvre": null,
+   "mission": null,
+   "objectif": "Indiquer le dépôt GitHub ou le dossier du Mac qui contient les outils d'EM'ERGENCY, ou confirmer qu'il n'y a pas encore de code.",
+   "origine": "bde-emergency",
+   "pieces": [
+    {
+     "chemin": "architecture/ENTREPRISE-IA.md §1.3",
+     "sha256": null
+    }
+   ],
+   "receptions": [],
+   "rectifications": [],
+   "risques": [],
+   "soumise": "2026-11-06T09:07:09+00:00",
+   "statut": "en_attente_decision",
+   "titre": "Où se trouvent les outils d'EM'ERGENCY ?",
+   "transmissions": [],
+   "version": "0f9b26eb096b9f3c5cf05de482b0835232abffbba53d57037b5b3a6687e6e197"
+  }
+ },
+ "statuts": {
+  "approuvee": "Approuvée",
+  "brouillon": "Brouillon",
+  "en_analyse": "En cours d'analyse",
+  "en_attente_decision": "En attente de décision",
+  "en_execution": "En exécution",
+  "executee": "Exécutée",
+  "modifications_demandees": "Modifications demandées",
+  "refusee": "Refusée",
+  "soumise": "Soumise"
+ }
+}
