@@ -8,7 +8,7 @@ const Q = new URLSearchParams(location.search);
 async function chargerRegistre(){
   // version publiée (GitHub Pages) : le registre est à la racine du site ; serveur local : /registre.json (alias /village/)
   let urls = ["../registre.json", "../../registre.json"];
-  if(window.IleSource){ try{ if(await IleSource.detecter() === "publie") urls = [IleSource.lien("fichier", "registre.json")]; }catch(_){} }
+  if(window.IleSource){ try{ urls = [await IleSource.detecter() === "publie" ? IleSource.lien("fichier", "registre.json") : "/registre.json"]; }catch(_){} }
   for(const url of urls){
     try{ const r = await fetch(url,{cache:"no-store"}); if(r.ok) return await r.json(); }catch(e){}
   }
@@ -783,6 +783,8 @@ const SECTIONS = {residence: [["Résidence présidentielle", ""], ["À trancher"
   maison: [["Fiche du projet", "#projets"], ["Missions", "#missions"]]};
 function accesBatiment(b){
   const res = window.IleSource ? IleSource.lien("residence") : "/residence", l = [];
+  if(["maison", "mairie", "conseil", "forge", "residence"].includes(b.type))      // bâtiment relié à une organisation du cadastre
+    l.push(`<a class="entrer" href="entreprise.html#/e/${encodeURIComponent(b.id)}" data-entrer="1">Entrer dans ${b.type === "maison" ? "l'entreprise" : "l'institution"} →</a>`);
   for(const [titre, ancre] of (SECTIONS[b.type] || [])) l.push(`<a href="${esc(res + ancre)}">${esc(titre)} ↗</a>`);
   if(b.type === "residence" || b.type === "forge") l.push(`<a href="verification.html">Vérification publique du journal ↗</a>`);
   if(b.dossier) l.push(`<a href="${esc(b.dossier === "." ? "https://github.com/Antsvfr/ile-entrepreneuriale" : DEPOT_WEB + b.dossier)}" target="_blank" rel="noopener">Dossier dans le dépôt ↗</a>`);
@@ -802,7 +804,7 @@ function ouvrir(id, focus=true){
     ${b.branches ? `<div class="f"><span>Branches (${b.branches.length})</span><ul class="env">${b.branches.map(x => `<li>${x.nom === b.branche_active ? "★ " : ""}${esc(x.nom)}${x.sha ? " · " + esc(x.sha) : ""}<br><small>${esc(x.role)}</small></li>`).join("")}</ul></div>` : ""}
     ${b.dossier ? `<div class="f"><span>Dossier</span><code>${esc(b.dossier === "." ? "/ (racine)" : b.dossier + "/")}</code></div>` : ""}
     ${b.type === "maison" ? `<div class="f" id="jr" data-id="${esc(b.id)}" hidden><span>Journal · 5 dernières entrées</span><ul class="jr"></ul></div>` : ""}
-    ${b.type === "chantier" ? "" : accesBatiment(b)}
+    ${b.type === "chantier" ? '<div class="f"><span>Organisation</span><p>Chantier : aucune entreprise n\'y est encore installée (rien n\'est inventé).</p></div>' : accesBatiment(b)}
     <div class="f"><span>${b.type === "chantier" ? "Environnement prévu" : "Environnement"}</span><ul class="env">${(b.environnement||[]).map(e => `<li>${esc(e)}</li>`).join("")}</ul></div>
     ${b.type === "residence" ? `<a class="tag" style="text-decoration:none;border-style:solid;font-size:14px;padding:8px 12px" href="residence.html">Entrer dans la Résidence : tableau de bord →</a>` : ""}
     <div class="f"><span>Dans Claude Code</span><div class="cmd"><code id="cmdTxt">${esc(b.commande)}</code><button id="copy">Copier</button></div></div>`;
@@ -987,3 +989,9 @@ function diagnostic(renderer, qualite, auto){
     requestAnimationFrame(boucle); };
   requestAnimationFrame(boucle);
 }
+
+/* entrée dans une entreprise : fondu, puis ouverture des bureaux (la page garde l'adresse : retour arrière = métropole) */
+document.addEventListener("click", ev => {
+  const a = ev.target.closest("a[data-entrer]"); if(!a || ev.metaKey || ev.ctrlKey) return;
+  ev.preventDefault(); document.body.classList.add("entree"); setTimeout(() => { location.href = a.href; }, 380);
+});
