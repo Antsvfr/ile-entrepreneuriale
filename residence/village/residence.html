@@ -92,7 +92,7 @@ dialog h3{font:400 24px var(--display)}
     <span class="brand">Résidence</span>
     <nav aria-label="Navigation">
       <a href="/village/" id="lien-metropole">Métropole 3D</a><a href="decisions.html"><b>Décisions</b></a><a href="entreprise.html">Entreprises</a><a href="verification.html">Vérification</a>
-      <a href="#trancher">À trancher</a><a href="#projets">Projets</a><a href="#rapports">Rapports</a><a href="#missions">Missions</a><a href="#instructions">Instructions</a><a href="#tests">Tests</a><a href="#securite">Sécurité</a><a href="#journal">Journal</a>
+      <a href="#trancher">À trancher</a><a href="#projets">Projets</a><a href="#rapports">Rapports</a><a href="#realisations">Réalisations</a><a href="#missions">Missions</a><a href="#instructions">Instructions</a><a href="#tests">Tests</a><a href="#securite">Sécurité</a><a href="#journal">Journal</a>
       <select id="aller" aria-label="Aller à un bâtiment"><option value="">Bâtiments…</option></select>
     </nav>
     <div class="chip-id" id="chip-id" aria-live="polite"></div>
@@ -155,6 +155,12 @@ dialog h3{font:400 24px var(--display)}
     <h2 id="t-ag">Agents et exécutions</h2>
     <p class="lead">Un agent n'est actif que pendant une exécution réelle ouverte par Claude Code (hook) ou par le directeur général.</p>
     <div class="tablewrap"><table id="runs"><thead><tr><th>Exécution</th><th>Agent</th><th>Projet</th><th>Mission</th><th>Début</th><th>Fin</th><th>Résultat</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="realisations" aria-labelledby="t-rx">
+    <h2 id="t-rx">Réalisations automatiques</h2>
+    <p class="lead">Chaque demande passée par la chaîne complète (<code>/realiser</code>) : avis du Conseil, plan du Concepteur, développement, verdicts des correcteurs, tours de correction. Chaque étape dit qui l'a inscrite et si une exécution d'agent l'atteste au registre.</p>
+    <div class="grid" id="realisations-l"></div>
   </section>
 
   <section id="tests" aria-labelledby="t-te">
@@ -352,6 +358,16 @@ function runs(d){
 }
 
 function tests(d){
+  const PH = {conseil:"Conseil", conception:"Conception", developpement:"Développement", correction:"Correction"};
+  $("#realisations-l").innerHTML = (d.realisations || []).length ? d.realisations.map(x => `
+    <article class="card">
+      <div class="row"><span class="tag">${esc(x.siege)}</span><span class="tag ${x.statut === "acceptee" ? "PASS" : x.statut === "bloquee" ? "FAIL" : ""}">${esc(x.libelle)}</span><span class="src">${esc(x.id)} · ${quand(x.ouverte)} · tour ${esc(x.tour)}</span></div>
+      <h3>${esc(x.titre)}</h3><div class="nr" style="font-style:normal">${esc(x.prompt)}</div>
+      ${x.attendu ? `<div class="src">Attendu ensuite : ${esc(x.attendu)}</div>` : ""}
+      ${x.criteres.length ? `<div class="src">Critères d'acceptation : ${x.criteres.map(esc).join(" · ")}</div>` : ""}
+      <ol style="margin:8px 0 0;padding-left:18px">${x.etapes.map(e => `<li><b>${esc(PH[e.phase] || e.phase)}</b>${e.tour ? ` (tour ${esc(e.tour)})` : ""} — ${esc(e.role)}${e.verdict ? ` : <b>${e.verdict === "accepte" ? "accepté" : "à corriger"}</b>` : ""}<br>${esc(e.resume)}${e.defauts.length ? `<ul>${e.defauts.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}<div class="src">${esc(e.preuve.texte)} · ${esc(e.evenement)}</div></li>`).join("")}</ol>
+      ${x.close ? `<div style="margin-top:6px"><b>Clôture :</b> ${esc(x.close.resume)}</div>` : ""}
+    </article>`).join("") : `<p class="nr">Aucune réalisation inscrite. Lancer : <code>/realiser &lt;votre demande&gt;</code> dans une session de l'île.</p>`;
   $("#tests-t tbody").innerHTML = d.tests.length ? d.tests.map(t => `<tr><td>${quand(t.execute_le)}</td><td>${esc(t.siege)}</td><td><b>${esc(t.intitule)}</b>${t.commande ? `<div class="src">${esc(t.commande)}</div>` : ""}</td><td><span class="tag ${esc(t.resultat.replace(" ",""))}">${esc(t.resultat)}</span></td><td>${esc(t.resume || "")}${t.preuve ? `<div class="src">preuve : ${esc(t.preuve)}</div>` : ""}<div class="src">inscrit par ${auteur(t.auteur)}</div></td></tr>`).join("") : `<tr><td colspan="5" class="nr">Aucun test inscrit.</td></tr>`;
 }
 

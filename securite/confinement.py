@@ -30,7 +30,8 @@ ICI = os.path.dirname(os.path.realpath(__file__))          # securite/
 RACINE = os.path.dirname(ICI)                              # racine de l'île
 # Modules de l'île chargeables, et leur seul emplacement admis (séparation : présidence / orchestrateur).
 MODULES = {"signature": "presidence/signature.py", "president": "presidence/president.py", "ile": "orchestrateur/ile.py",
-           "organisation": "orchestrateur/organisation.py", "propositions": "orchestrateur/propositions.py"}
+           "organisation": "orchestrateur/organisation.py", "propositions": "orchestrateur/propositions.py",
+           "realisations": "orchestrateur/realisations.py"}
 
 
 class ErreurConfinement(ImportError):

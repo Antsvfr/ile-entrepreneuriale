@@ -897,6 +897,36 @@ def _cli_proposition(a, who):
     return 0
 
 
+def _cli_realisation(a, who):
+    conf = sys.modules.get("confinement")
+    if conf is not None:
+        X = conf.charger("realisations")
+    else:
+        import realisations as X
+    if a.sous in ("liste", "voir"):
+        e = X.etat()
+        if a.sous == "voir":
+            x = e["realisations"].get(a.id)
+            if not x:
+                raise ErreurIle(f"réalisation inconnue : {a.id}")
+            print(json.dumps(x, ensure_ascii=False, indent=2)); return 0
+        for x in sorted(e["realisations"].values(), key=lambda x: x["ouverte"]):
+            print(f"{x['id']:<16} [{x['libelle']:<28}] tour {x['tour']}/{e['tours_max']}  {x['siege'] or '—':<14} {(x['titre'] or '')[:60]}" + (f"  → attendu : {x['attendu']}" if x["attendu"] else ""))
+        return 0
+    try:
+        if a.sous == "ouvrir":
+            ev = X.ouvrir(a.siege, a.titre, a.prompt, who())
+        elif a.sous == "etape":
+            ev = X.etape(a.id, a.phase, a.role, who(), a.resume, a.tour, a.verdict, a.defaut, a.critere, a.artefact, a.run_agent)
+        else:
+            ev = X.clore(a.id, a.resultat, a.resume, who())
+    except X.ErreurRealisation as e:
+        raise ErreurIle(str(e))
+    x = X.etat()["realisations"][ev["donnees"]["realisation"]]
+    print(f"{ev['id']} {ev['type']} — {x['id']} : {x['libelle']}" + (f" · attendu : {x['attendu']}" if x["attendu"] else ""))
+    return 0
+
+
 def _cli_president_proposition(a, cle):
     """Décisions du président sur les propositions, dans un vrai terminal (phrase saisie sur /dev/tty)."""
     P = _propositions()
@@ -992,6 +1022,13 @@ def main(argv=None):
     x = psp2.add_parser("executer"); x.add_argument("id"); x.add_argument("etape", choices=("debut", "fin")); x.add_argument("--resultat")
     x = psp2.add_parser("recevoir"); x.add_argument("id"); x.add_argument("--institution", dest="institution_", required=True)
     x = psp2.add_parser("archiver"); x.add_argument("id"); x.add_argument("--motif", required=True)
+    re_ = sp.add_parser("realisation", help="réalisation automatique d'une demande (/realiser) : trace et règles du circuit"); rsp2 = re_.add_subparsers(dest="sous", required=True)
+    rsp2.add_parser("liste"); x = rsp2.add_parser("voir"); x.add_argument("id")
+    x = rsp2.add_parser("ouvrir"); x.add_argument("--siege", required=True); x.add_argument("--titre", required=True); x.add_argument("--prompt", required=True)
+    x = rsp2.add_parser("etape"); x.add_argument("id"); x.add_argument("--phase", required=True, choices=("conseil", "conception", "developpement", "correction"))
+    x.add_argument("--role", required=True); x.add_argument("--resume", required=True); x.add_argument("--tour", type=int); x.add_argument("--verdict", choices=("accepte", "a_corriger"))
+    x.add_argument("--defaut", action="append", default=[]); x.add_argument("--critere", action="append", default=[]); x.add_argument("--artefact"); x.add_argument("--run-agent")
+    x = rsp2.add_parser("clore"); x.add_argument("id"); x.add_argument("resultat", choices=("acceptee", "bloquee", "abandonnee")); x.add_argument("--resume", required=True)
     og = sp.add_parser("org", help="organisation : entreprises, départements, postes, agents, hiérarchie"); osp = og.add_subparsers(dest="sous", required=True)
     osp.add_parser("fonctions"); osp.add_parser("amorcer")
     x = osp.add_parser("etat"); x.add_argument("--entreprise")
@@ -1050,6 +1087,8 @@ def main(argv=None):
             return _cli_org(a, who)
         if a.cmd == "proposition":
             return _cli_proposition(a, who)
+        if a.cmd == "realisation":
+            return _cli_realisation(a, who)
         if a.cmd == "etat":
             p = etat(); v = verifier()
             print(f"Journal : {p['evenements']} événements — {'intègre' if v['ok'] else 'ALTÉRÉ'}")

@@ -60,6 +60,7 @@ def _confinement():
 
 ile = _confinement().charger("ile")
 ORG = _confinement().charger("organisation")   # module (la fonction organisation() ci-dessous décrit les directions)
+REAL = _confinement().charger("realisations")  # réalisations automatiques (/realiser)
 PROP = _confinement().charger("propositions")  # propositions soumises au président (circuit institutionnel)
 
 PORT_DEFAUT = int(os.environ.get("ILE_PORT", "7777"))
@@ -179,6 +180,7 @@ def residence(session=None):
         "runs": sorted(p["runs"].values(), key=lambda r: r["debut"], reverse=True)[:30],
         "securite": {"refus": list(reversed(p["refus"]))[:30], "rejets": p["rejets"][-30:], **protections()},
         "organisation": organisation(),
+        "realisations": sorted(REAL.etat()["realisations"].values(), key=lambda x: x["ouverte"], reverse=True)[:30],
         "innovation": {"statut": "prévu — étape 6 de la roadmap", "dossier": "projets/innovation/"},
     }
 
