@@ -85,12 +85,12 @@
  },
  "instructions": [],
  "integrite": {
-  "dernier_hash": "a48cc8b194ea29999b6de06a00977b3ad51228fb1877d88f05fe55e58d195466",
+  "dernier_hash": "bf9109eaa4eca8ec339c2f1626bfec5bf886912f6c605587c3a3e1b34cbce13f",
   "erreurs": [],
-  "evenements": 79,
+  "evenements": 88,
   "ok": true
  },
- "maj": "2026-11-06T16:57:57+00:00",
+ "maj": "2026-11-16T10:28:04+00:00",
  "missions": [
   {
    "artefacts": [],
@@ -901,6 +901,163 @@
    "role": "chef-lexnote",
    "run": "R-0002",
    "siege": "lexnote"
+  }
+ ],
+ "realisations": [
+  {
+   "attendu": null,
+   "auteur": {
+    "role": "maire",
+    "verifie": "declare"
+   },
+   "close": {
+    "evenement": "E-000088",
+    "par": {
+     "role": "maire",
+     "verifie": "declare"
+    },
+    "quand": "2026-11-16T10:20:32+00:00",
+    "resultat": "acceptee",
+    "resume": "verification.html en politique de sécurité stricte : script déplacé dans verification-page.js, CSP identique à entreprise.html (script-src 'self', object-src 'none'), test de non-régression CspVerification (4 tests, échoue sur l'ancienne page). Accepté au tour 1 par la Forge et le Relecteur. 120 tests OK. Reste à décider par Anton : fusion dans main et ./ile publier."
+   },
+   "criteres": [
+    "verification.html : aucun <script> intégré (grep -c '<script>' → 0) et plus de 'unsafe-inline' dans script-src",
+    "Balise CSP identique à celle d'entreprise.html (diff vide)",
+    "verification-page.js identique aux lignes 71-128 de la page d'origine (diff vide) ; verification.js inchangé",
+    "Tests unitaires : OK avec plus de 116 tests ; le nouveau test échoue sur la page d'origine (sortie montrée)",
+    "Test navigateur sur miroir : « Vérification : journal recalculé », « documents gelés intacts », « Vérification : aucune erreur » en PASS",
+    "Mode local (serveur de l'île) : /village/verification.html affiche « Intègre », sans erreur de console"
+   ],
+   "etapes": [
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000081",
+     "phase": "conseil",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T09:57:41+00:00",
+     "resume": "Flou : « stricte » (script-src 'self' seul, ou aussi object-src 'none' ?), « sans rien casser » sans critère ; un verification.js existe déjà : fusionner ou nouveau fichier ? Manque : la preuve attendue (tests, navigateur, zéro violation CSP), le sort de l'instantané publié.",
+     "role": "critique-clarte",
+     "tour": 0,
+     "verdict": null
+    },
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000082",
+     "phase": "conseil",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T09:57:41+00:00",
+     "resume": "Barre : plus aucun script intégré ni attribut on…= ; CSP identique à entreprise.html (object-src 'none' compris) ; preuve en navigateur, zéro violation CSP, tests réellement exécutés ; un test de non-régression qui échoue si 'unsafe-inline' revient dans script-src. Pièges : loger le script dans verification.js (moteur pur testé sous Node) ; déclarer « rien cassé » sans rejouer les tests. « Stricte » vaut pour les scripts seulement (style-src garde 'unsafe-inline').",
+     "role": "critique-exigence",
+     "tour": 0,
+     "verdict": null
+    },
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000083",
+     "phase": "conseil",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T09:57:41+00:00",
+     "resume": "Objectif réel : la page qui prouve l'intégrité du registre ne doit pas être le maillon faible ; banc d'essai borné et testable pour /realiser. Raccourci : déplacer tel quel le script intégré dans un fichier de branchement distinct, aligner la CSP sur entreprise.html, rejouer tests/version_publiee.js. Pas de refonte, pas de styles. S'arrêter avant commit, push et ./ile publier.",
+     "role": "critique-strategie",
+     "tour": 0,
+     "verdict": null
+    },
+    {
+     "artefact": null,
+     "criteres": [
+      "verification.html : aucun <script> intégré (grep -c '<script>' → 0) et plus de 'unsafe-inline' dans script-src",
+      "Balise CSP identique à celle d'entreprise.html (diff vide)",
+      "verification-page.js identique aux lignes 71-128 de la page d'origine (diff vide) ; verification.js inchangé",
+      "Tests unitaires : OK avec plus de 116 tests ; le nouveau test échoue sur la page d'origine (sortie montrée)",
+      "Test navigateur sur miroir : « Vérification : journal recalculé », « documents gelés intacts », « Vérification : aucune erreur » en PASS",
+      "Mode local (serveur de l'île) : /village/verification.html affiche « Intègre », sans erreur de console"
+     ],
+     "defauts": [],
+     "evenement": "E-000084",
+     "phase": "conception",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T09:59:18+00:00",
+     "resume": "Créer residence/village/verification-page.js (copie octet pour octet du script intégré, lignes 71-128), le charger après source.js et verification.js, aligner la balise CSP sur celle d'entreprise.html, ajouter un test CspVerification dans tests/test_version_web.py, prouver que ce test échoue sur la page d'origine, rejouer tests unitaires et test navigateur. Ne pas toucher verification.js, source.js, les styles, le serveur, le journal. Ni commit, ni push, ni publication.",
+     "role": "concepteur",
+     "tour": 0,
+     "verdict": null
+    },
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000085",
+     "phase": "developpement",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T10:04:29+00:00",
+     "resume": "Créé verification-page.js (lignes 71-128 de l'ancienne page, octet pour octet) ; verification.html : CSP identique à entreprise.html (script-src 'self', object-src 'none'), script intégré remplacé par un fichier externe ; tests/test_version_web.py : classe CspVerification (4 tests), dossier surchargeable par ILE_TEST_VILLAGE. Annonce : 120 tests OK ; le test échoue sur la page d'origine (3 échecs) ; miroir : lignes Vérification en PASS, test navigateur arrêté plus loin par un délai sur la métropole 3D (même échec sur l'état d'origine) ; mode local : Intègre, 0 erreur.",
+     "role": "developpeur",
+     "tour": 1,
+     "verdict": null
+    },
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000086",
+     "phase": "correction",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T10:11:26+00:00",
+     "resume": "Les 6 critères exécutés et remplis : aucun script intégré, CSP identique à entreprise.html, copie octet pour octet, verification.js inchangé ; 120 tests OK et le nouveau test échoue sur la page d'origine (3 échecs) ; miroir : les 3 lignes Vérification en PASS ; mode local : Intègre, 0 erreur. Délai dépassé sur la métropole 3D dans tests/version_publiee.js : identique sur HEAD, préexistant, à traiter à part.",
+     "role": "forgeron",
+     "tour": 1,
+     "verdict": "accepte"
+    },
+    {
+     "artefact": null,
+     "criteres": [],
+     "defauts": [],
+     "evenement": "E-000087",
+     "phase": "correction",
+     "preuve": {
+      "niveau": "declare",
+      "texte": "rapporté par maire ; sans exécution au registre"
+     },
+     "quand": "2026-11-16T10:20:32+00:00",
+     "resume": "Les 6 critères vérifiés par le relecteur lui-même ; déplacement exact (ordre de chargement, use strict, portée globale, gestionnaire en JS) ; le test mord sur 3 altérations différentes ; compte rendu du développeur honnête, une nuance : le délai sur la métropole 3D est intermittent (21/21 au second passage), pas systématique. Remarque non bloquante : la variable ILE_TEST_VILLAGE permet de pointer le test ailleurs (même risque que ILE_SOURCE_TEST existant).",
+     "role": "relecteur",
+     "tour": 1,
+     "verdict": "accepte"
+    }
+   ],
+   "evenement": "E-000080",
+   "id": "X-20261116-001",
+   "libelle": "Acceptée",
+   "ouverte": "2026-11-16T09:57:00+00:00",
+   "prompt": "Passe la page Vérification publique en politique de sécurité de contenu stricte, comme les pages Entreprises et Décisions, sans rien casser.",
+   "siege": "mairie",
+   "statut": "acceptee",
+   "titre": "Vérification publique en politique de sécurité stricte",
+   "tour": 1
   }
  ],
  "runs": [
