@@ -74,6 +74,49 @@ class Identite(Base):
         self.assertFalse(ile.verifier()["ok"])
 
 
+class PhraseAuTerminal(unittest.TestCase):
+    """La phrase se lit sur le terminal (/dev/tty), sans écho, jamais sur l'entrée standard (correctif macOS)."""
+    def _dans_un_terminal(self, saisie, entree_standard=b""):
+        import pty, select, time
+        prog = ("import sys; sys.path.insert(0, %r); import president; "
+                "r = president.demander_phrase('Phrase : '); print('LU=' + r + '|LONGUEUR=' + str(len(r)))") % str(RACINE / "presidence")
+        pid, fd = pty.fork()
+        if pid == 0:                                                   # enfant : son terminal est le pty
+            r, w = os.pipe(); os.write(w, entree_standard); os.close(w); os.dup2(r, 0)   # entrée standard remplie par un « programme »
+            os.execv(sys.executable, [sys.executable, "-I", "-S", "-c", prog])
+        sortie, fin = b"", time.time() + 20
+        while b"Phrase : " not in sortie and time.time() < fin:
+            if select.select([fd], [], [], .2)[0]:
+                sortie += os.read(fd, 1024)
+        os.write(fd, saisie)
+        while time.time() < fin:
+            if select.select([fd], [], [], .2)[0]:
+                try:
+                    bloc = os.read(fd, 1024)
+                except OSError:
+                    break
+                if not bloc:
+                    break
+                sortie += bloc
+            elif b"LONGUEUR=" in sortie:
+                break
+        os.waitpid(pid, 0)
+        return sortie.decode("utf-8", "replace")
+
+    @unittest.skipUnless(sys.platform != "win32", "terminal POSIX requis")
+    def test_lecture_sans_echo(self):
+        sortie = self._dans_un_terminal("ma phrase présidentielle ê\n".encode("utf-8"))
+        self.assertIn("LU=ma phrase présidentielle ê|LONGUEUR=26", sortie)
+        avant = sortie.split("LU=")[0]
+        self.assertNotIn("ma phrase", avant)                           # la saisie n'est jamais affichée
+
+    @unittest.skipUnless(sys.platform != "win32", "terminal POSIX requis")
+    def test_entree_standard_ignoree(self):
+        sortie = self._dans_un_terminal(b"vraie phrase du terminal\n", entree_standard=b"phrase injectee par un programme\n")
+        self.assertIn("LU=vraie phrase du terminal|", sortie)
+        self.assertNotIn("injectee", sortie)
+
+
 class Falsification(Base):
     def setUp(self):
         super().setUp()

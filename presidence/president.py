@@ -103,6 +103,29 @@ def demander_phrase(invite: str = "Phrase présidentielle : ") -> str:
     """Lit la phrase sur le terminal lui-même (jamais sur l'entrée standard, qu'un programme peut remplir)."""
     if not terminal_disponible():
         raise ErreurPresident("cette action exige un vrai terminal : lance-la toi-même dans Terminal (un agent ne le peut pas)")
-    import getpass
-    with open("/dev/tty", "r+") as tty:
-        return getpass.getpass(invite, stream=tty)
+    # Lecture directe sur /dev/tty, écho coupé (termios), sans getpass : getpass retombe sur l'entrée standard quand
+    # /dev/tty pose problème, et open("/dev/tty", "r+") échoue sur macOS (« not seekable »).
+    import termios
+    fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY)
+    try:
+        os.write(fd, invite.encode("utf-8"))
+        ancien = termios.tcgetattr(fd)
+        muet = termios.tcgetattr(fd)
+        muet[3] &= ~termios.ECHO
+        termios.tcsetattr(fd, termios.TCSAFLUSH, muet)
+        lu = b""
+        try:
+            while not lu.endswith(b"\n"):
+                bloc = os.read(fd, 1024)
+                if not bloc:
+                    break
+                lu += bloc
+        finally:
+            termios.tcsetattr(fd, termios.TCSAFLUSH, ancien)
+            os.write(fd, b"\n")
+    finally:
+        os.close(fd)
+    try:
+        return lu.decode("utf-8").rstrip("\r\n")
+    except UnicodeDecodeError:
+        raise ErreurPresident("phrase illisible (encodage du terminal) : réessaie")
