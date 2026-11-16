@@ -31,6 +31,10 @@ Séparation des privilèges visée (pas encore en place) : `docs/architecture/SE
  CONSEIL DES CRITIQUES   CHEFS DE MAISON      FORGE
  clarté · exigence ·     un par projet        vérifie et répare
  stratégie               (projets/<id>)       tout ce qui sort
+      │                        │                    │
+ CONCEPTEUR              DÉVELOPPEUR           RELECTEUR
+ plan + critères         code de l'île         second correcteur,
+ d'acceptation           (hors maisons)        ne modifie rien
 ```
 
 ## Le circuit d'une demande (obligatoire pour toute tâche non triviale)
@@ -43,6 +47,8 @@ Séparation des privilèges visée (pas encore en place) : `docs/architecture/SE
 
 Questions rapides (une définition, une info) : réponds directement, sans circuit.
 
+**Circuit automatique : `/realiser <demande>`.** Tu enchaînes toi-même toute la chaîne, sans attendre Anton entre les étapes : Conseil (3 critiques en parallèle) → `concepteur` (plan + critères d'acceptation vérifiables) → développeur (`chef-<id>` pour un projet, `developpeur` pour le code de l'île) → correcteurs en parallèle (`forgeron` exécute, `relecteur` relit) → retour au développeur tant qu'un correcteur refuse, **3 tours au plus**. Chaque étape est inscrite au registre (`ile.py realisation …`), qui impose l'ordre, l'indépendance développeur / correcteur et la limite de tours. Tu ne t'arrêtes que pour une vraie ambiguïté, une opération sensible (commit, push, fusion, `main`, projet extérieur) ou un blocage.
+
 ## Règles de l'île
 
 - Chaque maison vit dans `projets/<id>/` avec son propre `CLAUDE.md`, un `journal.md` et ses dossiers. Un chef ne sort jamais de sa maison sans passer par toi.
@@ -53,6 +59,7 @@ Questions rapides (une définition, une info) : réponds directement, sans circu
 
 ## Commandes
 
+- `/realiser <demande>` — réaliser une demande de bout en bout : Conseil, Concepteur, Développeur, Correcteurs, boucle de correction, rapport.
 - `/conseil <prompt>` — faire passer un prompt devant le Conseil, sans exécuter.
 - `/nouvelle-maison <nom>` — construire une branche (dossier, agent, registre, bâtiment 3D).
 - `/inspection` — la Forge inspecte toute l'île et répare.

@@ -25,3 +25,14 @@ FORGE — <date> — <cible>
 ```
 
 Écris-le aussi dans `audit/rapports/AAAA-MM-JJ-<cible>.md`.
+
+## Verdict de correcteur (quand on te confie une livraison à juger, notamment par /realiser)
+
+On te donne alors le plan du Concepteur, ses critères d'acceptation et le compte rendu du développeur. Tu **exécutes** : les tests du projet, chaque critère d'acceptation vérifiable par une commande, et `python3 -I -S orchestrateur/ile.py verifier`. Tu ne répares toi-même que la forme (faute, lien, fichier oublié) ; un défaut de fond retourne au développeur. Termine ton rapport par :
+
+```
+VERDICT : ACCEPTE | A_CORRIGER
+Critères : critère → commande exécutée → résultat
+Défauts (si A_CORRIGER) : ce qui échoue (commande, message) — ce qu'il faut pour que ce soit accepté
+```
+`A_CORRIGER` dès qu'un test échoue ou qu'un critère n'est pas rempli. Ce que tu n'as pas pu exécuter est « non vérifié », jamais « accepté ».

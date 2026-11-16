@@ -458,6 +458,10 @@ def analyser(payload: dict) -> Verdict:
         if agent.get("agent_type") and re.search(r"\bile\.py\b.*\bproposition\s+(creer|soumettre|modifier|transmettre|avis-demander|avis-rendre|mettre-en-oeuvre|executer|recevoir|archiver)\b", cmd):
             if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
                 return Verdict("bloquer", "propositions", "usurpation-dg", "un agent agit sur une proposition sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
+        # Réalisations (/realiser) : le Maire rapporte ; un agent n'inscrit que sa propre étape, identité vérifiée.
+        if agent.get("agent_type") and re.search(r"\bile\.py\b.*\brealisation\s+(ouvrir|etape|clore)\b", cmd):
+            if not re.search(r"--run(?:=|\s+)['\"]?R-\d+", cmd) or re.search(r"--auteur(?:=|\s+)['\"]?maire\b", cmd) or not re.search(r"--auteur(?:=|\s+)", cmd):
+                return Verdict("bloquer", "realisations", "usurpation-dg", "un agent n'inscrit une étape de réalisation que sous sa propre identité vérifiée (--auteur <son rôle> --run R-…), jamais comme le Maire", "Bash", cmd.strip())
         return analyser_bash(cmd, cwd)
     if outil in ECRITURE:
         return analyser_fichier(outil, ti.get("file_path") or ti.get("notebook_path") or "", cwd, agent)

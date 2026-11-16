@@ -1,6 +1,8 @@
 """Version web publiée : instantané généré par le code du serveur, et vérification du journal dans le navigateur
 (residence/village/verification.js) identique à orchestrateur/ile.py verifier."""
 import json
+import os
+import re
 import shutil
 import subprocess
 import sys
@@ -121,6 +123,41 @@ class Instantane(Base):
         r = _verifier_js(vrai, meta)
         evs = [json.loads(l) for l in vrai.read_text(encoding="utf-8").splitlines() if l.strip()]
         self.assertTrue(r["ok"], r["erreurs"]); self.assertEqual(r["n"], len(evs)); self.assertEqual(r["dernier"], evs[-1]["hash"])
+
+
+class CspVerification(unittest.TestCase):
+    """verification.html : aucun script intégré, CSP stricte (script-src 'self'), branchement dans verification-page.js. Sans Node."""
+    VILLAGE = Path(os.environ.get("ILE_TEST_VILLAGE") or RACINE / "residence" / "village")   # variable : prouver que le test mord sur une copie
+
+    def setUp(self):
+        self.html = (self.VILLAGE / "verification.html").read_text(encoding="utf-8")
+
+    def test_scripts_externes_locaux_et_vides(self):
+        scripts = re.findall(r"<script\b([^>]*)>(.*?)</script\s*>", self.html, re.S | re.I)
+        self.assertEqual(len(scripts), len(re.findall(r"<script\b", self.html, re.I)), "balise <script> mal formée")
+        self.assertTrue(scripts, "aucun script chargé")
+        for attrs, corps in scripts:
+            src = re.search(r"""\bsrc\s*=\s*["']([^"']*)["']""", attrs, re.I)
+            self.assertIsNotNone(src, "script sans src : " + attrs)
+            self.assertRegex(src.group(1), r"^[A-Za-z0-9_.-]+\.js$", "script non local : " + src.group(1))
+            self.assertTrue((self.VILLAGE / src.group(1)).is_file(), src.group(1) + " absent")
+            self.assertEqual(corps.strip(), "", "script intégré dans verification.html")
+        self.assertIn("verification-page.js", [re.search(r"""src\s*=\s*["']([^"']*)""", a).group(1) for a, _ in scripts])
+
+    def test_csp_stricte(self):
+        metas = re.findall(r"""<meta\s+http-equiv="Content-Security-Policy"\s+content="([^"]*)">""", self.html)
+        self.assertEqual(len(metas), 1, "une balise CSP, une seule")
+        directives = {d.split()[0]: d.split()[1:] for d in metas[0].split(";") if d.strip()}
+        self.assertEqual(directives.get("script-src"), ["'self'"])
+        self.assertEqual(directives.get("object-src"), ["'none'"])
+
+    def test_aucun_gestionnaire_en_attribut(self):
+        for balise in re.findall(r"<[a-zA-Z][^>]*>", self.html):
+            self.assertIsNone(re.search(r"""\son[a-z]+\s*=""", balise, re.I), "gestionnaire en attribut : " + balise[:80])
+
+    def test_branchement_separe_du_moteur(self):
+        self.assertTrue((self.VILLAGE / "verification-page.js").is_file())
+        self.assertNotIn("document.querySelector", (self.VILLAGE / "verification.js").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
