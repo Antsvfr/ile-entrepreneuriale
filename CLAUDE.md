@@ -47,7 +47,7 @@ Séparation des privilèges visée (pas encore en place) : `docs/architecture/SE
 
 Questions rapides (une définition, une info) : réponds directement, sans circuit.
 
-**Circuit automatique : `/realiser <demande>`.** Tu enchaînes toi-même toute la chaîne, sans attendre Anton entre les étapes : Conseil (3 critiques en parallèle) → `concepteur` (plan + critères d'acceptation vérifiables) → développeur (`chef-<id>` pour un projet, `developpeur` pour le code de l'île) → correcteurs en parallèle (`forgeron` exécute, `relecteur` relit) → retour au développeur tant qu'un correcteur refuse, **3 tours au plus**. Chaque étape est inscrite au registre (`ile.py realisation …`), qui impose l'ordre, l'indépendance développeur / correcteur et la limite de tours. Tu ne t'arrêtes que pour une vraie ambiguïté, une opération sensible (commit, push, fusion, `main`, projet extérieur) ou un blocage.
+**Circuit automatique : `/realiser <demande>`.** Tu enchaînes toi-même toute la chaîne, sans attendre Anton entre les étapes : Conseil (3 critiques en parallèle) → `concepteur` (plan + critères d'acceptation vérifiables) → développeur (`chef-<id>` pour un projet, `developpeur` pour le code de l'île) → correcteurs en parallèle (`forgeron` exécute, `relecteur` relit) → retour au développeur tant qu'un correcteur refuse, **3 tours au plus**. Chaque étape est inscrite au registre (`ile.py realisation …`), qui impose l'ordre, l'indépendance développeur / correcteur et la limite de tours. Tu ne t'arrêtes que pour une vraie ambiguïté, une opération sensible (fusion, `main`, déploiement, secret, ou projet extérieur hors règle branches et pull requests) ou un blocage. Pour REV-EM et LexNote, une réalisation acceptée se termine par une branche poussée et une pull request ouverte, qu'Anton fusionne.
 
 ## Règles de l'île
 
@@ -82,8 +82,8 @@ Tout ce que fait l'entreprise est inscrit dans **`orchestrateur/registre/journal
 ## Maisons-projets (grosses maisons)
 
 Trois projets d'Anton ont leur grande maison : **LexNote**, **REV-EM**, **UPSA Sales Pilot** (`projets/<id>/`). Chacune a un `branches.md` (branches réelles, SHA, ordre de fusion), un `etat-des-lieux.md` (vérifié / non vérifié) et le dossier de reprise du projet. Les règles de chaque projet sont dans son `CLAUDE.md` et priment sur les habitudes de l'île.
-- Aucun agent ne modifie un projet extérieur à l'île, ne touche à `main`, ne fusionne, ne pousse ni ne déploie sans l'accord explicite d'Anton dans le chat.
-- Le code de ces projets n'est pas dans l'île : REV-EM et LexNote sont sur GitHub (copies de lecture dans `/home/user/antsvfr/`), UPSA est seulement sur le Mac d'Anton.
+- **Règle branches et pull requests (accord d'Anton du 16 novembre 2026)** pour REV-EM et LexNote : sur une mission confiée par le Maire, le chef de la maison travaille sur une branche `claude/<mission>` du dépôt du projet, y commite et la pousse ; le Maire ouvre la pull request ; **Anton relit et fusionne**. Jamais de commit ni de push sur `main`, de fusion, de push forcé, de déploiement, de migration ni d'accès à un secret. Tout le reste d'un projet extérieur (UPSA compris) reste soumis à l'accord explicite d'Anton dans le chat. **Limite en vigueur :** le garde (`securite/garde.py`) n'a pas encore été adapté à cette règle ; dans une session où il est actif, chaque écriture dans un dépôt de projet reste soumise à approbation (« écriture hors du dépôt de l'île »). Son adaptation est une modification de garde-fou : elle revient à Anton.
+- Le code de ces projets n'est pas dans l'île : REV-EM et LexNote sont sur GitHub (clones de travail de la session cloud : `/home/user/rev-em`, `/home/user/lexnote`), UPSA est seulement sur le Mac d'Anton.
 - Quand deux sources se contredisent, on consigne l'écart et on le fait vérifier ; on ne tranche pas.
 
 ## La métropole 3D (`residence/village/`)
