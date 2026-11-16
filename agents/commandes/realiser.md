@@ -41,11 +41,12 @@ Pour chaque étape, ajoute `--run-agent R-…` si une exécution de cet agent fi
 - Accepté : `realisation clore X-… acceptee --resume "<ce qui est livré, où, comment c'est vérifié>"`.
 - Trois tours sans accord : `realisation clore X-… bloquee --resume "<ce qui bloque, les défauts restants>"`.
 - Journal : une ligne datée dans `audit/journal-de-l-ile.md` et dans le `journal.md` de la maison.
-- Rapport à Anton, court : ce qui a été fait · les fichiers touchés · le verdict de chaque correcteur et le nombre de tours · ce qui reste à décider par lui (commit, push, fusion) · l'identifiant `X-…`, visible dans la Résidence, rubrique « Réalisations automatiques ».
+- Rapport à Anton, court : ce qui a été fait · les fichiers touchés · le verdict de chaque correcteur et le nombre de tours · le lien de la pull request (ou ce qui reste à décider par lui) · l'identifiant `X-…`, visible dans la Résidence, rubrique « Réalisations automatiques ».
 
 ## Quand t'arrêter (et seulement là)
 1. **Vraie ambiguïté** relevée par le Conseil ou le Concepteur, qui change ce qu'il faut construire : pose UNE question à Anton, puis reprends.
-2. **Opération sensible** : push, fusion, `main`, déploiement, migration, secret, projet extérieur à l'île, dépense. Le travail s'arrête sur la branche de travail, non commité si Anton ne l'a pas demandé ; tu lui demandes son accord. Si le garde bloque, ne contourne pas.
+2. **Opération sensible** : fusion, `main`, push forcé, déploiement, migration, secret, dépense, ou projet extérieur hors de la règle branches et pull requests. Tu demandes son accord à Anton. Si le garde bloque, ne contourne pas.
+   - **REV-EM et LexNote** (règle branches et pull requests, accord du 16 novembre 2026) : le développeur travaille sur une branche `claude/<mission>` du dépôt du projet. Une fois la réalisation acceptée, la branche est commitée et poussée, puis tu ouvres la pull request vers `main`, avec le plan, les critères et les verdicts. Anton relit et fusionne : ce n'est jamais toi.
 3. **Blocage** : trois tours refusés, ou un agent déclare la demande impossible ou contraire aux règles.
 
 ## Interdits
